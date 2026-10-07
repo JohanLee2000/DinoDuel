@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_flbi0"]
+
+[resource]
+script = ExtResource("1_flbi0")
+id = &"mosasaurus"
+display_name = "Mosasaurus"
+dino_type = 2
+era = 2
+rarity = 2
+attack = 8
+defense = 1
+speed = 4
+health = 15

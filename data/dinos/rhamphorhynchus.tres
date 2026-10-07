@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_prd41"]
+
+[resource]
+script = ExtResource("1_prd41")
+id = &"rhamphorhynchus"
+display_name = "Rhamphorhynchus"
+dino_type = 1
+era = 1
+attack = 5
+speed = 8
+health = 9

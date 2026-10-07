@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_oqjql"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="2_ip8n8"]
+[ext_resource type="Resource" path="res://data/dinos/triceratops.tres" id="3_8w42p"]
+[ext_resource type="Resource" path="res://data/dinos/pteranodon.tres" id="4_k5v6g"]
+[ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="5_kindo"]
+[ext_resource type="Resource" path="res://data/dinos/mosasaurus.tres" id="6_pmis1"]
+[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="7_7ii3d"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="8_0n7le"]
+
+[resource]
+script = ExtResource("8_0n7le")
+id = &"rory"
+display_name = "Rival Rory"
+intro = "Rory just got back from the Cretaceous and wants to show off."
+brings = Array[ExtResource("1_oqjql")]([ExtResource("2_ip8n8"), ExtResource("3_8w42p"), ExtResource("4_k5v6g"), ExtResource("5_kindo"), ExtResource("6_pmis1"), ExtResource("7_7ii3d")])

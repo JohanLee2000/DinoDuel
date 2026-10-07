@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_hh808"]
+
+[resource]
+script = ExtResource("1_hh808")
+id = &"nothosaurus"
+display_name = "Nothosaurus"
+dino_type = 2
+attack = 5
+defense = 1
+speed = 4
+health = 11

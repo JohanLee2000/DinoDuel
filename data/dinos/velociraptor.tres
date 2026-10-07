@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_x55tl"]
+
+[resource]
+script = ExtResource("1_x55tl")
+id = &"velociraptor"
+display_name = "Velociraptor"
+era = 2
+rarity = 1
+attack = 6
+defense = 1
+speed = 9
+health = 11

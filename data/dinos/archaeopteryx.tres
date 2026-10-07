@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_sq65a"]
+
+[resource]
+script = ExtResource("1_sq65a")
+id = &"archaeopteryx"
+display_name = "Archaeopteryx"
+dino_type = 1
+era = 1
+rarity = 1
+attack = 6
+defense = 1
+speed = 10
+health = 11

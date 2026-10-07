@@ -1,0 +1,100 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/herd_select/herd_select.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
+
+[node name="HerdSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.105882, 0.129412, 0.188235, 1)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_safe")
+
+[node name="Column" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="SafeArea/Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Choose your herd"
+horizontal_alignment = 1
+
+[node name="RivalPanel" type="PanelContainer" parent="SafeArea/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RivalBox" type="VBoxContainer" parent="SafeArea/Column/RivalPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RivalLabel" type="Label" parent="SafeArea/Column/RivalPanel/RivalBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Rival brings:"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RivalBrings" type="HBoxContainer" parent="SafeArea/Column/RivalPanel/RivalBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Hint" type="Label" parent="SafeArea/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pick 3 dinos within 9 Herd Points"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Scroll" type="ScrollContainer" parent="SafeArea/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Grid" type="GridContainer" parent="SafeArea/Column/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Summary" type="Label" parent="SafeArea/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Herd Points 0/9"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BattleButton" type="Button" parent="SafeArea/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+disabled = true
+text = "Battle!"

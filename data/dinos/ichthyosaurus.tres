@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_b3tis"]
+
+[resource]
+script = ExtResource("1_b3tis")
+id = &"ichthyosaurus"
+display_name = "Ichthyosaurus"
+dino_type = 2
+era = 1
+attack = 5
+speed = 7
+health = 11

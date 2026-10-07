@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_fvjd8"]
+
+[resource]
+script = ExtResource("1_fvjd8")
+id = &"liopleurodon"
+display_name = "Liopleurodon"
+dino_type = 2
+era = 1
+rarity = 1
+attack = 7
+defense = 2
+speed = 3
+health = 13

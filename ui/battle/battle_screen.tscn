@@ -1,0 +1,196 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/battle/battle_screen.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.105882, 0.129412, 0.188235, 1)
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_safe")
+
+[node name="Column" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopBar" type="HBoxContainer" parent="SafeArea/Column"]
+layout_mode = 2
+
+[node name="RivalName" type="Label" parent="SafeArea/Column/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 26
+text = "Rival"
+
+[node name="TurnLabel" type="Label" parent="SafeArea/Column/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Turn 1"
+
+[node name="EnemyRow" type="HBoxContainer" parent="SafeArea/Column"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="EnemyBench" type="VBoxContainer" parent="SafeArea/Column/EnemyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EnemySlot" type="Control" parent="SafeArea/Column/EnemyRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(290, 330)
+layout_mode = 2
+
+[node name="LogPanel" type="PanelContainer" parent="SafeArea/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 116)
+layout_mode = 2
+
+[node name="Log" type="RichTextLabel" parent="SafeArea/Column/LogPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 21
+theme_override_font_sizes/bold_font_size = 23
+bbcode_enabled = true
+scroll_active = false
+
+[node name="PlayerRow" type="HBoxContainer" parent="SafeArea/Column"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PlayerSlot" type="Control" parent="SafeArea/Column/PlayerRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(290, 330)
+layout_mode = 2
+
+[node name="PlayerBench" type="VBoxContainer" parent="SafeArea/Column/PlayerRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Hint" type="Label" parent="SafeArea/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_font_sizes/font_size = 22
+text = "Choose an action"
+horizontal_alignment = 1
+
+[node name="Actions" type="GridContainer" parent="SafeArea/Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="BiteButton" type="Button" parent="SafeArea/Column/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 23
+text = "Bite"
+
+[node name="ChargeButton" type="Button" parent="SafeArea/Column/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 23
+text = "Charge"
+
+[node name="BraceButton" type="Button" parent="SafeArea/Column/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 23
+text = "Brace"
+
+[node name="SwapButton" type="Button" parent="SafeArea/Column/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 23
+text = "Swap"
+
+[node name="Overlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="Center" type="CenterContainer" parent="Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResultBox" type="VBoxContainer" parent="Overlay/Center"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ResultTitle" type="Label" parent="Overlay/Center/ResultBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Victory!"
+horizontal_alignment = 1
+
+[node name="ResultDetail" type="Label" parent="Overlay/Center/ResultBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RematchButton" type="Button" parent="Overlay/Center/ResultBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Rematch"
+
+[node name="NewHerdButton" type="Button" parent="Overlay/Center/ResultBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Change herd"

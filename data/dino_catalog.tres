@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DinoCatalog" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_ip2j2"]
+[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_5cu0e"]
+[ext_resource type="Resource" path="res://data/dinos/stegosaurus.tres" id="3_yt0tg"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="4_2xkr6"]
+[ext_resource type="Resource" path="res://data/dinos/triceratops.tres" id="5_05nsn"]
+[ext_resource type="Resource" path="res://data/dinos/t_rex.tres" id="6_4hnpg"]
+[ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="7_e7s1f"]
+[ext_resource type="Resource" path="res://data/dinos/rhamphorhynchus.tres" id="8_g218f"]
+[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="9_glkyd"]
+[ext_resource type="Resource" path="res://data/dinos/pteranodon.tres" id="10_2igop"]
+[ext_resource type="Resource" path="res://data/dinos/quetzalcoatlus.tres" id="11_xur8e"]
+[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="12_xk75t"]
+[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="13_jhtqu"]
+[ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="14_vcncn"]
+[ext_resource type="Resource" path="res://data/dinos/liopleurodon.tres" id="15_tbexf"]
+[ext_resource type="Resource" path="res://data/dinos/mosasaurus.tres" id="16_iqugg"]
+[ext_resource type="Script" path="res://core/dino_catalog.gd" id="17_ibvxg"]
+
+[resource]
+script = ExtResource("17_ibvxg")
+dinos = Array[ExtResource("1_ip2j2")]([ExtResource("2_5cu0e"), ExtResource("3_yt0tg"), ExtResource("4_2xkr6"), ExtResource("5_05nsn"), ExtResource("6_4hnpg"), ExtResource("7_e7s1f"), ExtResource("8_g218f"), ExtResource("9_glkyd"), ExtResource("10_2igop"), ExtResource("11_xur8e"), ExtResource("12_xk75t"), ExtResource("13_jhtqu"), ExtResource("14_vcncn"), ExtResource("15_tbexf"), ExtResource("16_iqugg")])

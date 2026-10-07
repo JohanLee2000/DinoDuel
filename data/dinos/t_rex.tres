@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_7j6l4"]
+
+[resource]
+script = ExtResource("1_7j6l4")
+id = &"t_rex"
+display_name = "T. rex"
+era = 2
+rarity = 4
+attack = 9
+defense = 2
+speed = 4
+health = 20
