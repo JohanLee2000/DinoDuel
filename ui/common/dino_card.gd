@@ -1,242 +1,504 @@
 class_name DinoCard
-extends PanelContainer
-## Placeholder card: type-colored panel, rarity-colored border, name, stats, and (in battle) an
-## HP bar. The art box will hold the Blender render later.
+extends Control
+## A dino card in the style of Jo's concept sheet (docs/concept/card_concept_sheet.webp):
+## full-bleed painting inside a glowing frame in the tier color, the tier crest (N, R, SR, SSR,
+## UR) top-left, the type medallion top-right, a name banner with the dino's title, and four
+## stat boxes along the bottom. SSR and UR frames pulse; UR and Shiny frames shift through
+## colors; Shiny cards also get a holo sheen over the art. Undiscovered dinos show the card back.
+##
+## Everything is laid out in fractions of the card width, so the same card renders crisply from
+## a tiny bench card to the full-screen view.
+##
+## Tap emits `pressed`. Holding the card opens the full-size CardViewer.
 
 ## Emitted on tap. A drag (e.g. scrolling a list of cards) doesn't count as a tap.
 signal pressed
 
+enum Mode { MINI, FULL, BATTLE, LARGE }
+
+const WIDTHS := {Mode.MINI: 104.0, Mode.FULL: 212.0, Mode.BATTLE: 200.0, Mode.LARGE: 480.0}
+const ASPECT := 1.68
 const TAP_SLOP := 16.0
-
-enum Mode { FULL, BATTLE, MINI }
-
-const SIZES := {
-	Mode.FULL: Vector2(212, 300),
-	Mode.BATTLE: Vector2(290, 330),
-	Mode.MINI: Vector2(104, 132),
-}
+const HOLD_SECONDS := 0.45
+const FRAME_SHADER := preload("res://ui/common/card_frame.gdshader")
+const HABITAT_SHADER := preload("res://ui/common/habitat.gdshader")
+const HOLO_SHADER := preload("res://ui/common/holo.gdshader")
+const CARD_BACK_PATH := "res://assets/branding/card_back.png"
+## Placeholder backdrops per type until the paintings exist: top, middle, bottom, horizon, rays.
+const HABITATS := [
+	[Color("f6b26b"), Color("c77b3f"), Color("3b2a1e"), 0.55, 0.0],
+	[Color("6fb8f2"), Color("cdebff"), Color("6e8fb5"), 0.6, 0.0],
+	[Color("3fb6e0"), Color("1462b8"), Color("04122e"), 0.35, 1.0],
+]
+const PANEL := Color(0.03, 0.07, 0.14, 0.88)
 
 var def: DinoDef
 var combatant: Combatant
 var mode := Mode.FULL
+var width := 212.0
+## Opens the full-size view when the card is held.
+var inspect_on_hold := true
 var selected := false:
 	set(value):
 		selected = value
-		_update_style()
+		queue_redraw()
 var highlighted := false:
 	set(value):
 		highlighted = value
-		_update_style()
+		queue_redraw()
 var dimmed := false:
 	set(value):
 		dimmed = value
 		modulate = Color(1, 1, 1, 0.4) if value else Color.WHITE
+## Shiny copies get a color-shifting frame and a holo sheen. Cosmetic only.
+var shiny := false
+## Undiscovered dinos show the card back (used by the Dex).
+var unknown := false
+## Health drawn on the HP bar; tweened by the battle screen.
+var shown_health := 0.0:
+	set(value):
+		shown_health = value
+		if _overlay:
+			_overlay.queue_redraw()
 
-var _style := StyleBoxFlat.new()
-var _health_bar: ProgressBar
-var _health_fill := StyleBoxFlat.new()
-var _health_label: Label
-var _badge: Label
+var _overlay: Control
+var _badge_text := ""
 var _press_position := Vector2.INF
+var _press_serial := 0
 
 
-## Builds a card. Pass a Combatant to show live battle stats and health.
-static func create(dino: DinoDef, card_mode: Mode, live: Combatant = null) -> DinoCard:
+## Builds a card. Pass a Combatant to show live battle stats and an HP bar. `custom_width`
+## overrides the mode's default width.
+static func create(dino: DinoDef, card_mode: Mode, live: Combatant = null, is_shiny := false,
+		custom_width := 0.0) -> DinoCard:
 	var card := DinoCard.new()
 	card.def = dino
 	card.mode = card_mode
 	card.combatant = live
+	card.shiny = is_shiny
+	card.width = custom_width if custom_width > 0.0 else WIDTHS[card_mode]
 	card._build()
 	return card
 
 
-func refresh() -> void:
-	if combatant:
-		display_health(combatant.health)
+## A face-down card (the card back) for a dino the player hasn't discovered yet.
+static func create_unknown(dino: DinoDef, card_mode: Mode, custom_width := 0.0) -> DinoCard:
+	var card := DinoCard.new()
+	card.def = dino
+	card.mode = card_mode
+	card.unknown = true
+	card.width = custom_width if custom_width > 0.0 else WIDTHS[card_mode]
+	card._build()
+	return card
 
 
-## Shows `health` right away. The battle screen uses this instead of reading the combatant,
-## because the engine resolves a whole turn at once and the UI replays it step by step.
+## Just the card back at a given width, e.g. for a card about to be flipped over.
+static func create_back(card_width: float) -> TextureRect:
+	var back := TextureRect.new()
+	back.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	back.stretch_mode = TextureRect.STRETCH_SCALE
+	back.texture = load(CARD_BACK_PATH)
+	back.size = Vector2(card_width, card_width * ASPECT)
+	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return back
+
+
+## Full size of a card in this mode, including the HP bar when it shows one.
+static func size_for(card_mode: Mode, with_health := false) -> Vector2:
+	return size_for_width(WIDTHS[card_mode], with_health)
+
+
+static func size_for_width(w: float, with_health: bool) -> Vector2:
+	return Vector2(w, w * ASPECT + (_bar_height(w) + w * 0.04 if with_health else 0.0))
+
+
+static func _bar_height(w: float) -> float:
+	return maxf(10.0, w * 0.075)
+
+
 func display_health(health: int) -> void:
-	if _health_bar == null:
-		return
-	_health_bar.max_value = combatant.max_health
-	_health_bar.value = health
-	_set_health_text(health)
+	shown_health = health
+	dimmed = health <= 0
 
 
-## Animates the HP bar from its current value to `health`.
+## Animates the HP bar to `health`.
 func tween_health(health: int, duration := 0.35) -> void:
-	if _health_bar == null:
-		return
-	var tween := create_tween()
-	tween.tween_property(_health_bar, "value", float(health), duration)
-	_set_health_text(health)
-
-
-func _set_health_text(health: int) -> void:
-	_health_fill.bg_color = Palette.health_color(float(health) / combatant.max_health)
-	if _health_label:
-		_health_label.text = "HP %d/%d" % [health, combatant.max_health]
+	create_tween().tween_property(self, "shown_health", float(health), duration)
 	dimmed = health <= 0
 
 
 func set_badge(text: String) -> void:
-	_badge.text = text
-	_badge.visible = text != ""
+	_badge_text = text
+	if _overlay:
+		_overlay.queue_redraw()
 
+
+func card_height() -> float:
+	return width * ASPECT
+
+
+func tier_color() -> Color:
+	return Palette.RARITY_COLORS[def.rarity]
+
+
+func _small() -> bool:
+	return width < 150.0
+
+
+# --- Building -------------------------------------------------------------------------------
 
 func _build() -> void:
-	custom_minimum_size = SIZES[mode]
-	size = SIZES[mode]
+	size = size_for_width(width, combatant != null)
+	custom_minimum_size = size
+	pivot_offset = Vector2(width, card_height()) / 2
 	# PASS lets a parent ScrollContainer still see drags that start on the card.
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	_style.bg_color = Palette.TYPE_COLORS[def.dino_type].darkened(0.35)
-	_style.set_corner_radius_all(10 if mode == Mode.MINI else 14)
-	_style.set_content_margin_all(6 if mode == Mode.MINI else 10)
-	add_theme_stylebox_override("panel", _style)
-	_update_style()
+	var w := width
+	var h := card_height()
 
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 2 if mode == Mode.MINI else 6)
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(box)
+	if unknown:
+		var back := create_back(w)
+		add_child(back)
+	else:
+		var border := w * 0.045
+		var art_rect := Rect2(border * 0.6, border * 0.6, w - border * 1.2, h - border * 1.2)
+		_add_art(art_rect)
+		if shiny:
+			_add_holo(art_rect)
+		var fade := Control.new()
+		fade.position = art_rect.position
+		fade.size = art_rect.size
+		fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		fade.draw.connect(func() -> void:
+			var top := fade.size.y * 0.48
+			var colors := PackedColorArray([Color(PANEL, 0.0), Color(PANEL, 0.0), Color(PANEL, 0.95), Color(PANEL, 0.95)])
+			fade.draw_polygon(PackedVector2Array([Vector2(0, top), Vector2(fade.size.x, top),
+					Vector2(fade.size.x, fade.size.y), Vector2(0, fade.size.y)]), colors))
+		add_child(fade)
+		_add_frame(border)
 
-	var stats_source: Variant = combatant if combatant else def
-	match mode:
-		Mode.MINI:
-			box.add_child(_label(def.display_name, 14, Palette.TEXT, true))
-			box.add_child(_art_box(46, 22))
-			box.add_child(_label("%s %s" % [def.type_name(), _short_rarity()], 12, Palette.TEXT_DIM))
-			if combatant:
-				box.add_child(_make_health_bar(10))
-			else:
-				box.add_child(_label("%d/%d/%d/%d" % [def.attack, def.defense, def.speed, def.health],
-						12, Palette.TEXT_DIM))
-		Mode.FULL:
-			box.add_child(_label(def.display_name, 20, Palette.TEXT, true))
-			box.add_child(_art_box(110, 40))
-			box.add_child(_label("%s  %s" % [def.type_name(), def.era_name()], 15, Palette.TEXT_DIM))
-			box.add_child(_label("%s  %d pt%s" % [def.rarity_name(), HerdRules.points_of(def),
-					"" if HerdRules.points_of(def) == 1 else "s"], 15,
-					Palette.RARITY_COLORS[def.rarity]))
-			box.add_child(_stats_grid(stats_source, 16))
-		Mode.BATTLE:
-			box.add_child(_label(def.display_name, 24, Palette.TEXT, true))
-			box.add_child(_art_box(108, 44))
-			box.add_child(_label("%s  %s  %s" % [def.type_name(), def.era_name(), def.rarity_name()],
-					15, Palette.TEXT_DIM))
-			box.add_child(_stats_grid(stats_source, 18))
-			_health_label = _label("", 18, Palette.TEXT)
-			box.add_child(_health_label)
-			box.add_child(_make_health_bar(16))
+	_overlay = Control.new()
+	_overlay.size = size
+	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_overlay.draw.connect(_draw_overlay)
+	add_child(_overlay)
+	if combatant:
+		shown_health = combatant.health
 
-	_badge = _label("", 13 if mode == Mode.MINI else 16, Color.BLACK)
-	_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var badge_style := StyleBoxFlat.new()
-	badge_style.bg_color = Palette.HIGHLIGHT
-	badge_style.set_corner_radius_all(8)
-	badge_style.set_content_margin_all(3)
-	_badge.add_theme_stylebox_override("normal", badge_style)
-	_badge.visible = false
-	box.add_child(_badge)
-	refresh()
 
+func _add_frame(border: float) -> void:
+	var w := width
+	var glow := w * 0.07
+	var frame := ColorRect.new()
+	frame.position = Vector2(-glow, -glow)
+	frame.size = Vector2(w + glow * 2, card_height() + glow * 2)
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = FRAME_SHADER
+	material.set_shader_parameter("rect_size", frame.size)
+	material.set_shader_parameter("card_size", Vector2(w, card_height()))
+	material.set_shader_parameter("glow", glow)
+	material.set_shader_parameter("border", border)
+	material.set_shader_parameter("radius", w * 0.07)
+	material.set_shader_parameter("tier_color", tier_color())
+	material.set_shader_parameter("glow_strength", 0.55 + def.rarity * 0.1)
+	material.set_shader_parameter("rainbow", 1.0 if def.rarity == DinoDef.Rarity.LEGENDARY else (0.6 if shiny else 0.0))
+	material.set_shader_parameter("pulse", 1.0 if def.rarity >= DinoDef.Rarity.EPIC or shiny else 0.0)
+	frame.material = material
+	add_child(frame)
+
+
+## The painting if there is one, otherwise a habitat backdrop with a silhouette.
+func _add_art(rect: Rect2) -> void:
+	var clip := Control.new()
+	clip.position = rect.position
+	clip.size = rect.size
+	# Cover-fit draws past its rect, so clip the art to the card.
+	clip.clip_contents = true
+	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(clip)
+	var painting := DinoArt.full(def, shiny)
+	if painting:
+		var art := TextureRect.new()
+		# Expand mode first: otherwise the size can't go below the texture's own size.
+		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		art.texture = painting
+		art.size = rect.size
+		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		clip.add_child(art)
+		return
+	var habitat: Array = HABITATS[def.dino_type]
+	var backdrop := ColorRect.new()
+	backdrop.size = rect.size
+	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = HABITAT_SHADER
+	material.set_shader_parameter("top_color", habitat[0])
+	material.set_shader_parameter("mid_color", habitat[1])
+	material.set_shader_parameter("bottom_color", habitat[2])
+	material.set_shader_parameter("horizon", habitat[3])
+	material.set_shader_parameter("rays", habitat[4])
+	material.set_shader_parameter("rect_size", rect.size)
+	material.set_shader_parameter("radius", 0.0)
+	backdrop.material = material
+	clip.add_child(backdrop)
+	var shape := TextureRect.new()
+	shape.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	shape.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	shape.position = Vector2(rect.size.x * 0.06, rect.size.y * 0.2)
+	shape.size = Vector2(rect.size.x * 0.88, rect.size.y * 0.36)
+	shape.texture = Icons.texture(Icons.silhouette(def.dino_type), int(shape.size.y))
+	shape.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.add_child(shape)
+
+
+func _add_holo(rect: Rect2) -> void:
+	var holo := ColorRect.new()
+	holo.position = rect.position
+	holo.size = rect.size
+	holo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = HOLO_SHADER
+	material.set_shader_parameter("rect_size", rect.size)
+	material.set_shader_parameter("radius", 0.0)
+	material.set_shader_parameter("rainbow", 1.0)
+	material.set_shader_parameter("strength", 0.26)
+	holo.material = material
+	add_child(holo)
+
+
+# --- Input ----------------------------------------------------------------------------------
 
 # Touches arrive as emulated mouse events on phones, so this covers both.
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and _press_position != Vector2.INF:
+		if _press_position.distance_to(event.global_position) > TAP_SLOP:
+			_press_position = Vector2.INF
+		return
 	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
 		return
 	if event.pressed:
 		_press_position = event.global_position
-	elif _press_position.distance_to(event.global_position) < TAP_SLOP:
+		_press_serial += 1
+		if inspect_on_hold:
+			_watch_hold(_press_serial)
+	elif _press_position != Vector2.INF and _press_position.distance_to(event.global_position) < TAP_SLOP:
 		_press_position = Vector2.INF
 		pressed.emit()
 
 
-func _update_style() -> void:
-	var border := Palette.RARITY_COLORS[def.rarity] if def else Color.WHITE
-	var width := 3
-	if selected:
-		border = Palette.HIGHLIGHT
-		width = 6
-	elif highlighted:
-		border = Palette.HIGHLIGHT
-		width = 4
-	_style.border_color = border
-	_style.set_border_width_all(width)
+func _watch_hold(serial: int) -> void:
+	await get_tree().create_timer(HOLD_SECONDS).timeout
+	if serial == _press_serial and _press_position != Vector2.INF and is_inside_tree():
+		_press_position = Vector2.INF
+		CardViewer.open(def, shiny, not unknown)
 
 
-## The art placeholder: a colored box with the dino's initials. Replaced by renders later.
-func _art_box(height: int, font_size: int) -> Control:
-	var art := PanelContainer.new()
-	art.custom_minimum_size = Vector2(0, height)
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var art_style := StyleBoxFlat.new()
-	art_style.bg_color = Palette.TYPE_COLORS[def.dino_type]
-	art_style.set_corner_radius_all(8)
-	art.add_theme_stylebox_override("panel", art_style)
-	var initials := _label(_initials(), font_size, Color(1, 1, 1, 0.85))
-	initials.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	initials.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	art.add_child(initials)
-	return art
+# --- Drawing --------------------------------------------------------------------------------
+
+## Selection ring, drawn behind the card so only the part outside the frame shows.
+func _draw() -> void:
+	if not (selected or highlighted):
+		return
+	var grow := width * 0.045
+	var ring := StyleBoxFlat.new()
+	ring.bg_color = Color.WHITE if selected else Color(Palette.HIGHLIGHT, 0.7)
+	ring.set_corner_radius_all(int(width * 0.1))
+	draw_style_box(ring, Rect2(-grow, -grow, width + grow * 2, card_height() + grow * 2))
 
 
-func _stats_grid(source: Variant, font_size: int) -> GridContainer:
-	var grid := GridContainer.new()
-	grid.columns = 4
-	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	grid.add_theme_constant_override("h_separation", 4)
-	var health: int = source.max_health if source is Combatant else source.health
-	var values := [source.attack, source.defense, source.speed, health]
+func _draw_overlay() -> void:
+	if not unknown:
+		_draw_corner_brackets()
+		_draw_name_banner()
+		_draw_stats()
+		_draw_type_medallion()
+		_draw_tier_crest()
+	if _badge_text != "":
+		_draw_badge()
+	if combatant:
+		_draw_health_bar()
+
+
+## Tier crest: a shield badge with N / R / SR / SSR / UR, crowned for SSR and UR.
+func _draw_tier_crest() -> void:
+	var o := _overlay
+	var w := width
+	var cw := w * (0.3 if _small() else 0.25)
+	var ch := cw * 0.78
+	var origin := Vector2(w * 0.035, w * 0.035)
+	var shape := PackedVector2Array([origin, origin + Vector2(cw, 0), origin + Vector2(cw, ch * 0.62),
+			origin + Vector2(cw * 0.5, ch), origin + Vector2(0, ch * 0.62)])
+	var tier := tier_color()
+	o.draw_colored_polygon(shape, Color(tier.darkened(0.75), 0.95))
+	var inner := PackedVector2Array()
+	var middle := origin + Vector2(cw * 0.5, ch * 0.45)
+	for point in shape:
+		inner.append(middle + (point - middle) * 0.78)
+	inner.append(inner[0])
+	o.draw_polyline(inner, Color(tier, 0.6), maxf(1.0, w * 0.006), true)
+	shape.append(shape[0])
+	o.draw_polyline(shape, tier.lightened(0.2), maxf(1.5, w * 0.014), true)
+	var code := def.rarity_code()
+	var font := Fonts.display()
+	var fitted := int(ch * 0.62)
+	while fitted > 6 and font.get_string_size(code, HORIZONTAL_ALIGNMENT_LEFT, -1, fitted).x > cw * 0.82:
+		fitted -= 1
+	_text_centered(font, code, origin + Vector2(cw * 0.5, ch * 0.42), fitted, tier.lerp(Color.WHITE, 0.45), true)
+	if def.rarity >= DinoDef.Rarity.EPIC:
+		var crown_w := cw * 0.55
+		var crown := Icons.texture(&"crown", int(crown_w * 0.62))
+		o.draw_texture_rect(crown, Rect2(origin + Vector2(cw * 0.5 - crown_w / 2, -crown_w * 0.42),
+				Vector2(crown_w, crown_w * 0.62)), false)
+	if not _small():
+		# Herd Point cost, needed when picking a herd.
+		var pts := HerdRules.points_of(def)
+		var pill := Rect2(origin + Vector2(cw * 0.12, ch + w * 0.01), Vector2(cw * 0.76, w * 0.065))
+		_draw_panel(pill, tier, pill.size.y / 2)
+		_text_centered(Fonts.display(), "%d PT%s" % [pts, "" if pts == 1 else "S"], pill.get_center(),
+				int(pill.size.y * 0.72), Color.WHITE, false)
+
+
+func _draw_type_medallion() -> void:
+	var w := width
+	var size_px := w * (0.28 if _small() else 0.24)
+	var top_left := Vector2(w - size_px - w * 0.03, w * 0.03)
+	var icon := Icons.texture(Icons.type_icon(def.dino_type), int(size_px))
+	_overlay.draw_texture_rect(icon, Rect2(top_left, Vector2.ONE * size_px), false)
+	if not _small():
+		_text_centered(Fonts.display(), Palette.TYPE_LABELS[def.dino_type],
+				top_left + Vector2(size_px / 2, size_px + w * 0.03), int(w * 0.05), Color.WHITE, true)
+
+
+func _draw_name_banner() -> void:
+	var o := _overlay
+	var w := width
+	var h := card_height()
+	var small := _small()
+	var bh := w * (0.17 if small else 0.18)
+	var y0 := h - w * (0.43 if small else 0.5)
+	var x0 := w * 0.06
+	var x1 := w * 0.94
+	var slant := w * 0.045
+	var banner := PackedVector2Array([Vector2(x0 + slant, y0), Vector2(x1 - slant, y0), Vector2(x1, y0 + bh / 2),
+			Vector2(x1 - slant, y0 + bh), Vector2(x0 + slant, y0 + bh), Vector2(x0, y0 + bh / 2)])
+	o.draw_colored_polygon(banner, PANEL)
+	var tier := tier_color()
+	banner.append(banner[0])
+	o.draw_polyline(banner, Color(tier, 0.85), maxf(1.0, w * 0.007), true)
+	o.draw_line(Vector2(x0 + slant * 1.5, y0 + 1.5), Vector2(x1 - slant * 1.5, y0 + 1.5), Color(tier.lightened(0.4), 0.7), 1.0)
+	var name_rect := Rect2(x0 + slant, y0, x1 - x0 - slant * 2, bh * (1.0 if small else 0.62))
+	_text_fit(Fonts.display(), def.display_name, name_rect, int(w * (0.12 if small else 0.088)), Color.WHITE)
+	if not small and def.epithet != "":
+		var epithet_rect := Rect2(x0 + slant, y0 + bh * 0.56, x1 - x0 - slant * 2, bh * 0.4)
+		_text_fit(Fonts.italic(), def.epithet, epithet_rect, int(w * 0.048), Palette.HIGHLIGHT.lerp(tier, 0.35))
+
+
+func _draw_stats() -> void:
+	var w := width
+	var h := card_height()
+	var small := _small()
+	var values := _stat_values()
 	var base := [def.attack, def.defense, def.speed, def.health]
-	for stat_name in ["ATK", "DEF", "SPD", "HP"]:
-		var header := _label(stat_name, font_size - 5, Palette.TEXT_DIM)
-		header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		grid.add_child(header)
+	var gap := w * 0.02
+	var left := w * 0.06
+	var box_w := (w * 0.88 - gap * 3) / 4.0
+	var box_h := w * (0.2 if small else 0.24)
+	var top := h - box_h - w * 0.06
+	var tier := tier_color()
 	for i in 4:
-		# Stats boosted by herd bonuses show in the highlight color.
-		var value := _label(str(values[i]), font_size, Palette.HIGHLIGHT if values[i] > base[i] else Palette.TEXT)
-		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		grid.add_child(value)
-	return grid
+		var box := Rect2(left + (box_w + gap) * i, top, box_w, box_h)
+		_draw_panel(box, tier, w * 0.025)
+		var boosted: bool = values[i] > base[i]
+		var value_color := Color("8dffa0") if boosted else Color.WHITE
+		if small:
+			_text_centered(Fonts.display(), str(values[i]), box.get_center(), int(box_h * 0.62), value_color, true)
+			continue
+		var icon_px := int(box_h * 0.3)
+		var icon := Icons.texture(Palette.STAT_ICONS[i], icon_px)
+		_overlay.draw_texture_rect(icon, Rect2(Vector2(box.get_center().x - icon_px / 2.0, box.position.y + box_h * 0.07),
+				Vector2.ONE * icon_px), false)
+		_text_centered(Fonts.condensed_bold(), Palette.STAT_CODES[i], Vector2(box.get_center().x, box.position.y + box_h * 0.5),
+				int(box_h * 0.19), Palette.STAT_COLORS[i], false)
+		_text_centered(Fonts.display(), str(values[i]), Vector2(box.get_center().x, box.position.y + box_h * 0.76),
+				int(box_h * 0.34), value_color, true)
 
 
-func _make_health_bar(height: int) -> ProgressBar:
-	_health_bar = ProgressBar.new()
-	_health_bar.custom_minimum_size = Vector2(0, height)
-	_health_bar.show_percentage = false
-	_health_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+func _draw_corner_brackets() -> void:
+	if _small():
+		return
+	var w := width
+	var h := card_height()
+	var inset := w * 0.07
+	var arm := w * 0.07
+	var color := Color(tier_color().lightened(0.5), 0.8)
+	var thickness := maxf(1.0, w * 0.006)
+	for corner in [Vector2(inset, h * 0.42), Vector2(w - inset, h * 0.42)]:
+		var dir := 1.0 if corner.x < w / 2 else -1.0
+		_overlay.draw_line(corner, corner + Vector2(dir * arm, 0), color, thickness, true)
+		_overlay.draw_line(corner, corner + Vector2(0, -arm * 0.6), color, thickness, true)
+
+
+func _draw_badge() -> void:
+	var w := width
+	var size_px := int(w * (0.085 if not _small() else 0.12))
+	var ribbon := Rect2(0, card_height() * 0.36, w, size_px * 1.6)
+	_overlay.draw_rect(ribbon, Color(0, 0, 0, 0.72))
+	_overlay.draw_line(ribbon.position, Vector2(ribbon.end.x, ribbon.position.y), Palette.HIGHLIGHT, 1.0)
+	_overlay.draw_line(Vector2(0, ribbon.end.y), ribbon.end, Palette.HIGHLIGHT, 1.0)
+	_text_centered(Fonts.display(), _badge_text, ribbon.get_center(), size_px, Palette.HIGHLIGHT, true)
+
+
+func _draw_health_bar() -> void:
+	var w := width
+	var bar := Rect2(w * 0.04, card_height() + w * 0.04, w * 0.92, _bar_height(w))
 	var back := StyleBoxFlat.new()
-	back.bg_color = Color(0, 0, 0, 0.45)
-	back.set_corner_radius_all(height / 2)
-	_health_fill.set_corner_radius_all(height / 2)
-	_health_bar.add_theme_stylebox_override("background", back)
-	_health_bar.add_theme_stylebox_override("fill", _health_fill)
-	return _health_bar
+	back.bg_color = Color(0, 0, 0, 0.65)
+	back.border_color = Palette.PANEL_BORDER
+	back.set_border_width_all(1)
+	back.set_corner_radius_all(int(bar.size.y / 2))
+	_overlay.draw_style_box(back, bar)
+	var fraction := clampf(shown_health / combatant.max_health, 0.0, 1.0)
+	if fraction > 0.0:
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = Palette.health_color(fraction)
+		fill.set_corner_radius_all(int(bar.size.y / 2))
+		_overlay.draw_style_box(fill, Rect2(bar.position, Vector2(maxf(bar.size.y, bar.size.x * fraction), bar.size.y)))
+	if not _small():
+		_text_centered(Fonts.display(), "%d / %d" % [roundi(shown_health), combatant.max_health],
+				bar.get_center(), int(bar.size.y * 0.9), Color.WHITE, true)
 
 
-func _label(text: String, font_size: int, color: Color, ellipsis := false) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.add_theme_font_size_override("font_size", font_size)
-	label.add_theme_color_override("font_color", color)
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ellipsis:
-		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		label.clip_text = true
-	return label
+func _draw_panel(rect: Rect2, accent: Color, radius: float) -> void:
+	var box := StyleBoxFlat.new()
+	box.bg_color = PANEL
+	box.border_color = Color(accent, 0.8)
+	box.set_border_width_all(maxi(1, int(width * 0.006)))
+	box.set_corner_radius_all(int(radius))
+	box.anti_aliasing = true
+	_overlay.draw_style_box(box, rect)
 
 
-func _initials() -> String:
-	var words := def.display_name.replace(".", "").split(" ", false)
-	if words.size() > 1:
-		return (words[0].left(1) + words[1].left(1)).to_upper()
-	return def.display_name.left(2).to_upper()
+func _stat_values() -> Array:
+	var source: Variant = combatant if combatant else def
+	return [source.attack, source.defense, source.speed, combatant.max_health if combatant else def.health]
 
 
-func _short_rarity() -> String:
-	return def.rarity_name().left(1)
+# --- Text helpers ---------------------------------------------------------------------------
+
+func _text_centered(font: Font, text: String, center: Vector2, font_size: int, color: Color, outline: bool) -> void:
+	var text_w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	var pos := Vector2(center.x - text_w / 2, center.y + (font.get_ascent(font_size) - font.get_descent(font_size)) / 2.0)
+	if outline:
+		_overlay.draw_string_outline(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size,
+				maxi(2, int(font_size * 0.16)), Palette.OUTLINE)
+	_overlay.draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+
+
+## Draws text centered in `rect`, shrinking the font until it fits.
+func _text_fit(font: Font, text: String, rect: Rect2, font_size: int, color: Color) -> void:
+	var fitted := font_size
+	while fitted > 6 and font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fitted).x > rect.size.x:
+		fitted -= 1
+	_text_centered(font, text, rect.get_center(), fitted, color, true)

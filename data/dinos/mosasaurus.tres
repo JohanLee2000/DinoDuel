@@ -13,3 +13,7 @@ attack = 8
 defense = 1
 speed = 4
 health = 15
+group = "Marine reptile (mosasaur)"
+size_text = "Length 15 m"
+flavor_text = "A giant sea lizard, more closely related to monitor lizards and snakes than to dinosaurs."
+epithet = "Ocean's Apex"

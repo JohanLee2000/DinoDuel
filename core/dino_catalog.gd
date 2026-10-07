@@ -7,9 +7,13 @@ const PATH := "res://data/dino_catalog.tres"
 
 @export var dinos: Array[DinoDef] = []
 
+static var _default: DinoCatalog
+
 
 static func load_default() -> DinoCatalog:
-	return load(PATH) as DinoCatalog
+	if _default == null:
+		_default = load(PATH) as DinoCatalog
+	return _default
 
 
 func find(id: StringName) -> DinoDef:
@@ -17,3 +21,11 @@ func find(id: StringName) -> DinoDef:
 		if dino.id == id:
 			return dino
 	return null
+
+
+## The dino's collector number in the set, starting at 1 (shown as "005/015" on cards).
+func number_of(dino: DinoDef) -> int:
+	for i in dinos.size():
+		if dinos[i].id == dino.id:
+			return i + 1
+	return 0

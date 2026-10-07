@@ -167,7 +167,7 @@ func test_herd_bonuses_apply() -> void:
 func test_herd_validation() -> void:
 	var common := make_dino(1, 1, 1, 1)
 	var legend := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.LEGENDARY)
-	var rare := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.RARE)
+	var rare := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.SUPER_RARE)
 	assert_eq(HerdRules.validate(herd([common, legend, rare])), "", "1 + 5 + 3 = 9 fits")
 	var legend2 := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.LEGENDARY)
 	assert_true(HerdRules.validate(herd([common, legend, legend2])) != "", "11 points is over the cap")

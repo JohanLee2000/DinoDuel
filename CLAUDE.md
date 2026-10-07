@@ -3,10 +3,10 @@
 Godot 4.7 (GDScript) portrait mobile game for Android: collect dinosaur cards, battle rival AIs in a Herd Battle. Design decisions live in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md); Jo makes the design calls, so propose options for anything not decided there.
 
 ## Layout
-- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `HerdRules`, and `core/battle/` (engine, state, AI). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
+- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `HerdRules`, `core/battle/` (engine, state, AI), and `core/collection/` (`PlayerProfile` save model, `Economy` numbers). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
 - `data/`: `.tres` resources (dinos, catalog, rivals). New dinos must be added to `data/dino_catalog.tres`.
-- `app/session.gd`: `Session` autoload (cross-scene state).
-- `ui/`: scenes and their scripts (`herd_select/`, `battle/`, shared `common/`).
+- `app/session.gd`: `Session` autoload (profile, navigation, cross-scene state). `app/save_store.gd`: JSON save in `user://` with backup.
+- `ui/`: `main/` (tab shell), `tabs/` (Battle, Herd, Eggs, Dex; built in code with `UiKit`), `pre_battle/`, `battle/`, `eggs/` (egg + hatch view), shared `common/`.
 - `tests/`: tiny custom test runner; files named `test_*.gd` extending `res://tests/test_case.gd`.
 - `tools/balance_sim.gd`: AI-vs-AI balance report.
 
@@ -16,11 +16,16 @@ GODOT="/c/Users/johan/Downloads/Godot_v4.7.2-stable_win64.exe/Godot_v4.7.2-stabl
 "$GODOT" --headless --path . --import                                  # register new class_names
 "$GODOT" --headless --path . --script res://tests/run_tests.gd         # tests (exit 1 on failure)
 "$GODOT" --headless --path . --script res://tools/balance_sim.gd -- 600  # balance report (~50s)
-"$GODOT" --path . --write-movie captures/frame.png --fixed-fps 5 --quit-after 900 -- --autoplay  # AI plays both sides, frames to captures/
+"$GODOT" --path . --write-movie captures/frame.png --fixed-fps 5 --quit-after 600 -- --autoplay  # AI plays a battle + hatches, throwaway save
+"$GODOT" --path . --write-movie captures/dex.png --fixed-fps 5 --quit-after 4 -- --sandbox --tab=3 --open-dex=t_rex  # screenshot a tab/popup
 ```
+Dev flags (after `--`): `--autoplay`, `--sandbox` (reuse the autoplay save), `--tab=N` (0 Battle, 1 Herd, 2 Eggs, 3 Dex), `--open-dex=<id>`, `--open-card=<id>[:shiny]` (full-screen view of any card), `--fresh-save` (wipes the real save). Movie Maker paths are relative to the project folder; keep them in `captures/` (it has a `.gdignore`).
+
+Android: `"$GODOT" --headless --path . --export-debug "Android" build/android/dino_duel_debug.apk`, then `"$ANDROID_HOME/platform-tools/adb.exe" install -r build/android/dino_duel_debug.apk`. Package `com.leejohan.dinoduel` is permanent.
 Test failures that are script errors print `SCRIPT ERROR` rather than `FAIL`; check output for both.
 
 ## Conventions
 - Battle rules change → update `docs/GAME_DESIGN.md`, add a test, rerun the balance sim and check the "AI vs one-note bots" lines stay well above 50%.
-- Placeholder art only (colored panels + initials) until the Blender pipeline exists. Don't use images from Jo's DinosaurDatabase project.
+- Visual style follows Jo's concept sheet `docs/concept/card_concept_sheet.webp` (see docs/GAME_DESIGN.md). Cards are drawn in code by `ui/common/dino_card.gd` (layout in fractions of card width) with shaders in `ui/common/*.gdshader`; icons are SVG strings in `ui/common/icons.gd`, rendered at display size; fonts via `ui/common/fonts.gd`. Tiers are N/R/SR/SSR/UR (`DinoDef.Rarity` COMMON..LEGENDARY, stored as ints). Paintings are found by file name in `assets/dinos/` (`ui/common/dino_art.gd`); `tools/prepare_art.py` resizes ChatGPT output into place (docs/ART_BRIEF.md). Branding lives in `assets/branding/` (`tools/extract_branding.py`). Don't use images from Jo's DinosaurDatabase project.
+- Labels created in code inside rows/grids need `wrap = false` (`UiKit.label`/`UiKit.title`), or they collapse to one letter per line.
 - Never commit keystores. Release keystore + password must be backed up by Jo.

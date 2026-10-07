@@ -11,3 +11,7 @@ attack = 4
 defense = 2
 speed = 2
 health = 13
+group = "Plated dinosaur"
+size_text = "Length 9 m · 5 t"
+flavor_text = "Its brain was tiny for its size, roughly as big as a dog's. The spiked tail is nicknamed the thagomizer."
+epithet = "Spiked Fortress"

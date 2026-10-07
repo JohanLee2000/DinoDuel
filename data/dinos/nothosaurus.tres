@@ -11,3 +11,7 @@ attack = 5
 defense = 1
 speed = 4
 health = 11
+group = "Marine reptile (nothosaur)"
+size_text = "Length 3 m"
+flavor_text = "Not a dinosaur but a sea reptile. It hunted fish in shallow Triassic seas and may have rested on shore like a seal."
+epithet = "Shoreline Hunter"

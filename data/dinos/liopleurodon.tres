@@ -13,3 +13,7 @@ attack = 7
 defense = 2
 speed = 3
 health = 13
+group = "Marine reptile (pliosaur)"
+size_text = "Length 6 m"
+flavor_text = "A short-necked pliosaur with a huge head. Old claims of 25 m were exaggerated; about 6 to 7 m is more likely."
+epithet = "Jaws of the Deep"

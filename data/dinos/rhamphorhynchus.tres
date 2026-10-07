@@ -11,3 +11,7 @@ era = 1
 attack = 5
 speed = 8
 health = 9
+group = "Long-tailed pterosaur"
+size_text = "Wingspan 1.8 m"
+flavor_text = "Its long tail ended in a diamond-shaped vane. Some fossils were found with fish still in their stomachs."
+epithet = "Lagoon Fisher"

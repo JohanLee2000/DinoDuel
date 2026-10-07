@@ -10,3 +10,7 @@ attack = 5
 defense = 1
 speed = 7
 health = 10
+group = "Early theropod dinosaur"
+size_text = "Length 3 m · 20 kg"
+flavor_text = "One of the earliest dinosaurs. Hundreds of skeletons were found together at Ghost Ranch, New Mexico."
+epithet = "Dawn Runner"

@@ -12,3 +12,7 @@ attack = 6
 defense = 1
 speed = 9
 health = 11
+group = "Dromaeosaur dinosaur"
+size_text = "Length 2 m · 15 kg"
+flavor_text = "Real Velociraptors were about the size of a turkey, covered in feathers, with a sickle-shaped claw on each foot."
+epithet = "Swift and Deadly"

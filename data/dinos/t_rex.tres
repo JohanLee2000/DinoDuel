@@ -5,10 +5,14 @@
 [resource]
 script = ExtResource("1_7j6l4")
 id = &"t_rex"
-display_name = "T. rex"
+display_name = "Tyrannosaurus Rex"
 era = 2
 rarity = 4
 attack = 9
 defense = 2
 speed = 4
 health = 20
+group = "Tyrannosaur dinosaur"
+size_text = "Length 12 m · 8 t"
+flavor_text = "Its bite was among the strongest of any land animal that ever lived, strong enough to crush bone."
+epithet = "King of the Cretaceous"

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/battle/battle_screen.gd" id="1_script"]
 [ext_resource type="Script" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
+[ext_resource type="Script" path="res://ui/common/backdrop.gd" id="3_backdrop"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -19,7 +20,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.105882, 0.129412, 0.188235, 1)
+color = Color(0.0862745, 0.0901961, 0.101961, 1)
+script = ExtResource("3_backdrop")
 
 [node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -181,6 +183,13 @@ text = ""
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="HatchButton" type="Button" parent="Overlay/Center/ResultBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Hatch your eggs"
+
 [node name="RematchButton" type="Button" parent="Overlay/Center/ResultBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
@@ -188,9 +197,9 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Rematch"
 
-[node name="NewHerdButton" type="Button" parent="Overlay/Center/ResultBox"]
+[node name="BackButton" type="Button" parent="Overlay/Center/ResultBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Change herd"
+text = "Back to camp"

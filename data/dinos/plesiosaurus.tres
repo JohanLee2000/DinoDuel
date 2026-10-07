@@ -13,3 +13,7 @@ attack = 6
 defense = 1
 speed = 5
 health = 13
+group = "Marine reptile (plesiosaur)"
+size_text = "Length 3.5 m"
+flavor_text = "It swam with four flippers like underwater wings. Mary Anning found the first complete skeleton in 1823."
+epithet = "Deep Sea Guardian"

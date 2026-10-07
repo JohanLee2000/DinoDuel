@@ -12,3 +12,7 @@ attack = 6
 defense = 3
 speed = 3
 health = 17
+group = "Horned dinosaur"
+size_text = "Length 9 m · 9 t"
+flavor_text = "Its horns and frill were likely used for display and sparring. Fossil bite marks show T. rex fed on it."
+epithet = "Shield of the Plains"

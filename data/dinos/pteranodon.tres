@@ -13,3 +13,7 @@ attack = 7
 defense = 1
 speed = 8
 health = 14
+group = "Pterosaur"
+size_text = "Wingspan 6 m"
+flavor_text = "Its name means toothless wing. It probably caught fish at sea, much like a modern seabird."
+epithet = "Sky Hunter"

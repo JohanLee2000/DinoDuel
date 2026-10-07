@@ -12,7 +12,7 @@ Every card is a dinosaur (broadly: Land, Sky and Sea creatures).
 |---|---|
 | Type | Land, Sky, Sea |
 | Era | Triassic, Jurassic, Cretaceous |
-| Rarity | Common, Uncommon, Rare, Epic, Legendary |
+| Tier (rarity) | N Common, R Rare, SR Super Rare, SSR Epic, UR Legendary |
 | Stats | Attack, Defense, Speed, Health |
 | Ability | None at launch of M1. Decide after the M1 playtest. The data model reserves an `ability_id`. |
 
@@ -45,7 +45,7 @@ Triangle: **Bite beats Charge, Charge beats Brace, Brace beats Bite.**
 Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces on pterosaurs on the ground, Sky dives on marine reptiles, Sea ambushes land dinos at the water's edge.
 
 ### Herd rules (proposal)
-- Herd Points: Common 1, Uncommon 2, Rare 3, Epic 4, Legendary 5. The 3 you pick must total **9 or less**. Journey levels may change the cap.
+- Herd Points: N 1, R 2, SR 3, SSR 4, UR 5. The 3 you pick must total **9 or less**. Journey levels may change the cap.
 - **Era bond:** all 3 from the same era: +1 Attack and +1 Speed each.
 - **Balanced herd:** one Land, one Sky, one Sea: +2 max Health each.
 - **Meteor shower (stall breaker):** from turn 20, both active dinos take rising damage at the end of each turn. It can bring a dino to 1 HP but never knocks one out itself (this cut draws from ~13% to under 1% in the balance sim).
@@ -54,10 +54,32 @@ Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces o
 The AI simulates every (its move, your move) pair one turn ahead, guesses your move from both reasoning and **your habits so far** (it learns if you always Bite), then picks with some randomness. `temperature` is the difficulty knob per rival; `*_bias` values give a rival a learnable personality. Balance sim (600 battles): the AI beats always-Bite 91%, always-Charge 100%, always-Brace 87%.
 
 ## Collection (decided)
-- Packs are **fossil eggs**: tap to crack them open. They are **earned only** (journey wins, daily egg, Amber). No real-money packs.
-- Duplicates **melt into Amber**, which crafts a specific card.
-- Proposal: 5 cards per egg (3 Common, 1 Uncommon, 1 Rare+ slot at Rare 75% / Epic 20% / Legendary 5%), 1-in-40 Shiny chance, every 10th egg guaranteed Epic+. Odds shown in-game.
-- Starter collection: the 6 Commons, which form two ready-made herds (Triassic trio and Jurassic trio, each era-bonded and balanced).
+- Rewards come as a **clutch of 3 fossil eggs**; each egg hatches **one dino**. First tap cracks the egg and its **glow shows the rarity**; second tap hatches it.
+- Clutches are **earned only**: win a battle (1 clutch + 25 Amber; a loss gives 10 Amber), one free clutch per calendar day, or buy one for 150 Amber. No real-money eggs.
+- Odds per egg: N 60%, R 25%, SR 10%, SSR 4%, UR 1%. Shiny 1 in 40 (cosmetic). If 9 clutches in a row had no Epic+, the 10th is guaranteed one (SSR 80% / UR 20%). Odds are shown on the Eggs tab.
+- **Duplicates auto-melt into Amber** (N 5, R 20, SR 50, SSR 150, UR 400). A Shiny duplicate upgrades a non-Shiny copy instead.
+- **Crafting** from the Dex: N 40, R 100, SR 400, SSR 1000, UR 2000 Amber.
+- New players start with the 6 N-tier dinos (two ready-made herds) and 1 clutch.
+- **Herd:** you bring 6; before each battle you see the rival's 6 and pick 3.
+- **Dino Dex:** grouped by era; owned dinos show in full, dinos you've faced show faded, the rest are "???".
+- Results are rolled and saved before the hatch animation plays, so closing the app can't reroll a clutch.
+
+## Art and UI direction (decided)
+The look follows Jo's ChatGPT concept sheet, saved at `docs/concept/card_concept_sheet.webp` (it replaced two earlier directions: cartoony "Bright and bold", then a realistic stone-frame card).
+- **Cards (every tier):** full-bleed portrait painting inside a glowing neon frame in the tier color. Top-left: tier crest (N, R, SR, SSR, UR; SSR and UR wear a crown) with the Herd Point cost under it. Top-right: type medallion with LAND / SKY / SEA under it. Bottom: angled name banner with the dino's title (e.g. "King of the Cretaceous"), then four stat boxes (ATK sword, DEF shield, SPD feather, HP heart). Card proportions about 1 : 1.68.
+- **Tier colors:** N steel, R green, SR purple, SSR gold, UR magenta with a color-cycling frame. SSR and UR frames pulse.
+- **Shiny:** color-shifting frame plus a rainbow holo sheen over the painting.
+- **Types:** Land = gold mountain, Sea = blue wave, Sky = white bird, each in a glossy round medallion.
+- **Card back:** dark stone with blue claw marks and the logo. Used for undiscovered Dex entries and for the hatch reveal (the card pops up face down, then flips).
+- **Branding:** the DINO DUEL wordmark sits in the app's top bar, on the splash screen and on the app icon. The current files are cut from the concept sheet (`tools/extract_branding.py`); full-resolution exports can replace them in `assets/branding/` under the same names.
+- **Fonts:** Barlow (body) and Barlow Condensed bold italic (names, numbers, headings, buttons). SIL Open Font License.
+- **App UI:** deep navy textured background, navy panels with steel-blue borders, glowing gold primary buttons, uppercase italic headings.
+- **Dino art:** one 2:3 portrait painting per dino (plus an optional Shiny version), generated by Jo with ChatGPT. See docs/ART_BRIEF.md. Until a painting exists, cards show a habitat gradient with a silhouette.
+- **Card details** that don't fit on the face (group, era, size, matchups, Herd Points, the real fact) show in the full-screen view when a card is held.
+- **Hatching:** one egg at a time. Tap: shake, crack, rarity-colored glow. Tap again: escalating shake (longer for rarer), shell pieces burst, rays in the tier color, the card pops up face down and flips; SSR and UR add a screen shake and flash. Summary of the clutch at the end, with a skip button.
+
+## App layout (decided)
+Bottom tabs: **Battle** (rivals), **Herd** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
 ## Journey (proposal)
 Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
@@ -72,26 +94,26 @@ Deck codes and "ghost duels" (fight a friend's herd as AI), challenge codes with
 Needs a server for online play (Play Games multiplayer APIs were shut down in 2020). The battle engine is pure, deterministic code with no UI dependencies so it can run on a server later.
 
 ## First set: 15 dinos (first pass)
-| Dino | Type | Era | Rarity | Atk | Def | Spd | HP |
+| Dino | Type | Era | Tier | Atk | Def | Spd | HP |
 |---|---|---|---|---|---|---|---|
-| Coelophysis | Land | Triassic | C | 5 | 1 | 7 | 10 |
-| Stegosaurus | Land | Jurassic | C | 4 | 2 | 2 | 13 |
-| Velociraptor | Land | Cretaceous | U | 6 | 1 | 9 | 11 |
-| Triceratops | Land | Cretaceous | R | 6 | 3 | 3 | 17 |
-| T. rex | Land | Cretaceous | L | 9 | 2 | 4 | 20 |
-| Eudimorphodon | Sky | Triassic | C | 4 | 0 | 9 | 10 |
-| Rhamphorhynchus | Sky | Jurassic | C | 5 | 0 | 8 | 9 |
-| Archaeopteryx | Sky | Jurassic | U | 6 | 1 | 10 | 11 |
-| Pteranodon | Sky | Cretaceous | R | 7 | 1 | 8 | 14 |
-| Quetzalcoatlus | Sky | Cretaceous | E | 8 | 2 | 6 | 17 |
-| Nothosaurus | Sea | Triassic | C | 5 | 1 | 4 | 11 |
-| Ichthyosaurus | Sea | Jurassic | C | 5 | 0 | 7 | 11 |
-| Plesiosaurus | Sea | Jurassic | U | 6 | 1 | 5 | 13 |
-| Liopleurodon | Sea | Jurassic | U | 7 | 2 | 3 | 13 |
-| Mosasaurus | Sea | Cretaceous | R | 8 | 1 | 4 | 15 |
+| Coelophysis | Land | Triassic | N | 5 | 1 | 7 | 10 |
+| Stegosaurus | Land | Jurassic | N | 4 | 2 | 2 | 13 |
+| Velociraptor | Land | Cretaceous | R | 6 | 1 | 9 | 11 |
+| Triceratops | Land | Cretaceous | SR | 6 | 3 | 3 | 17 |
+| T. rex | Land | Cretaceous | UR | 9 | 2 | 4 | 20 |
+| Eudimorphodon | Sky | Triassic | N | 4 | 0 | 9 | 10 |
+| Rhamphorhynchus | Sky | Jurassic | N | 5 | 0 | 8 | 9 |
+| Archaeopteryx | Sky | Jurassic | R | 6 | 1 | 10 | 11 |
+| Pteranodon | Sky | Cretaceous | SR | 7 | 1 | 8 | 14 |
+| Quetzalcoatlus | Sky | Cretaceous | SSR | 8 | 2 | 6 | 17 |
+| Nothosaurus | Sea | Triassic | N | 5 | 1 | 4 | 11 |
+| Ichthyosaurus | Sea | Jurassic | N | 5 | 0 | 7 | 11 |
+| Plesiosaurus | Sea | Jurassic | R | 6 | 1 | 5 | 13 |
+| Liopleurodon | Sea | Jurassic | R | 7 | 2 | 3 | 13 |
+| Mosasaurus | Sea | Cretaceous | SR | 8 | 1 | 4 | 15 |
 
 ## Milestones
 1. **M1: Battle on your phone.** Battle engine + tests + balance sim, herd pick and battle screens with placeholder cards, one AI rival, Android debug build.
-2. **M2: Collecting.** Eggs, Amber, Dino Dex, herd builder (bring 6), save file.
+2. **M2: Collecting.** Egg clutches, Amber, Dino Dex with crafting, herd of 6, bottom tabs, save file.
 3. **M3: Journey.** Rivals, boss, stars, rewards. Start recruiting closed-test testers.
 4. Then: Blender art pipeline, sharing, IAP, store listing, closed test.

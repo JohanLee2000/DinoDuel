@@ -13,3 +13,7 @@ attack = 6
 defense = 1
 speed = 10
 health = 11
+group = "Early bird-like dinosaur"
+size_text = "Length 0.5 m · 1 kg"
+flavor_text = "Found in Germany in 1861. It had feathered wings but also teeth and a bony tail, linking dinosaurs and birds."
+epithet = "First Wings"

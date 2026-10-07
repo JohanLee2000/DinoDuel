@@ -15,9 +15,12 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Dino Duel"
-run/main_scene="res://ui/herd_select/herd_select.tscn"
+run/main_scene="res://ui/main/main.tscn"
+config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://assets/branding/app_icon_512.png"
+boot_splash/bg_color=Color(0.0352941, 0.0588235, 0.109804, 1)
+boot_splash/image="res://assets/branding/logo.png"
 
 [autoload]
 
@@ -36,6 +39,13 @@ window/handheld/orientation=1
 [gui]
 
 theme/custom="res://ui/theme/main_theme.tres"
+
+[importer_defaults]
+
+texture={
+"compress/mode": 1,
+"compress/lossy_quality": 0.85
+}
 
 [rendering]
 

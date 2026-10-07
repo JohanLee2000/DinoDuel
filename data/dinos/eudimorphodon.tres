@@ -10,3 +10,7 @@ dino_type = 1
 attack = 4
 speed = 9
 health = 10
+group = "Early pterosaur"
+size_text = "Wingspan 1 m"
+flavor_text = "One of the oldest known pterosaurs. Its jaws held over 100 tiny teeth, many with several points."
+epithet = "Triassic Glider"

@@ -1,9 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://ui/herd_select/herd_select.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/pre_battle/pre_battle.gd" id="1_script"]
 [ext_resource type="Script" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
+[ext_resource type="Script" path="res://ui/common/backdrop.gd" id="3_backdrop"]
 
-[node name="HerdSelect" type="Control"]
+[node name="PreBattle" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +20,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.105882, 0.129412, 0.188235, 1)
+color = Color(0.0862745, 0.0901961, 0.101961, 1)
+script = ExtResource("3_backdrop")
 
 [node name="SafeArea" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -35,9 +37,10 @@ layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="SafeArea/Column"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Choose your herd"
+theme_override_font_sizes/font_size = 38
+text = "Pick 3 for this battle"
 horizontal_alignment = 1
 
 [node name="RivalPanel" type="PanelContainer" parent="SafeArea/Column"]
@@ -91,10 +94,22 @@ text = "Herd Points 0/9"
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="BattleButton" type="Button" parent="SafeArea/Column"]
+[node name="Buttons" type="HBoxContainer" parent="SafeArea/Column"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="SafeArea/Column/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 96)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Back"
+
+[node name="BattleButton" type="Button" parent="SafeArea/Column/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 36
 disabled = true
 text = "Battle!"

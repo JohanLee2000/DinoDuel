@@ -15,7 +15,8 @@ const MATCHUP_TEXT := {
 	"1-2": "Charge smashes through Brace!", "2-1": "Charge smashes through Brace!",
 	"2-0": "Brace beats Bite!", "0-2": "Brace beats Bite!",
 }
-const BUTTON_COLORS: Array[Color] = [Color("b54a3c"), Color("c97a26"), Color("3a6fb0"), Color("5a6275")]
+const BUTTON_COLORS: Array[Color] = [Color("d92b3a"), Color("ff7a1a"), Color("2e7bff"), Color("34445e")]
+const BENCH_CARD_WIDTH := 92.0
 
 var _state: BattleState
 var _ai: BattleAI
@@ -46,20 +47,26 @@ func _ready() -> void:
 		_autopilot = BattleAI.new(Session.battle_seed + 1)
 
 	var log_style := StyleBoxFlat.new()
-	log_style.bg_color = Palette.PANEL
-	log_style.set_corner_radius_all(12)
+	log_style.bg_color = Color(Palette.PANEL, 0.92)
+	log_style.border_color = Palette.PANEL_BORDER
+	log_style.set_border_width_all(1)
+	log_style.set_corner_radius_all(8)
 	log_style.set_content_margin_all(10)
+	_rival_name.add_theme_font_override("font", Fonts.title())
+	_turn_label.add_theme_font_override("font", Fonts.condensed_bold())
 	%LogPanel.add_theme_stylebox_override("panel", log_style)
 	for i in _buttons.size():
-		_style_button(_buttons[i], BUTTON_COLORS[i])
+		UiKit.style_button(_buttons[i], BUTTON_COLORS[i])
 	_buttons[0].pressed.connect(func() -> void: _submit(BattleAction.bite()))
 	_buttons[1].pressed.connect(func() -> void: _submit(BattleAction.charge()))
 	_buttons[2].pressed.connect(func() -> void: _submit(BattleAction.brace()))
 	_buttons[3].pressed.connect(_on_swap_pressed)
-	_style_button(%RematchButton, Color("3f8f55"))
-	_style_button(%NewHerdButton, BUTTON_COLORS[3])
-	%RematchButton.pressed.connect(Session.rematch)
-	%NewHerdButton.pressed.connect(Session.back_to_herd_select)
+	UiKit.style_button(%HatchButton, UiKit.BUTTON_AMBER)
+	UiKit.style_button(%RematchButton, UiKit.BUTTON_GREEN)
+	UiKit.style_button(%BackButton, UiKit.BUTTON_GRAY)
+	%HatchButton.pressed.connect(Session.go_to_main.bind(Session.Tab.EGGS))
+	%RematchButton.pressed.connect(Session.go_to_pre_battle)
+	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
 
 	_rival_name.text = Session.rival.display_name
 	for side in 2:
@@ -191,8 +198,10 @@ func _play(events: Array[Dictionary]) -> void:
 			"swap", "replace":
 				var side: int = event["side"]
 				_rebuild_side(side)
-				var verb := "swaps in" if event["type"] == "swap" else "sends in"
-				_say("%s %s [b]%s[/b]." % [_who(side), verb, _name(side)])
+				var verb := "swap" if event["type"] == "swap" else "send"
+				if side == RIVAL:
+					verb += "s"
+				_say("%s %s in [b]%s[/b]." % [_who(side), verb, _name(side)])
 				await _pause()
 			"brace":
 				_popup(_active_cards[event["side"]], "BRACE", Palette.HIGHLIGHT)
@@ -262,7 +271,8 @@ func _shake(card: DinoCard) -> void:
 func _popup(card: DinoCard, text: String, color: Color) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 34)
+	label.add_theme_font_size_override("font_size", 38)
+	label.add_theme_font_override("font", Fonts.condensed_bold())
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color.BLACK)
 	label.add_theme_constant_override("outline_size", 8)
@@ -282,8 +292,9 @@ func _rebuild_side(side: int) -> void:
 	if _active_cards[side]:
 		_active_cards[side].queue_free()
 	var card := DinoCard.create(battle_side.active_dino().def, DinoCard.Mode.BATTLE,
-			battle_side.active_dino())
+			battle_side.active_dino(), _is_shiny(side, battle_side.active_dino().def))
 	card.display_health(_shown_health[side][battle_side.active])
+	_slots[side].custom_minimum_size = card.size
 	_slots[side].add_child(card)
 	_active_cards[side] = card
 
@@ -293,11 +304,16 @@ func _rebuild_side(side: int) -> void:
 	for i in battle_side.herd.size():
 		if i == battle_side.active:
 			continue
-		var mini := DinoCard.create(battle_side.herd[i].def, DinoCard.Mode.MINI, battle_side.herd[i])
+		var mini := DinoCard.create(battle_side.herd[i].def, DinoCard.Mode.MINI, battle_side.herd[i],
+				_is_shiny(side, battle_side.herd[i].def), BENCH_CARD_WIDTH)
 		mini.display_health(_shown_health[side][i])
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)
 		_bench_cards[side][i] = mini
+
+
+func _is_shiny(side: int, dino: DinoDef) -> bool:
+	return side == PLAYER and Session.profile.is_shiny(dino.id)
 
 
 func _set_bench_highlight(on: bool) -> void:
@@ -329,12 +345,23 @@ func _show_result() -> void:
 	elif _state.winner == RIVAL:
 		title = "Defeat"
 	%ResultTitle.text = title
-	%ResultDetail.text = "%d turns · %d of %d dinos still standing" % [_state.turn - 1, left,
-			_state.side(PLAYER).herd.size()]
+	var reward := Session.finish_battle(_state.winner == PLAYER)
+	var gains: Array[String] = []
+	if reward["clutches"] > 0:
+		gains.append("%d egg clutch" % reward["clutches"])
+	gains.append("%d Amber" % reward["amber"])
+	%ResultDetail.text = "%d turns · %d of %d dinos still standing
+Rewards: %s" % [_state.turn - 1,
+			left, _state.side(PLAYER).herd.size(), " + ".join(gains)]
+	%HatchButton.visible = reward["clutches"] > 0
 	_overlay.show()
 	if _autopilot:
 		await get_tree().create_timer(2.5).timeout
-		get_tree().quit()
+		if Session.autoplay_battles_left > 0:
+			Session.autoplay_battles_left -= 1
+			Session.go_to_main(Session.Tab.EGGS)
+		else:
+			get_tree().quit()
 
 
 # --- Text helpers ---------------------------------------------------------------------------
@@ -353,25 +380,3 @@ func _name(side: int) -> String:
 
 func _who(side: int) -> String:
 	return "You" if side == PLAYER else Session.rival.display_name
-
-
-func _style_button(button: Button, color: Color) -> void:
-	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
-		var style := StyleBoxFlat.new()
-		style.set_corner_radius_all(14)
-		style.set_content_margin_all(8)
-		match state_name:
-			"normal":
-				style.bg_color = color
-			"hover":
-				style.bg_color = color.lightened(0.12)
-			"pressed":
-				style.bg_color = color.darkened(0.2)
-			"disabled":
-				style.bg_color = color.darkened(0.6)
-			"focus":
-				style.draw_center = false
-				style.border_color = Palette.HIGHLIGHT
-				style.set_border_width_all(3)
-		button.add_theme_stylebox_override(state_name, style)
-	button.add_theme_color_override("font_disabled_color", Palette.TEXT_DIM)
