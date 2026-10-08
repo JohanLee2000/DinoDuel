@@ -1,5 +1,7 @@
 # Music brief
 
+**Status (2026-10-08):** both tracks are in. `main.ogg` loops 27.29 s → end, `battle.ogg` loops 23.51 s → end (set in their `.import` files; the intro plays once). Made with `tools/make_music_loop.py`: cut before the fade-out at a point whose lead-in matches the loop start, 0.12 s blend, loudness evened to -15 LUFS. Replacing a track: send the new file and I redo the loop points.
+
 Two looping instrumental tracks. Jo generates them with an AI music tool **on a plan that allows commercial use** (keep a note of the plan and date in case Google or the tool ever asks). Upload the results in chat; I'll trim them to loop cleanly, convert to `.ogg` and drop them in `assets/audio/music/`. The game already plays them by file name, so nothing else changes.
 
 | File | Plays on | Length |

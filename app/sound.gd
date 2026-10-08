@@ -17,7 +17,6 @@ const SOUNDS := {
 	&"tap": [2, -3.0],
 	&"back": [1, -4.0],
 	&"error": [1, -7.0],
-	&"toggle": [1, -10.0],
 	&"card_open": [1, -2.0],
 	&"card_pick": [1, -2.0],
 	&"card_flip": [1, -1.5],
