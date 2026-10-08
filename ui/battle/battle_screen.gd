@@ -49,6 +49,7 @@ var _shown_health: Array = [[], []]
 var _log_lines: Array[String] = []
 var _card_scale := 1.0
 var _coaching := false
+var _backdrop: BattleBackdrop
 var _coach_panel: PanelContainer
 var _coach_text: RichTextLabel
 var _coach_pulse: Tween
@@ -74,6 +75,10 @@ func _ready() -> void:
 	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
 	_state = BattleEngine.create(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
+	_backdrop = BattleBackdrop.new()
+	add_child(_backdrop)
+	move_child(_backdrop, $Background.get_index() + 1)
+	resized.connect(_update_backdrop_focus.call_deferred)
 	if Session.autoplay:
 		_autopilot = BattleAI.new(Session.battle_seed + 1)
 
@@ -364,6 +369,9 @@ func _rebuild_side(side: int) -> void:
 	_slots[side].custom_minimum_size = card.size
 	_slots[side].add_child(card)
 	_active_cards[side] = card
+	# Each side's half of the background follows its active dino's type.
+	_backdrop.set_types(_state.side(PLAYER).active_dino().def.dino_type, _state.side(RIVAL).active_dino().def.dino_type)
+	_update_backdrop_focus.call_deferred()
 
 	for child in _benches[side].get_children():
 		child.queue_free()
@@ -377,6 +385,11 @@ func _rebuild_side(side: int) -> void:
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)
 		_bench_cards[side][i] = mini
+
+
+func _update_backdrop_focus() -> void:
+	if _active_cards[RIVAL] and _active_cards[PLAYER]:
+		_backdrop.set_focus(_slots[RIVAL].get_global_rect(), _slots[PLAYER].get_global_rect())
 
 
 func _is_shiny(side: int, dino: DinoDef) -> bool:

@@ -90,6 +90,9 @@ The look follows Jo's ChatGPT concept sheet, saved at `docs/concept/card_concept
 - **Card details** that don't fit on the face (group, era, size, matchups, Party Points, the real fact) show in the full-screen view when a card is held.
 - **Hatching:** one egg at a time. Tap: shake, crack, rarity-colored glow. Tap again: escalating shake (longer for rarer), shell pieces burst, rays in the tier color, the card pops up face down and flips; SSR and UR add a screen shake and flash. Summary of the clutch at the end, with a skip button.
 
+### Battle backgrounds (decided 2026-10-08)
+One painted scene per type in `assets/battle/` (Land: volcanic wasteland, Sea: stormy ocean, Sky: sunset clouds). In battle the rival's active dino's scene fills the top and the player's fills the bottom, blended across the middle band, dimmed with soft shadows behind the active cards and the log, and drifting slowly (top half less, for parallax). A swap or replacement crossfades that half to the new type (`ui/battle/battle_backdrop.gd` + `.gdshader`).
+
 ## App layout (decided)
 Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
