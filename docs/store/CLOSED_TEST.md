@@ -42,6 +42,21 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.3.0 (version code 3)
+
+**Release notes:**
+
+```
+<en-US>
+Dino Duel 0.3.0
+- New players choose a starter partner: Dilophosaurus, Archaeopteryx or Tanystropheus, plus 2 egg clutches
+- Battle backgrounds for Land, Sea and Sky
+- Bigger text, and a clear panel to pick your next dino after a knockout
+- Leave button to quit a battle (counts as a loss)
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Links
 
 - Opt-in (testers tap "Become a tester"): https://play.google.com/apps/testing/com.dinoduelstudios.dinoduel
@@ -83,4 +98,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | Date | Feedback | What changed (version) |
 |---|---|---|
 | 2026-10-08 | (before tester feedback) New players had no explanation of the moves; the game was silent | 0.2.0: coached first battle, How to play pages, music, sound effects, volume settings |
+| 2026-10-08 | Jo playtest: text too small, unclear what to do after a knockout, no way to quit a battle | 0.3.0: bigger text, knocked-out panel, Leave button; also starter partners and battle backgrounds |
 | | | |
