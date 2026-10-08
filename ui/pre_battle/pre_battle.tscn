@@ -69,7 +69,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Pick 3 dinos within 9 Party Points"
+text = "Pick 3 dinos within 10 Party Points"
 horizontal_alignment = 1
 autowrap_mode = 3
 

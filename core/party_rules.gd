@@ -4,7 +4,7 @@ extends RefCounted
 
 const PARTY_SIZE := 3
 const BRING_SIZE := 6
-const POINT_CAP := 9
+const POINT_CAP := 10
 ## Party Points per rarity, indexed by DinoDef.Rarity.
 const RARITY_POINTS: Array[int] = [1, 2, 3, 4, 5]
 

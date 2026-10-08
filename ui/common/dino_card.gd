@@ -17,7 +17,16 @@ signal pressed
 enum Mode { MINI, FULL, BATTLE, LARGE }
 
 const WIDTHS := {Mode.MINI: 104.0, Mode.FULL: 212.0, Mode.BATTLE: 200.0, Mode.LARGE: 480.0}
+## Card height / width, as in the concept sheet.
 const ASPECT := 1.68
+## Frame thickness as a fraction of the card width.
+const BORDER := 0.045
+## Paintings are 2:3 portraits. They're shown at the full width inside the frame, anchored to the
+## top, so nothing is cropped; the window is taller than 2:3, and the extra space at the bottom is
+## the dark panel behind the name banner and stats.
+const ART_ASPECT := 1.5
+## The part of card_back.png inside its own painted frame (fractions of the image).
+const CARD_BACK_INNER := Rect2(0.07, 0.05, 0.86, 0.9)
 const TAP_SLOP := 16.0
 const HOLD_SECONDS := 0.45
 const FRAME_SHADER := preload("res://ui/common/card_frame.gdshader")
@@ -92,14 +101,33 @@ static func create_unknown(dino: DinoDef, card_mode: Mode, custom_width := 0.0) 
 	return card
 
 
-## Just the card back at a given width, e.g. for a card about to be flipped over.
-static func create_back(card_width: float) -> TextureRect:
-	var back := TextureRect.new()
-	back.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	back.stretch_mode = TextureRect.STRETCH_SCALE
-	back.texture = load(CARD_BACK_PATH)
-	back.size = Vector2(card_width, card_width * ASPECT)
+## Just the card back at a given width, e.g. for a card about to be flipped over: the stone and
+## claw-mark center of the card back art inside the same glowing frame the fronts use (in blue).
+static func create_back(card_width: float) -> Control:
+	var h := card_width * ASPECT
+	var border := card_width * BORDER
+	var back := Control.new()
+	back.size = Vector2(card_width, h)
 	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var clip := Control.new()
+	clip.position = Vector2(border, border)
+	clip.size = back.size - Vector2(border, border) * 2
+	clip.clip_contents = true
+	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	back.add_child(clip)
+	var source: Texture2D = load(CARD_BACK_PATH)
+	var inner := AtlasTexture.new()
+	inner.atlas = source
+	var source_size := Vector2(source.get_size())
+	inner.region = Rect2(CARD_BACK_INNER.position * source_size, CARD_BACK_INNER.size * source_size)
+	var art := TextureRect.new()
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	art.texture = inner
+	art.size = clip.size
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.add_child(art)
+	back.add_child(_make_frame(card_width, h, border, Palette.ACCENT, 0.7, 0.0, 0.0))
 	return back
 
 
@@ -160,22 +188,33 @@ func _build() -> void:
 		var back := create_back(w)
 		add_child(back)
 	else:
-		var border := w * 0.045
-		var art_rect := Rect2(border * 0.6, border * 0.6, w - border * 1.2, h - border * 1.2)
+		var border := w * BORDER
+		var window := Rect2(border, border, w - border * 2, h - border * 2)
+		var panel := ColorRect.new()
+		panel.color = Color(PANEL, 1.0)
+		panel.position = window.position
+		panel.size = window.size
+		panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(panel)
+		# Full width, top-aligned, exact 2:3: the whole painting shows.
+		var art_rect := Rect2(window.position, Vector2(window.size.x, window.size.x * ART_ASPECT))
 		_add_art(art_rect)
 		if shiny:
-			_add_holo(art_rect)
+			_add_holo(window)
+		# Blend the bottom of the painting into the panel behind the name and stats.
 		var fade := Control.new()
 		fade.position = art_rect.position
 		fade.size = art_rect.size
 		fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		fade.draw.connect(func() -> void:
-			var top := fade.size.y * 0.48
-			var colors := PackedColorArray([Color(PANEL, 0.0), Color(PANEL, 0.0), Color(PANEL, 0.95), Color(PANEL, 0.95)])
+			var top := fade.size.y * 0.66
+			var colors := PackedColorArray([Color(PANEL, 0.0), Color(PANEL, 0.0), Color(PANEL, 1.0), Color(PANEL, 1.0)])
 			fade.draw_polygon(PackedVector2Array([Vector2(0, top), Vector2(fade.size.x, top),
 					Vector2(fade.size.x, fade.size.y), Vector2(0, fade.size.y)]), colors))
 		add_child(fade)
-		_add_frame(border)
+		add_child(_make_frame(w, h, border, tier_color(), 0.55 + def.rarity * 0.1,
+				1.0 if def.rarity == DinoDef.Rarity.LEGENDARY else (0.6 if shiny else 0.0),
+				1.0 if def.rarity >= DinoDef.Rarity.EPIC or shiny else 0.0))
 
 	_overlay = Control.new()
 	_overlay.size = size
@@ -186,26 +225,27 @@ func _build() -> void:
 		shown_health = combatant.health
 
 
-func _add_frame(border: float) -> void:
-	var w := width
+## The glowing frame (see card_frame.gdshader), on a rect that extends past the card for the glow.
+static func _make_frame(w: float, h: float, border: float, color: Color, glow_strength: float,
+		rainbow: float, pulse: float) -> ColorRect:
 	var glow := w * 0.07
 	var frame := ColorRect.new()
 	frame.position = Vector2(-glow, -glow)
-	frame.size = Vector2(w + glow * 2, card_height() + glow * 2)
+	frame.size = Vector2(w + glow * 2, h + glow * 2)
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var material := ShaderMaterial.new()
 	material.shader = FRAME_SHADER
 	material.set_shader_parameter("rect_size", frame.size)
-	material.set_shader_parameter("card_size", Vector2(w, card_height()))
+	material.set_shader_parameter("card_size", Vector2(w, h))
 	material.set_shader_parameter("glow", glow)
 	material.set_shader_parameter("border", border)
 	material.set_shader_parameter("radius", w * 0.07)
-	material.set_shader_parameter("tier_color", tier_color())
-	material.set_shader_parameter("glow_strength", 0.55 + def.rarity * 0.1)
-	material.set_shader_parameter("rainbow", 1.0 if def.rarity == DinoDef.Rarity.LEGENDARY else (0.6 if shiny else 0.0))
-	material.set_shader_parameter("pulse", 1.0 if def.rarity >= DinoDef.Rarity.EPIC or shiny else 0.0)
+	material.set_shader_parameter("tier_color", color)
+	material.set_shader_parameter("glow_strength", glow_strength)
+	material.set_shader_parameter("rainbow", rainbow)
+	material.set_shader_parameter("pulse", pulse)
 	frame.material = material
-	add_child(frame)
+	return frame
 
 
 ## The painting if there is one, otherwise a habitat backdrop with a silhouette.

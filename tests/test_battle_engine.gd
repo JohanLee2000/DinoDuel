@@ -168,10 +168,11 @@ func test_has_valid_pick() -> void:
 	var cheap := make_dino(1, 1, 1, 1)
 	var legend := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.LEGENDARY)
 	var epic := make_dino(1, 1, 1, 1, LAND, DinoDef.Era.TRIASSIC, DinoDef.Rarity.EPIC)
-	assert_true(PartyRules.has_valid_pick(party([legend, epic, cheap, cheap, epic, legend])), "1 + 1 + 4 fits")
-	assert_true(PartyRules.has_valid_pick(party([legend, epic, epic, legend, cheap, legend])), "1 + 4 + 4 = 9 fits exactly")
-	assert_false(PartyRules.has_valid_pick(party([legend, legend, epic, legend, cheap, legend])), "1 + 4 + 5 doesn't")
-	assert_false(PartyRules.has_valid_pick(party([cheap, cheap])), "too few")
+	# Explicit cap so the test doesn't depend on the current PartyRules.POINT_CAP.
+	assert_true(PartyRules.has_valid_pick(party([legend, epic, cheap, cheap, epic, legend]), 9), "1 + 1 + 4 fits")
+	assert_true(PartyRules.has_valid_pick(party([legend, epic, epic, legend, cheap, legend]), 9), "1 + 4 + 4 = 9 fits exactly")
+	assert_false(PartyRules.has_valid_pick(party([legend, legend, epic, legend, cheap, legend]), 9), "1 + 4 + 5 doesn't")
+	assert_false(PartyRules.has_valid_pick(party([cheap, cheap]), 9), "too few")
 
 
 func test_party_validation() -> void:

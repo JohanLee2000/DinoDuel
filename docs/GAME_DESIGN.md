@@ -45,7 +45,7 @@ Triangle: **Bite beats Charge, Charge beats Brace, Brace beats Bite.**
 Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces on pterosaurs on the ground, Sky dives on marine reptiles, Sea ambushes land dinos at the water's edge.
 
 ### Party rules (proposal)
-- Party Points: N 1, R 2, SR 3, SSR 4, UR 5. The 3 you pick must total **9 or less**. Journey levels may change the cap. A party of 6 whose 3 cheapest cost more than the cap can't battle; the Party and Battle tabs say so.
+- Party Points: N 1, R 2, SR 3, SSR 4, UR 5. The 3 you pick must total **10 or less**. Journey levels may change the cap. A party of 6 whose 3 cheapest cost more than the cap can't battle; the Party and Battle tabs say so.
 - **Era bond:** all 3 from the same era: +1 Attack and +1 Speed each.
 - **Balanced party:** one Land, one Sky, one Sea: +2 max Health each.
 - **Meteor shower (stall breaker):** from turn 20, both active dinos take rising damage at the end of each turn. It can bring a dino to 1 HP but never knocks one out itself (this cut draws from ~13% to under 1% in the balance sim).
@@ -66,7 +66,7 @@ The AI simulates every (its move, your move) pair one turn ahead, guesses your m
 
 ## Art and UI direction (decided)
 The look follows Jo's ChatGPT concept sheet, saved at `docs/concept/card_concept_sheet.webp` (it replaced two earlier directions: cartoony "Bright and bold", then a realistic stone-frame card).
-- **Cards (every tier):** full-bleed portrait painting inside a glowing neon frame in the tier color. Top-left: tier crest (N, R, SR, SSR, UR; SSR and UR wear a crown) with the Party Point cost under it. Top-right: type medallion with LAND / SKY / SEA under it. Bottom: angled name banner with the dino's title (e.g. "King of the Cretaceous"), then four stat boxes (ATK sword, DEF shield, SPD feather, HP heart). Card proportions about 1 : 1.68.
+- **Cards (every tier):** full-bleed portrait painting inside a glowing neon frame in the tier color. Top-left: tier crest (N, R, SR, SSR, UR; SSR and UR wear a crown) with the Party Point cost under it. Top-right: type medallion with LAND / SKY / SEA under it. Bottom: angled name banner with the dino's title (e.g. "King of the Cretaceous"), then four stat boxes (ATK sword, DEF shield, SPD feather, HP heart). Card proportions about 1 : 1.68. The 2:3 painting is shown at the full width inside the frame, top-aligned, so it's never cropped; it fades into the dark panel behind the name and stats at the bottom.
 - **Tier colors:** N steel, R green, SR purple, SSR gold, UR magenta with a color-cycling frame. SSR and UR frames pulse.
 - **Shiny:** color-shifting frame plus a rainbow holo sheen over the painting.
 - **Types:** Land = gold mountain, Sea = blue wave, Sky = white bird, each in a glossy round medallion.

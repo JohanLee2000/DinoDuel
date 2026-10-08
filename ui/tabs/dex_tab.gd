@@ -34,16 +34,17 @@ func _refresh() -> void:
 		var owned := dinos.filter(func(d: DinoDef) -> bool: return profile.owns(d.id)).size()
 		_body.add_child(UiKit.title("%s  %d/%d" % [DinoDef.ERA_NAMES[era], owned, dinos.size()], 28,
 				Palette.HIGHLIGHT if owned == dinos.size() else Palette.TEXT))
-		var row := UiKit.grid(6, 6)
+		var row := UiKit.grid(3, 12)
+		row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		for dino in dinos:
 			var card: DinoCard
 			if profile.owns(dino.id):
-				card = DinoCard.create(dino, DinoCard.Mode.MINI, null, profile.is_shiny(dino.id))
+				card = DinoCard.create(dino, DinoCard.Mode.FULL, null, profile.is_shiny(dino.id))
 			elif profile.seen.has(dino.id):
-				card = DinoCard.create(dino, DinoCard.Mode.MINI)
+				card = DinoCard.create(dino, DinoCard.Mode.FULL)
 				card.modulate = Color(1, 1, 1, 0.45)
 			else:
-				card = DinoCard.create_unknown(dino, DinoCard.Mode.MINI)
+				card = DinoCard.create_unknown(dino, DinoCard.Mode.FULL)
 			card.inspect_on_hold = false
 			card.pressed.connect(_open.bind(dino))
 			row.add_child(card)

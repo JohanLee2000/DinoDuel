@@ -19,11 +19,11 @@ python tools/prepare_art.py "path/to/your/downloads"
 
 It resizes them for phones and saves WebP copies into `assets/dinos/`. The cards pick them up automatically; nothing else to wire up.
 
-## Composition rules (match the concept sheet)
+## Composition rules
 
-- Portrait 2:3, the dinosaur large and dynamic, filling the frame like the sample cards (mouth open, mid-stride, swimming toward the viewer).
-- **Keep the head and the key action in the upper 55% of the image.** The bottom 40% sits under the name banner and stat boxes, and the two top corners under the tier crest and type medallion.
-- Vivid, saturated, dramatic lighting with a bright habitat background, like the sample cards: Land in golden light, Sea in deep blue with light rays, Sky in bright blue sky.
+- Portrait 2:3. Cards show the painting at the full width inside the frame, anchored to the top, so **nothing is cropped**.
+- **The bottom fifth fades into the dark panel behind the name banner and stat boxes**, so keep the head and key action in the top 80%.
+- **The top corners** (about a quarter of the width and the top fifth on each side) sit under the tier crest and type medallion. Keep eyes and jaws out of them.
 - **Shiny:** identical composition; only the animal's coloring changes (e.g. pale silver-white with iridescent blue-green highlights).
 - No text, frames, borders, logos or watermarks in the image. The card adds all of that.
 
