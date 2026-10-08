@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dino Duel</title>
+<meta name="description" content="Hatch fossil eggs, collect 30 prehistoric beasts and outsmart rival collectors. A card battler for Android.">
+<link rel="icon" href="site/icon.png">
+<meta property="og:title" content="Dino Duel">
+<meta property="og:description" content="Hatch fossil eggs, collect 30 prehistoric beasts and outsmart rival collectors.">
+<meta property="og:image" content="https://johanlee2000.github.io/DinoDuel/site/hero.jpg">
+<style>
+  @font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("site/fonts/BarlowCondensed-Bold.ttf") format("truetype"); font-display: swap; }
+  @font-face { font-family: "Barlow"; font-weight: 500; src: url("site/fonts/Barlow-Medium.ttf") format("truetype"); font-display: swap; }
+  :root {
+    color-scheme: dark;
+    --bg: #0a111f; --panel: #101b2e; --border: #22314d;
+    --text: #eaf2ff; --dim: #8fa3bf; --accent: #4da8ff; --gold: #ffd34d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 500 17px/1.6 "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  .hero { padding-top: 24px; }
+  h1, h2, h3 { font-family: "Barlow Condensed", system-ui, sans-serif; font-weight: 700; font-style: italic; letter-spacing: 0.02em; line-height: 1.1; }
+  .hero img { width: 100%; height: auto; display: block; border-radius: 16px; border: 1px solid var(--border); }
+  .lead { font-size: 1.25em; margin: 24px 0 8px; max-width: 46ch; }
+  .badge {
+    display: inline-block; margin: 8px 0 0; padding: 8px 16px; border-radius: 999px;
+    background: var(--panel); border: 1px solid var(--border); color: var(--gold);
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-style: italic; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 40px 0; }
+  .feature { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+  .feature h3 { margin: 0 0 6px; font-size: 1.35em; color: var(--gold); text-transform: uppercase; }
+  .feature p { margin: 0; color: var(--dim); }
+  .shots { display: flex; gap: 16px; overflow-x: auto; padding: 4px 0 16px; scroll-snap-type: x mandatory; }
+  .shots img { flex: 0 0 auto; width: 210px; height: auto; border-radius: 14px; border: 1px solid var(--border); scroll-snap-align: start; }
+  footer { margin: 40px 0 0; padding: 24px 0 40px; border-top: 1px solid var(--border); color: var(--dim); font-size: 0.95em; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 8px; }
+  @media (max-width: 600px) {
+    .hero { padding-top: 16px; }
+    .lead { font-size: 1.1em; }
+    .shots img { width: 170px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main>
+    <section class="hero">
+      <img src="site/hero.jpg" alt="Dino Duel: Hatch. Collect. Battle. Cards of Mosasaurus, Tyrannosaurus Rex and Quetzalcoatlus" width="1024" height="500">
+      <p class="lead">Hatch fossil eggs, collect 30 prehistoric beasts and outsmart rival collectors in quick, tactical card duels.</p>
+      <span class="badge">Coming soon to Google Play</span>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <div class="feature">
+        <h3>Collect 30 creatures</h3>
+        <p>Dinosaurs, pterosaurs and sea reptiles from the Triassic, Jurassic and Cretaceous, from Common to Legendary, plus rare Shiny cards.</p>
+      </div>
+      <div class="feature">
+        <h3>Hatch fossil eggs</h3>
+        <p>Win battles to earn clutches of eggs. Each egg's glow shows how rare it is before it hatches.</p>
+      </div>
+      <div class="feature">
+        <h3>Mind games, not luck</h3>
+        <p>Both sides pick Bite, Charge, Brace or Swap at the same time. Read your rival and strike first.</p>
+      </div>
+      <div class="feature">
+        <h3>Play anywhere</h3>
+        <p>Fully offline. No account, no ads, and eggs are earned by playing, never sold for real money.</p>
+      </div>
+    </section>
+
+    <section aria-label="Screenshots">
+      <h2>Screenshots</h2>
+      <div class="shots">
+        <img src="site/01_battle.jpg" alt="A battle against Rival Rory" width="420" height="839" loading="lazy">
+        <img src="site/02_hatch_legendary.jpg" alt="Hatching a Legendary Brachiosaurus" width="420" height="839" loading="lazy">
+        <img src="site/03_card_t_rex_shiny.jpg" alt="The Shiny Tyrannosaurus Rex card" width="420" height="839" loading="lazy">
+        <img src="site/04_dex_cretaceous.jpg" alt="The Dino Dex, Cretaceous section" width="420" height="839" loading="lazy">
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav>
+      <a href="privacy-policy.html">Privacy policy</a>
+      <a href="mailto:dinoduelstudios@gmail.com">dinoduelstudios@gmail.com</a>
+    </nav>
+    <div>&copy; 2026 Dino Duel Studios</div>
+  </footer>
+</div>
+</body>
+</html>
