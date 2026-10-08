@@ -42,6 +42,21 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.3.1 (version code 4)
+
+Same game as 0.3.0, plus 32-bit ARM (armeabi-v7a) in the Play build so phones running 32-bit Android (e.g. Redmi A3, Android Go) can install it.
+
+```
+<en-US>
+Dino Duel 0.3.1
+- Now installs on more phones (32-bit Android, like the Redmi A3)
+- New players choose a starter partner: Dilophosaurus, Archaeopteryx or Tanystropheus, plus 2 egg clutches
+- Battle backgrounds for Land, Sea and Sky
+- Bigger text, a clear panel to pick your next dino after a knockout, and a Leave button
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.3.0 (version code 3)
 
 **Release notes:**
@@ -99,4 +114,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 |---|---|---|
 | 2026-10-08 | (before tester feedback) New players had no explanation of the moves; the game was silent | 0.2.0: coached first battle, How to play pages, music, sound effects, volume settings |
 | 2026-10-08 | Jo playtest: text too small, unclear what to do after a knockout, no way to quit a battle | 0.3.0: bigger text, knocked-out panel, Leave button; also starter partners and battle backgrounds |
+| 2026-10-08 | Tester with a Redmi A3: "device isn't compatible" (32-bit Android) | 0.3.1: Play build includes armeabi-v7a |
 | | | |
