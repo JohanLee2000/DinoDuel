@@ -28,6 +28,20 @@ Found a bug or have an idea? Email dinoduelstudios@gmail.com
 
 **Every later upload:** bump `version/code` (and usually `version/name`) in both presets in `export_presets.cfg` with the Godot editor closed, rebuild, and create a new release on the same track.
 
+## Release 0.2.0 (version code 2)
+
+**Release notes:**
+
+```
+<en-US>
+Dino Duel 0.2.0
+- New: your first battle comes with a coach that teaches Bite, Charge, Brace and Swap
+- New: How to play pages (tap ? in any battle, or the gear in the top bar)
+- New: music and sound effects, with volume sliders in Settings
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Links
 
 - Opt-in (testers tap "Become a tester"): https://play.google.com/apps/testing/com.dinoduelstudios.dinoduel
@@ -68,4 +82,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 
 | Date | Feedback | What changed (version) |
 |---|---|---|
+| 2026-10-08 | (before tester feedback) New players had no explanation of the moves; the game was silent | 0.2.0: coached first battle, How to play pages, music, sound effects, volume settings |
 | | | |
