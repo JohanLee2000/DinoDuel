@@ -32,7 +32,7 @@ Found a bug or have an idea? Email dinoduelstudios@gmail.com
 
 - Opt-in (testers tap "Become a tester"): https://play.google.com/apps/testing/com.dinoduelstudios.dinoduel
 - Store page (install after opting in): https://play.google.com/store/apps/details?id=com.dinoduelstudios.dinoduel
-- Tester group: https://groups.google.com/g/<group name> (the group's join page)
+- Tester group: https://groups.google.com/g/dino-duel-testers (dino-duel-testers@googlegroups.com; share this form, without /u/N/)
 
 Both Play links only work once the closed-test release is approved, and only for accounts in the tester group.
 
