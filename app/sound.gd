@@ -3,7 +3,7 @@ extends Node
 ## Sound effects and music. Session calls Sound.setup() at startup; after that, Sound.play(&"bite")
 ## works from anywhere and every Button plays a tap sound by itself. Effects are Kenney CC0 sounds
 ## (assets/audio/CREDITS.md). Music tracks are optional files in assets/audio/music/ (<track>.ogg)
-## and stay silent until they exist. The on/off switches are saved per device in settings.cfg.
+## and stay silent until they exist. The volume sliders are saved per device in settings.cfg.
 
 const SFX_DIR := "res://assets/audio/sfx/"
 const MUSIC_DIR := "res://assets/audio/music/"
@@ -11,39 +11,41 @@ const SETTINGS_PATH := "user://settings.cfg"
 const VOICES := 8
 const MUSIC_DB := -10.0
 const FADE_SECONDS := 1.0
-## Name -> [variants, volume in dB]. Files are <name>.ogg, or <name>_1.ogg, <name>_2.ogg, ...
-## Volumes even out the source files' loudness (measured, not by ear: adjust after listening).
+## Name -> volume in dB. Files are levelled to the same loudness by tools/prepare_sfx.py, so these
+## set how loud each sound is relative to the others. Variants are found by file name:
+## <name>.ogg, or <name>_1.ogg, <name>_2.ogg, ... (one is picked at random each time).
 const SOUNDS := {
-	&"tap": [2, -3.0],
-	&"back": [1, -4.0],
-	&"error": [1, -7.0],
-	&"card_open": [1, -2.0],
-	&"card_pick": [1, -2.0],
-	&"card_flip": [1, -1.5],
-	&"swap": [2, 5.0],
-	&"clutch_open": [1, -2.0],
-	&"bite": [3, -2.5],
-	&"charge": [3, -1.0],
-	&"block": [2, 0.0],
-	&"interrupted": [1, -1.0],
-	&"ko": [1, -4.5],
-	&"meteor": [2, -2.0],
-	&"victory": [1, 0.0],
-	&"defeat": [1, 0.0],
-	&"egg_crack": [3, 0.0],
-	&"egg_burst": [1, -2.0],
-	&"glow": [1, 0.0],
-	&"reveal_rare": [1, 0.0],
-	&"reveal_epic": [1, 0.0],
-	&"new_dino": [1, -5.0],
-	&"shiny": [1, 2.0],
-	&"amber": [1, 1.0],
+	&"tap": -9.0,
+	&"error": -9.0,
+	&"card_open": -6.0,
+	&"card_pick": -6.0,
+	&"card_flip": -6.0,
+	&"swap": -6.0,
+	&"clutch_open": -6.0,
+	&"bite": 0.0,
+	&"charge": 0.0,
+	&"block": 0.0,
+	&"interrupted": -5.0,
+	&"ko": 0.0,
+	&"meteor": 0.0,
+	&"victory": -1.0,
+	&"defeat": -1.0,
+	&"egg_crack": -3.0,
+	&"egg_burst": 0.0,
+	&"glow": -5.0,
+	&"reveal_rare": -1.0,
+	&"reveal_epic": -1.0,
+	&"new_dino": -3.0,
+	&"shiny": -5.0,
+	&"amber": -5.0,
 }
+const MAX_VARIANTS := 9
 
 static var _node: Sound
 
-var _sfx_on := true
-var _music_on := true
+## Volume sliders, 0 to 1 (0 mutes).
+var _sfx_volume := 1.0
+var _music_volume := 1.0
 var _streams := {}
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
@@ -74,23 +76,23 @@ static func music(track: StringName) -> void:
 		_node._set_music(track)
 
 
-static func sfx_on() -> bool:
-	return _node == null or _node._sfx_on
+static func sfx_volume() -> float:
+	return _node._sfx_volume if _node else 1.0
 
 
-static func music_on() -> bool:
-	return _node == null or _node._music_on
+static func music_volume() -> float:
+	return _node._music_volume if _node else 1.0
 
 
-static func set_sfx_on(on: bool) -> void:
+static func set_sfx_volume(volume: float) -> void:
 	if _node:
-		_node._sfx_on = on
+		_node._sfx_volume = clampf(volume, 0.0, 1.0)
 		_node._apply_settings()
 
 
-static func set_music_on(on: bool) -> void:
+static func set_music_volume(volume: float) -> void:
 	if _node:
-		_node._music_on = on
+		_node._music_volume = clampf(volume, 0.0, 1.0)
 		_node._apply_settings()
 
 
@@ -114,8 +116,13 @@ func _ready() -> void:
 		_music_players.append(player)
 	var config := ConfigFile.new()
 	if config.load(SETTINGS_PATH) == OK:
-		_sfx_on = bool(config.get_value("audio", "sfx", true))
-		_music_on = bool(config.get_value("audio", "music", true))
+		_sfx_volume = float(config.get_value("audio", "sfx_volume", 1.0))
+		_music_volume = float(config.get_value("audio", "music_volume", 1.0))
+		# Settings saved before the sliders existed had on/off switches.
+		if not config.get_value("audio", "sfx", true):
+			_sfx_volume = 0.0
+		if not config.get_value("audio", "music", true):
+			_music_volume = 0.0
 	_apply_settings(false)
 	get_tree().node_added.connect(_on_node_added)
 	if _pending_track != &"":
@@ -123,12 +130,16 @@ func _ready() -> void:
 
 
 func _apply_settings(save := true) -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(&"SFX"), not _sfx_on)
-	AudioServer.set_bus_mute(AudioServer.get_bus_index(&"Music"), not _music_on)
+	for pair in [[&"SFX", _sfx_volume], [&"Music", _music_volume]]:
+		var bus := AudioServer.get_bus_index(pair[0])
+		var volume: float = pair[1]
+		AudioServer.set_bus_mute(bus, volume <= 0.0)
+		# Squared, so the slider feels even: half way is about a quarter of the loudness.
+		AudioServer.set_bus_volume_db(bus, linear_to_db(maxf(volume * volume, 0.0001)))
 	if save:
 		var config := ConfigFile.new()
-		config.set_value("audio", "sfx", _sfx_on)
-		config.set_value("audio", "music", _music_on)
+		config.set_value("audio", "sfx_volume", _sfx_volume)
+		config.set_value("audio", "music_volume", _music_volume)
 		config.save(SETTINGS_PATH)
 
 
@@ -139,7 +150,7 @@ func _play(sound: StringName, pitch: float) -> void:
 	var voice := _voices[_next_voice]
 	_next_voice = (_next_voice + 1) % VOICES
 	voice.stream = variants.pick_random()
-	voice.volume_db = SOUNDS[sound][1]
+	voice.volume_db = SOUNDS[sound]
 	# A little random pitch so repeated hits don't sound copy-pasted.
 	voice.pitch_scale = pitch * randf_range(0.96, 1.04)
 	voice.play()
@@ -148,14 +159,15 @@ func _play(sound: StringName, pitch: float) -> void:
 func _variants(sound: StringName) -> Array:
 	if not _streams.has(sound):
 		var loaded := []
-		if SOUNDS.has(sound):
-			var count: int = SOUNDS[sound][0]
-			for i in count:
-				var path := SFX_DIR + (String(sound) if count == 1 else "%s_%d" % [sound, i + 1]) + ".ogg"
+		if not SOUNDS.has(sound):
+			push_warning("Unknown sound: %s" % sound)
+		elif ResourceLoader.exists(SFX_DIR + String(sound) + ".ogg"):
+			loaded.append(load(SFX_DIR + String(sound) + ".ogg"))
+		else:
+			for i in range(1, MAX_VARIANTS + 1):
+				var path := SFX_DIR + "%s_%d.ogg" % [sound, i]
 				if ResourceLoader.exists(path):
 					loaded.append(load(path))
-		else:
-			push_warning("Unknown sound: %s" % sound)
 		_streams[sound] = loaded
 	return _streams[sound]
 

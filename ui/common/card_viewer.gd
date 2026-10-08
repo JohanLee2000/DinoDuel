@@ -27,7 +27,6 @@ static func open(dino: DinoDef, shiny := false, known := true, extras: Array[Con
 
 
 func close() -> void:
-	Sound.play(&"back")
 	closed.emit()
 	queue_free()
 

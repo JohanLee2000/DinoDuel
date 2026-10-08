@@ -1,6 +1,6 @@
 class_name SettingsView
 extends Control
-## Settings popup from the gear in the top bar: sound effects and music on/off, How to play,
+## Settings popup from the gear in the top bar: sound effects and music volume, How to play,
 ## and credits.
 
 
@@ -11,7 +11,6 @@ static func open() -> SettingsView:
 
 
 func close() -> void:
-	Sound.play(&"back")
 	queue_free()
 
 
@@ -30,8 +29,8 @@ func _ready() -> void:
 	var column := UiKit.vbox(16)
 	column.custom_minimum_size.x = 560
 	column.add_child(UiKit.title("Settings", 40, Palette.HIGHLIGHT))
-	column.add_child(_toggle("Sound effects", Sound.sfx_on(), Sound.set_sfx_on))
-	column.add_child(_toggle("Music", Sound.music_on(), Sound.set_music_on))
+	column.add_child(_volume_row("Sound effects", Sound.sfx_volume(), Sound.set_sfx_volume, true))
+	column.add_child(_volume_row("Music", Sound.music_volume(), Sound.set_music_volume, false))
 	var help := UiKit.button("How to play", UiKit.BUTTON_GRAY, 76, 26)
 	help.pressed.connect(func() -> void: HelpView.open())
 	column.add_child(help)
@@ -43,24 +42,44 @@ func _ready() -> void:
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
 
 
-func _toggle(text: String, on: bool, apply: Callable) -> Control:
-	var row := UiKit.hbox(12)
+func _volume_row(text: String, volume: float, apply: Callable, preview: bool) -> Control:
+	var box := UiKit.vbox(4)
+	var top := UiKit.hbox(12)
 	var label := UiKit.label(text, 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(label)
-	var button := UiKit.button("", UiKit.BUTTON_GRAY, 64, 24)
-	button.custom_minimum_size.x = 140
-	var show_state := func(state: bool) -> void:
-		button.text = "On" if state else "Off"
-		UiKit.style_button(button, UiKit.BUTTON_GREEN if state else UiKit.BUTTON_GRAY)
-	show_state.call(on)
-	button.pressed.connect(func() -> void:
-		var state := button.text != "On"
-		apply.call(state)
-		show_state.call(state))
-	row.add_child(button)
-	return row
+	top.add_child(label)
+	var amount := UiKit.label("", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	top.add_child(amount)
+	box.add_child(top)
+
+	var slider := HSlider.new()
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.step = 5
+	slider.value = roundf(volume * 100)
+	slider.custom_minimum_size = Vector2(0, 56)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var knob := Icons.texture(&"knob", 40)
+	for icon in ["grabber", "grabber_highlight"]:
+		slider.add_theme_icon_override(icon, knob)
+	for style_name in ["slider", "grabber_area", "grabber_area_highlight"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = UiKit.BUTTON_GRAY if style_name == "slider" else Palette.HIGHLIGHT
+		style.set_corner_radius_all(6)
+		style.content_margin_top = 6
+		style.content_margin_bottom = 6
+		slider.add_theme_stylebox_override(style_name, style)
+	var show_amount := func(value: float) -> void:
+		amount.text = "Off" if value <= 0 else "%d%%" % value
+	show_amount.call(slider.value)
+	slider.value_changed.connect(func(value: float) -> void:
+		apply.call(value / 100.0)
+		show_amount.call(value))
+	if preview:
+		# Let the player hear the new level when they let go.
+		slider.drag_ended.connect(func(_changed: bool) -> void: Sound.play(&"tap"))
+	box.add_child(slider)
+	return box
 
 
 func _notification(what: int) -> void:

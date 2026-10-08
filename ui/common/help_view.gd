@@ -68,7 +68,6 @@ static func open(page := 0, intro := false) -> HelpView:
 
 
 func close() -> void:
-	Sound.play(&"back")
 	closed.emit()
 	queue_free()
 

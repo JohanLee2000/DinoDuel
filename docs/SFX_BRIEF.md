@@ -1,6 +1,15 @@
 # Sound effects brief
 
-Prompts for replacing the Kenney placeholder effects with AI-generated ones. Use a tool and plan whose terms allow commercial use (keep a note of which). Upload the results in chat with the file names below (any of .wav, .mp3, .ogg). I trim the silence, even out the volume, convert to `.ogg` and put them in `assets/audio/sfx/`. Anything you don't replace keeps its Kenney sound.
+Prompts for replacing the Kenney placeholder effects with AI-generated ones. Use a tool and plan whose terms allow commercial use (keep a note of which). Anything not replaced keeps its Kenney sound.
+
+To put a sound in (or upload it in chat and I'll do it):
+
+```bash
+python tools/prepare_sfx.py "C:/Users/johan/Downloads/my_bite.wav" bite          # replaces all bite variants
+python tools/prepare_sfx.py "C:/Users/johan/Downloads/my_bite2.wav" bite --add   # adds another variant
+```
+
+It trims the silence, levels the loudness (so the per-sound volumes in `app/sound.gd` stay right) and writes `assets/audio/sfx/<name>.ogg` or `<name>_N.ogg`. The game finds variants by file name; no code changes needed.
 
 Tips:
 - Keep effects **dry** (little or no reverb) and **starting instantly** (no silence or build-up before the sound).
@@ -10,8 +19,7 @@ Tips:
 
 | File | Plays when | Length | Prompt |
 |---|---|---|---|
-| `tap_1`, `tap_2` | Any button press | 0.1 s | A single short, soft click of a small smooth pebble tapped on a wooden board, crisp and dry, no reverb |
-| `back` | Closing a popup or the card view | 0.3 s | A short soft downward whoosh ending in a gentle wooden click, like closing a small leather-bound field journal, dry |
+| `tap` (done: Jo's click) | Any button press | 0.1 s | A single short, soft click of a small smooth pebble tapped on a wooden board, crisp and dry, no reverb |
 | `error` | Tapping something not allowed (e.g. over the point cap) | 0.3 s | Two quick muted knocks on hollow wood, low and friendly, a gentle "nope" for a game menu, dry |
 | `card_open` | Holding a card to see it full size | 0.5 s | A thick trading card sliding quickly out of a stack and lifted up, crisp card slide with a soft airy whoosh |
 | `card_pick` | Picking or removing a dino for your party | 0.3 s | A thick trading card snapped down onto a wooden table, crisp short card slap |

@@ -53,6 +53,8 @@ const SVG := {
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="url(#g)" stroke="#5a3404" stroke-width="3" stroke-linejoin="round"/></svg>""",
 	&"star_empty": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="#1c2c48" stroke="#4d6a96" stroke-width="3" stroke-linejoin="round"/></svg>""",
+	# Volume slider knob.
+	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.
 	&"gear": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#cfe0ff"><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(0 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(45 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(90 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(135 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(180 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(225 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(270 32 32)"/><rect x="27" y="3" width="10" height="14" rx="2" transform="rotate(315 32 32)"/><circle cx="32" cy="32" r="20"/></g><circle cx="32" cy="32" r="8" fill="#101b2e"/></svg>""",
 	# Currency: a drop of amber with a tiny trapped insect.
