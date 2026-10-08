@@ -28,6 +28,14 @@ Found a bug or have an idea? Email dinoduelstudios@gmail.com
 
 **Every later upload:** bump `version/code` (and usually `version/name`) in both presets in `export_presets.cfg` with the Godot editor closed, rebuild, and create a new release on the same track.
 
+## Links
+
+- Opt-in (testers tap "Become a tester"): https://play.google.com/apps/testing/com.dinoduelstudios.dinoduel
+- Store page (install after opting in): https://play.google.com/store/apps/details?id=com.dinoduelstudios.dinoduel
+- Tester group: https://groups.google.com/g/<group name> (the group's join page)
+
+Both Play links only work once the closed-test release is approved, and only for accounts in the tester group.
+
 ## Invitation message
 
 Send after the release is approved (the opt-in link only works then). Fill in the two links: the group's join link, and the opt-in link from the Testers tab ("Copy link").
