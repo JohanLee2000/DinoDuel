@@ -259,6 +259,7 @@ func _play(events: Array[Dictionary]) -> void:
 				_say("%s %s in [b]%s[/b]." % [_who(side), verb, _name(side)])
 				await _pause()
 			"brace":
+				Sound.play(&"brace")
 				_popup(_active_cards[event["side"]], "BRACE", Palette.HIGHLIGHT)
 			"blocked":
 				Sound.play(&"block")
@@ -296,6 +297,9 @@ func _show_hit(event: Dictionary) -> void:
 	var attacker_card := _active_cards[side]
 	var target_card := _active_cards[target]
 	var lunge := Vector2(0, -36 if side == PLAYER else 36)
+	# The charge sound builds up during the lunge; its slam is timed to land with the hit.
+	if event["type"] == "charge":
+		Sound.play(&"charge", 0.88 if event["advantage"] else 1.0)
 	var tween := create_tween()
 	tween.tween_property(attacker_card, "position", lunge, 0.12)
 	tween.tween_property(attacker_card, "position", Vector2.ZERO, 0.15)
@@ -305,7 +309,8 @@ func _show_hit(event: Dictionary) -> void:
 	target_card.tween_health(event["health_after"])
 	_shake(target_card)
 	# Type-edge hits land a little lower and heavier.
-	Sound.play(&"charge" if event["type"] == "charge" else &"bite", 0.88 if event["advantage"] else 1.0)
+	if event["type"] != "charge":
+		Sound.play(&"bite", 0.88 if event["advantage"] else 1.0)
 	var label := "-%d" % event["damage"]
 	if event["type"] == "charge":
 		label = "CHARGE -%d" % event["damage"]

@@ -26,8 +26,9 @@ Tips:
 | `card_flip` | A hatched card flips face up | 0.4 s | A stiff playing card flipped over fast in the air, quick paper flick with a light whoosh |
 | `swap_1`, `swap_2` | A dino swaps in or comes in after a knockout | 0.6 s | A fast whoosh of a card sliding away followed by a heavy dinosaur footstep landing on dirt |
 | `clutch_open` (done: Jo's sound) | Starting to hatch a clutch, claiming the daily clutch | 1.0 s | Three large stone-like fossil eggs set down one after another on a stone slab, soft heavy clunks, then a faint mysterious shimmer |
-| `bite_1`..`bite_3` | A Bite or counter-bite lands | 0.5 s | A large predator dinosaur bite, powerful jaws snapping shut with a meaty crunch and a short snarl, close and punchy game impact |
-| `charge_1`..`charge_3` | A Charge lands (double damage) | 0.8 s | A heavy dinosaur ramming its target: two fast thundering footsteps then a massive body-slam thud with a short roar, punchy game impact |
+| `bite_1`..`bite_3` (synthesized: `tools/synth_sfx.py`) | A Bite or counter-bite lands | 0.5 s | A large predator dinosaur bite, powerful jaws snapping shut with a meaty crunch and a short snarl, close and punchy game impact |
+| `charge_1`..`charge_3` (synthesized) | Starts when a Charge lunges; **the big impact must land 0.27 s in**, on the hit | 1.1 s | A heavy dinosaur ramming its target: two fast thundering footsteps then a massive body-slam thud with a short roar, punchy game impact |
+| `brace_1`, `brace_2` (synthesized) | A dino raises Brace (shield up) | 0.8 s | A shimmering protective barrier snapping into place: a quick rising crystalline whoosh ending in a bright glassy ting, video game shield sound |
 | `block_1`, `block_2` | A Brace blocks a Bite | 0.4 s | Teeth clacking hard against a bony armored plate, a solid blocked hit with a short grunt, punchy and dry |
 | `interrupted` | A Charge is cancelled by a Bite | 0.4 s | A dinosaur stumbling mid-run, feet skidding in dirt with a short frustrated snort |
 | `ko` | A dino is knocked out | 1.2 s | A large dinosaur collapsing onto the ground, heavy body-fall thud with a fading low groan and dust settling |

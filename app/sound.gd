@@ -24,6 +24,7 @@ const SOUNDS := {
 	&"clutch_open": -6.0,
 	&"bite": 0.0,
 	&"charge": 0.0,
+	&"brace": -3.0,
 	&"block": 0.0,
 	&"interrupted": -5.0,
 	&"ko": 0.0,
@@ -98,6 +99,11 @@ static func set_music_volume(volume: float) -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Music plus a few overlapping hits can add up past full scale; a limiter on the master bus
+	# catches those peaks instead of letting them crackle on phone speakers.
+	var limiter := AudioEffectHardLimiter.new()
+	limiter.ceiling_db = -0.5
+	AudioServer.add_bus_effect(0, limiter)
 	for bus in ["SFX", "Music"]:
 		if AudioServer.get_bus_index(bus) == -1:
 			AudioServer.add_bus()
