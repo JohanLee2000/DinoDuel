@@ -15,3 +15,4 @@ id = &"rory"
 display_name = "Rival Rory"
 intro = "Rory just got back from the Cretaceous and wants to show off."
 brings = Array[ExtResource("1_oqjql")]([ExtResource("2_ip8n8"), ExtResource("3_8w42p"), ExtResource("4_k5v6g"), ExtResource("5_kindo"), ExtResource("6_pmis1"), ExtResource("7_7ii3d")])
+difficulty = 5

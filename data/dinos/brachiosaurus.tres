@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_f98ss"]
+
+[resource]
+script = ExtResource("1_f98ss")
+id = &"brachiosaurus"
+display_name = "Brachiosaurus"
+dino_type = 0
+era = 1
+rarity = 4
+attack = 8
+defense = 2
+speed = 2
+health = 25
+group = "Sauropod dinosaur"
+size_text = "Length 22 m · 40 t"
+flavor_text = "Its front legs were longer than its back legs, so its body sloped up like a giraffe's, lifting its head high into the trees."
+epithet = "Titan of the Treetops"

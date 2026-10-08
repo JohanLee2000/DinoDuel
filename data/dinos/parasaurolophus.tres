@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_id7g1"]
+
+[resource]
+script = ExtResource("1_id7g1")
+id = &"parasaurolophus"
+display_name = "Parasaurolophus"
+dino_type = 0
+era = 2
+rarity = 0
+attack = 4
+defense = 1
+speed = 5
+health = 13
+group = "Duck-billed dinosaur"
+size_text = "Length 9.5 m · 2.5 t"
+flavor_text = "Its long hollow crest was connected to its nose and likely worked like a trumpet for deep, booming calls."
+epithet = "Trumpet Crest"

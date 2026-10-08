@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_7fb5w"]
+[ext_resource type="Resource" path="res://data/dinos/icarosaurus.tres" id="2_bapf3"]
+[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="3_hy4gi"]
+[ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="4_pqnfk"]
+[ext_resource type="Resource" path="res://data/dinos/archelon.tres" id="5_kjbdo"]
+[ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="6_6y056"]
+[ext_resource type="Resource" path="res://data/dinos/pteranodon.tres" id="7_rg40s"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_0ad4j"]
+
+[resource]
+script = ExtResource("9_0ad4j")
+id = &"cora"
+display_name = "Captain Cora"
+intro = "Cora goes for big Charges. A well-timed Bite cancels them."
+brings = Array[ExtResource("1_7fb5w")]([ExtResource("2_bapf3"), ExtResource("3_hy4gi"), ExtResource("4_pqnfk"), ExtResource("5_kjbdo"), ExtResource("6_6y056"), ExtResource("7_rg40s")])
+difficulty = 3
+temperature = 0.16
+charge_bias = 0.15
+learns_habits = false

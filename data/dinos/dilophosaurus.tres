@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_3jtbx"]
+
+[resource]
+script = ExtResource("1_3jtbx")
+id = &"dilophosaurus"
+display_name = "Dilophosaurus"
+dino_type = 0
+era = 1
+rarity = 1
+attack = 7
+defense = 1
+speed = 7
+health = 12
+group = "Crested theropod dinosaur"
+size_text = "Length 7 m"
+flavor_text = "Despite its movie fame, there's no evidence it had a neck frill or spat venom. It was a 7 m predator with two thin head crests."
+epithet = "Twin-Crested Stalker"

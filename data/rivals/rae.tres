@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_qumpm"]
+[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_j96ar"]
+[ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="3_b5lm6"]
+[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="4_ylvuh"]
+[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="5_f9q84"]
+[ext_resource type="Resource" path="res://data/dinos/pterodactylus.tres" id="6_nomef"]
+[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="7_m928e"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_hs49p"]
+
+[resource]
+script = ExtResource("9_hs49p")
+id = &"rae"
+display_name = "Rookie Rae"
+intro = "Rae just started collecting and Bites a lot. Brace to block it, then bite back."
+brings = Array[ExtResource("1_qumpm")]([ExtResource("2_j96ar"), ExtResource("3_b5lm6"), ExtResource("4_ylvuh"), ExtResource("5_f9q84"), ExtResource("6_nomef"), ExtResource("7_m928e")])
+difficulty = 1
+temperature = 0.25
+bite_bias = 0.45
+learns_habits = false

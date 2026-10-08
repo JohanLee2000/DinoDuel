@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_95h16"]
+
+[resource]
+script = ExtResource("1_95h16")
+id = &"pterodactylus"
+display_name = "Pterodactylus"
+dino_type = 1
+era = 1
+rarity = 0
+attack = 4
+defense = 1
+speed = 9
+health = 9
+group = "Short-tailed pterosaur"
+size_text = "Wingspan 1 m"
+flavor_text = "The first pterosaur ever named. Its fossil from Germany was described in 1784, before anyone knew flying reptiles had existed."
+epithet = "The Original Pterodactyl"

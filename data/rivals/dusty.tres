@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_8rs3m"]
+[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_jafg6"]
+[ext_resource type="Resource" path="res://data/dinos/postosuchus.tres" id="3_nf1kg"]
+[ext_resource type="Resource" path="res://data/dinos/dilophosaurus.tres" id="4_ys358"]
+[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="5_zm1qs"]
+[ext_resource type="Resource" path="res://data/dinos/allosaurus.tres" id="6_f7uum"]
+[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="7_rx47z"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_b5ecb"]
+
+[resource]
+script = ExtResource("9_b5ecb")
+id = &"dusty"
+display_name = "Dusty Dunes"
+intro = "Dusty hunts with Triassic and Jurassic predators and is quick to learn your habits."
+brings = Array[ExtResource("1_8rs3m")]([ExtResource("2_jafg6"), ExtResource("3_nf1kg"), ExtResource("4_ys358"), ExtResource("5_zm1qs"), ExtResource("6_f7uum"), ExtResource("7_rx47z")])
+difficulty = 4
+temperature = 0.08

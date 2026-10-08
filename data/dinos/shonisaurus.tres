@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_unzqw"]
+
+[resource]
+script = ExtResource("1_unzqw")
+id = &"shonisaurus"
+display_name = "Shonisaurus"
+dino_type = 2
+era = 0
+rarity = 3
+attack = 7
+defense = 3
+speed = 4
+health = 18
+group = "Giant ichthyosaur"
+size_text = "Length 15 m"
+flavor_text = "A whale-sized ichthyosaur about 15 m long. Its fossils were found in a Nevada ghost town, and it's now Nevada's state fossil."
+epithet = "Leviathan of the Triassic"

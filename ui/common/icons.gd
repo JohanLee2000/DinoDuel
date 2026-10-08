@@ -48,6 +48,11 @@ const SVG := {
 <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#d98b10"/></linearGradient></defs>
 <path d="M6 34 L4 10 L18 22 L32 4 L46 22 L60 10 L58 34 Z" fill="url(#g)" stroke="#5a3404" stroke-width="3" stroke-linejoin="round"/>
 <circle cx="32" cy="24" r="4" fill="#ff4fb0"/></svg>""",
+	&"star": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#f0a020"/></linearGradient></defs>
+<path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="url(#g)" stroke="#5a3404" stroke-width="3" stroke-linejoin="round"/></svg>""",
+	&"star_empty": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="#1c2c48" stroke="#4d6a96" stroke-width="3" stroke-linejoin="round"/></svg>""",
 	# Currency: a drop of amber with a tiny trapped insect.
 	&"amber": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <defs><radialGradient id="a" cx="40%" cy="38%" r="65%"><stop offset="0" stop-color="#ffe7a6"/>

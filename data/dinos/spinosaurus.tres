@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://ceoa8urcp48sa"]
+
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_5z7q0"]
+
+[resource]
+script = ExtResource("1_5z7q0")
+id = &"spinosaurus"
+display_name = "Spinosaurus"
+epithet = "Sail of the River"
+era = 2
+rarity = 3
+attack = 8
+defense = 1
+speed = 5
+health = 18
+group = "Sail-backed spinosaurid"
+size_text = "Length 14 m · 7 t"
+flavor_text = "The longest known meat-eating dinosaur. It ate fish, and how much time it spent swimming is still debated."

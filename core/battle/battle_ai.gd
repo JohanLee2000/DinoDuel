@@ -22,6 +22,9 @@ var rng: RandomNumberGenerator
 var temperature := 0.05
 ## Added to the score of each action kind, indexed by BattleAction.Kind.
 var biases: Array[float] = [0.0, 0.0, 0.0, 0.0]
+## Whether it adapts to the opponent's habits. Easy rivals don't, so their own habits stay
+## readable and exploitable.
+var learns_habits := true
 ## How often the opponent has used each action kind.
 var _seen_kinds: Array[float] = [HABIT_PRIOR, HABIT_PRIOR, HABIT_PRIOR, HABIT_PRIOR]
 var _turns_seen := 0
@@ -60,6 +63,8 @@ func choose_action(state: BattleState, me: int) -> BattleAction:
 		their_scores.append(value)
 	var their_guess := _softmax(their_scores, temperature * 4.0, _even_weights(theirs))
 	var habit_weight := minf(MAX_HABIT_WEIGHT, _turns_seen / (_turns_seen + HABIT_TRUST_TURNS))
+	if not learns_habits:
+		habit_weight = 0.0
 	var habits := _habit_weights(theirs)
 	for b in theirs.size():
 		their_guess[b] = lerpf(their_guess[b], habits[b], habit_weight)

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_wy6ev"]
+
+[resource]
+script = ExtResource("1_wy6ev")
+id = &"allosaurus"
+display_name = "Allosaurus"
+dino_type = 0
+era = 1
+rarity = 2
+attack = 8
+defense = 2
+speed = 6
+health = 14
+group = "Theropod dinosaur"
+size_text = "Length 8.5 m · 2 t"
+flavor_text = "One Allosaurus bone has a wound that matches the size and shape of a Stegosaurus tail spike, evidence of their fights."
+epithet = "Jurassic Hunter"

@@ -14,6 +14,8 @@ enum Tab { BATTLE, PARTY, EGGS, DEX }
 var catalog: DinoCatalog
 var profile: PlayerProfile
 var rival: RivalDef
+## Every rival, easiest first.
+var rivals: Array[RivalDef] = []
 var player_party: Array[DinoDef] = []
 var rival_party: Array[DinoDef] = []
 var battle_seed := 0
@@ -31,7 +33,8 @@ var dev_open_card := ""
 
 func _ready() -> void:
 	catalog = DinoCatalog.load_default()
-	rival = load("res://data/rivals/rory.tres")
+	rivals = RivalDef.load_roster()
+	rival = rivals[0]
 	var args := OS.get_cmdline_user_args()
 	autoplay = "--autoplay" in args
 	if autoplay:
@@ -71,7 +74,10 @@ func go_to_main(tab: int = -1) -> void:
 	get_tree().change_scene_to_file(MAIN_SCENE)
 
 
-func go_to_pre_battle() -> void:
+## Opens the pick screen against `chosen`, or the current rival (e.g. for a rematch).
+func go_to_pre_battle(chosen: RivalDef = null) -> void:
+	if chosen:
+		rival = chosen
 	for dino in rival.brings:
 		profile.mark_seen(dino.id)
 	save()
@@ -92,6 +98,6 @@ func rematch() -> void:
 
 ## Applies rewards and saves. Returns {"amber": int, "clutches": int}.
 func finish_battle(won: bool) -> Dictionary:
-	var reward := profile.record_battle(won)
+	var reward := profile.record_battle(won, rival.id)
 	save()
 	return reward

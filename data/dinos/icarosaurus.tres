@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_2pafh"]
+
+[resource]
+script = ExtResource("1_2pafh")
+id = &"icarosaurus"
+display_name = "Icarosaurus"
+dino_type = 1
+era = 0
+rarity = 0
+attack = 5
+defense = 0
+speed = 10
+health = 9
+group = "Gliding reptile"
+size_text = "Length about 10 cm"
+flavor_text = "A small lizard-like reptile that glided between trees on wings stretched over long ribs, like today's flying lizards."
+epithet = "Rib-Winged Glider"

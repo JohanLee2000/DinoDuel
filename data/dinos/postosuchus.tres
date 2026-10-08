@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_hu66g"]
+
+[resource]
+script = ExtResource("1_hu66g")
+id = &"postosuchus"
+display_name = "Postosuchus"
+dino_type = 0
+era = 0
+rarity = 1
+attack = 7
+defense = 2
+speed = 5
+health = 12
+group = "Crocodile-line predator"
+size_text = "Length 5 m"
+flavor_text = "Not a dinosaur but a relative of crocodiles, and one of the top predators of Late Triassic North America."
+epithet = "Triassic Terror"

@@ -131,6 +131,18 @@ func test_battle_rewards() -> void:
 	assert_eq([p.wins, p.losses], [1, 1])
 
 
+func test_record_per_rival() -> void:
+	var p := PlayerProfile.new_game(1)
+	p.record_battle(true, &"rae")
+	p.record_battle(false, &"rae")
+	p.record_battle(true, &"fern")
+	assert_eq(p.record_against(&"rae"), [1, 1])
+	assert_eq(p.record_against(&"fern"), [1, 0])
+	assert_eq(p.record_against(&"rory"), [0, 0])
+	var loaded := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(p.to_dict())), catalog)
+	assert_eq(loaded.record_against(&"rae"), [1, 1])
+
+
 func test_lineup_rules() -> void:
 	var p := PlayerProfile.new_game(1)
 	var not_owned: Array[StringName] = [&"t_rex"]

@@ -53,6 +53,18 @@ Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces o
 ### AI rivals
 The AI simulates every (its move, your move) pair one turn ahead, guesses your move from both reasoning and **your habits so far** (it learns if you always Bite), then picks with some randomness. `temperature` is the difficulty knob per rival; `*_bias` values give a rival a learnable personality. Balance sim (600 battles): the AI beats always-Bite 91%, always-Charge 100%, always-Brace 87%.
 
+Difficulty knobs per rival: `temperature` (randomness), `*_bias` (a readable habit), `learns_habits` (whether it adapts to yours), and the 6 dinos it brings. Easy rivals have a strong habit and don't adapt, so reading them is how you win.
+
+| Rival | Stars | Brings | Habit | Adapts | Starter party wins |
+|---|---|---|---|---|---|
+| Rookie Rae | 1 | 5 N, 1 R | Bites a lot | No | ~77% |
+| Ranger Fern | 2 | 3 N, 3 R | Braces a lot | No | ~59% |
+| Captain Cora | 3 | 3 N, 2 R, 1 SR | Charges a lot | No | ~50% |
+| Dusty Dunes | 4 | 2 N, 3 R, 1 SR | None | Yes | ~33% |
+| Rival Rory | 5 | 1 N, 1 R, 3 SR, 1 UR | None | Yes | ~16% |
+
+"Starter party wins" = the 6 starter dinos played by a strong AI, 300 battles each. A human who reads the habits should do better against the first three. The Battle tab lists rivals easiest first with stars and your record against each.
+
 ## Collection (decided)
 - Rewards come as a **clutch of 3 fossil eggs**; each egg hatches **one dino**. First tap cracks the egg and its **glow shows the rarity**; second tap hatches it.
 - Clutches are **earned only**: win a battle (1 clutch + 25 Amber; a loss gives 10 Amber), one free clutch per calendar day, or buy one for 150 Amber. No real-money eggs.
@@ -93,7 +105,7 @@ Deck codes and "ghost duels" (fight a friend's party as AI), challenge codes wit
 ## PvP (future)
 Needs a server for online play (Play Games multiplayer APIs were shut down in 2020). The battle engine is pure, deterministic code with no UI dependencies so it can run on a server later.
 
-## First set: 15 dinos (first pass)
+## The set: 30 dinos
 | Dino | Type | Era | Tier | Atk | Def | Spd | HP |
 |---|---|---|---|---|---|---|---|
 | Coelophysis | Land | Triassic | N | 5 | 1 | 7 | 10 |
@@ -111,6 +123,21 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Plesiosaurus | Sea | Jurassic | R | 6 | 1 | 5 | 13 |
 | Liopleurodon | Sea | Jurassic | SSR | 9 | 2 | 3 | 16 |
 | Mosasaurus | Sea | Cretaceous | UR | 10 | 1 | 5 | 20 |
+| Postosuchus | Land | Triassic | R | 7 | 2 | 5 | 12 |
+| Plateosaurus | Land | Triassic | N | 5 | 2 | 3 | 14 |
+| Icarosaurus | Sky | Triassic | N | 5 | 0 | 10 | 9 |
+| Tanystropheus | Sea | Triassic | R | 7 | 1 | 4 | 13 |
+| Shonisaurus | Sea | Triassic | SSR | 7 | 3 | 4 | 18 |
+| Allosaurus | Land | Jurassic | SR | 8 | 2 | 6 | 14 |
+| Brachiosaurus | Land | Jurassic | UR | 8 | 2 | 2 | 25 |
+| Dilophosaurus | Land | Jurassic | R | 7 | 1 | 7 | 12 |
+| Dimorphodon | Sky | Jurassic | N | 5 | 0 | 7 | 9 |
+| Pterodactylus | Sky | Jurassic | N | 4 | 1 | 9 | 9 |
+| Spinosaurus | Sea | Cretaceous | SSR | 8 | 1 | 5 | 18 |
+| Ankylosaurus | Land | Cretaceous | SR | 6 | 3 | 2 | 19 |
+| Parasaurolophus | Land | Cretaceous | N | 4 | 1 | 5 | 13 |
+| Archelon | Sea | Cretaceous | R | 5 | 3 | 2 | 17 |
+| Microraptor | Sky | Cretaceous | R | 6 | 1 | 11 | 9 |
 
 ## Milestones
 1. **M1: Battle on your phone.** Battle engine + tests + balance sim, party pick and battle screens with placeholder cards, one AI rival, Android debug build.

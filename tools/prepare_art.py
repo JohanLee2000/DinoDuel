@@ -16,11 +16,8 @@ from PIL import Image
 
 PROJECT = Path(__file__).resolve().parent.parent
 OUT = PROJECT / "assets" / "dinos"
-IDS = [
-    "coelophysis", "stegosaurus", "velociraptor", "triceratops", "t_rex",
-    "eudimorphodon", "rhamphorhynchus", "archaeopteryx", "pteranodon", "quetzalcoatlus",
-    "nothosaurus", "ichthyosaurus", "plesiosaurus", "liopleurodon", "mosasaurus",
-]
+# Every dino in the game has a data file named after its id.
+IDS = sorted(p.stem for p in (PROJECT / "data" / "dinos").glob("*.tres"))
 SUFFIXES = ["", "_shiny"]
 EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp"]
 

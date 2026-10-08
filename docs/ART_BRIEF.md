@@ -9,7 +9,7 @@ How to make the 2D dinosaur paintings with ChatGPT image generation so every car
 | `<id>.png` | Portrait 2:3 (ChatGPT "1024×1536") | The card painting. Every card is full-art |
 | `<id>_shiny.png` | Portrait 2:3 | Optional Shiny version: same animal and pose in a rare color morph. Falls back to the normal painting |
 
-`<id>` is the dino's id: `coelophysis`, `stegosaurus`, `velociraptor`, `triceratops`, `t_rex`, `eudimorphodon`, `rhamphorhynchus`, `archaeopteryx`, `pteranodon`, `quetzalcoatlus`, `nothosaurus`, `ichthyosaurus`, `plesiosaurus`, `liopleurodon`, `mosasaurus`.
+`<id>` is the dino's id, as listed in the first column of the table below (it's also the file name in `data/dinos/`).
 
 **Getting them into the game:** save ChatGPT's downloads into any folder with those file names, then run
 
@@ -48,6 +48,21 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `rhamphorhynchus` | Rhamphorhynchus | SKY | COMMON (N) | Done |
 | `nothosaurus` | Nothosaurus | SEA | RARE (R) | Done |
 | `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | Done |
+| `postosuchus` | Postosuchus | LAND | RARE (R) | Needed |
+| `plateosaurus` | Plateosaurus | LAND | COMMON (N) | Needed |
+| `icarosaurus` | Icarosaurus | SKY | COMMON (N) | Needed |
+| `tanystropheus` | Tanystropheus | SEA | RARE (R) | Needed |
+| `shonisaurus` | Shonisaurus | SEA | EPIC (SSR) | Needed |
+| `allosaurus` | Allosaurus | LAND | SUPER RARE (SR) | Needed |
+| `brachiosaurus` | Brachiosaurus | LAND | LEGENDARY (UR) | Needed |
+| `dilophosaurus` | Dilophosaurus | LAND | RARE (R) | Needed |
+| `dimorphodon` | Dimorphodon | SKY | COMMON (N) | Needed |
+| `pterodactylus` | Pterodactylus | SKY | COMMON (N) | Needed |
+| `spinosaurus` | Spinosaurus | SEA | EPIC (SSR) | Needed |
+| `ankylosaurus` | Ankylosaurus | LAND | SUPER RARE (SR) | Needed |
+| `parasaurolophus` | Parasaurolophus | LAND | COMMON (N) | Needed |
+| `archelon` | Archelon | SEA | RARE (R) | Needed |
+| `microraptor` | Microraptor | SKY | RARE (R) | Needed |
 
 Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized and fully feathered") helps ChatGPT get the anatomy right.
 
@@ -70,6 +85,21 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `plesiosaurus` | A Plesiosaurus, an Early Jurassic marine reptile about 3.5 m long: small head on a long neck, broad body, four long flippers, short tail. Habitat: underwater Jurassic sea with ammonites. |
 | `liopleurodon` | A Liopleurodon, a Jurassic pliosaur about 6–7 m long (not giant): short neck, massive elongated head with conical teeth, four powerful flippers. Habitat: deep blue Jurassic sea. |
 | `mosasaurus` | A Mosasaurus, a giant Late Cretaceous marine lizard: long powerful body, large jaws with conical teeth, paddle flippers, shark-like tail fluke. Habitat: Cretaceous ocean near the surface, dramatic light. |
+| `postosuchus` | A Postosuchus, a Late Triassic crocodile-line predator (rauisuchid) about 5 m long: deep narrow skull with large serrated teeth, rows of bony armor plates along the back, long tail, standing tall on fairly upright legs. Not a dinosaur. Habitat: dry Triassic river valley with conifers. |
+| `plateosaurus` | A Plateosaurus, a Late Triassic plant-eating dinosaur 5–10 m long: long neck, small head, bulky body, walking on its hind legs, grasping hands with a large thumb claw. Habitat: Triassic floodplain with conifers and ferns. |
+| `icarosaurus` | An Icarosaurus, a tiny Late Triassic gliding reptile about 10 cm long: lizard-like body with long ribs extended sideways supporting thin skin wings, gliding between trees. Not a pterosaur. Habitat: Triassic forest canopy, close-up with large leaves and sunbeams. |
+| `tanystropheus` | A Tanystropheus, a Middle Triassic marine reptile about 6 m long: an extremely long, stiff neck making up half its body, small head with sharp teeth, lizard-like body and limbs, ambushing fish underwater. Habitat: shallow murky Triassic lagoon. |
+| `shonisaurus` | A Shonisaurus, a giant Late Triassic ichthyosaur about 15 m long (whale-sized): deep rounded body, long narrow snout, long paddle flippers, crescent tail fin. Habitat: open Triassic ocean with huge scale and light rays from above. |
+| `allosaurus` | An Allosaurus, a Late Jurassic predator about 8.5 m long: large head with small hornlets above the eyes, blade-like teeth, strong three-fingered arms with big claws, scaly skin. Habitat: Jurassic floodplain with conifers. |
+| `brachiosaurus` | A Brachiosaurus, a Late Jurassic sauropod about 22 m long: front legs longer than back legs, body sloping upward, very long neck held high, small head with a bony arch over the nose, reaching treetops. Habitat: Jurassic forest of tall conifers. |
+| `dilophosaurus` | A Dilophosaurus, an Early Jurassic predator about 7 m long: two thin parallel bony crests on the head, slender snout with a notch in the upper jaw, no neck frill. Habitat: Early Jurassic riverbank. |
+| `dimorphodon` | A Dimorphodon, an Early Jurassic pterosaur with about a 1.4 m wingspan: very large deep head like a puffin's, two kinds of teeth, long tail, skin-membrane wings. Habitat: Jurassic coastal cliffs. |
+| `pterodactylus` | A Pterodactylus, a Late Jurassic pterosaur with about a 1 m wingspan: long narrow jaws with small teeth, a short tail, small soft head crest, slender wings. Habitat: Late Jurassic lagoon islands (Solnhofen, Germany). |
+| `spinosaurus` | A Spinosaurus, a mid-Cretaceous predator about 14 m long: tall sail on its back, long narrow crocodile-like snout with conical teeth, paddle-like tail, hunting fish in a river. Habitat: vast Cretaceous river system in North Africa. |
+| `ankylosaurus` | An Ankylosaurus, a Late Cretaceous armored dinosaur about 7 m long: low wide body covered in bony plates and spikes, armored head with horns at the back corners, heavy bony club at the end of the tail. Habitat: Late Cretaceous forest clearing. |
+| `parasaurolophus` | A Parasaurolophus, a Late Cretaceous duck-billed dinosaur about 9.5 m long: long backward-curving hollow tube crest on its head, duck-like beak, walking on all fours or two legs, calling. Habitat: Late Cretaceous swampy forest. |
+| `archelon` | An Archelon, a Late Cretaceous giant sea turtle about 4.6 m long: huge flippers, hooked beak, broad leathery shell rather than a hard one. Habitat: warm shallow Cretaceous sea with light rays. |
+| `microraptor` | A Microraptor, an Early Cretaceous crow-sized feathered dinosaur: long flight feathers on both arms and legs (four wings), glossy iridescent black feathers, long tail with a feather fan, gliding between trees. Habitat: Early Cretaceous forest in China. |
 
 ## Rights and rules
 

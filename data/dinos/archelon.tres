@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_4j4oh"]
+
+[resource]
+script = ExtResource("1_4j4oh")
+id = &"archelon"
+display_name = "Archelon"
+dino_type = 2
+era = 2
+rarity = 1
+attack = 5
+defense = 3
+speed = 2
+health = 17
+group = "Giant sea turtle"
+size_text = "Length 4.6 m · 2 t"
+flavor_text = "The largest sea turtle ever found, about 4.6 m long. Its shell was leathery rather than a solid bony plate."
+epithet = "Ancient Shell"

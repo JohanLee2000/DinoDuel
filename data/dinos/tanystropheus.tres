@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_sg2a5"]
+
+[resource]
+script = ExtResource("1_sg2a5")
+id = &"tanystropheus"
+display_name = "Tanystropheus"
+dino_type = 2
+era = 0
+rarity = 1
+attack = 7
+defense = 1
+speed = 4
+health = 13
+group = "Long-necked marine reptile"
+size_text = "Length 6 m"
+flavor_text = "Its neck was half of its 6 m length yet had only 13 bones. It likely hunted fish by sneaking up on them in murky water."
+epithet = "Long-Neck Lurker"

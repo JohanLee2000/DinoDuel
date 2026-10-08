@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_467bo"]
+
+[resource]
+script = ExtResource("1_467bo")
+id = &"ankylosaurus"
+display_name = "Ankylosaurus"
+dino_type = 0
+era = 2
+rarity = 2
+attack = 6
+defense = 3
+speed = 2
+health = 19
+group = "Armored dinosaur"
+size_text = "Length 7 m · 5 t"
+flavor_text = "Covered in bony armor, even over its eyelids, with a heavy bony club at the end of its tail."
+epithet = "Club-Tailed Tank"

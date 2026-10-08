@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_348q9"]
+
+[resource]
+script = ExtResource("1_348q9")
+id = &"microraptor"
+display_name = "Microraptor"
+dino_type = 1
+era = 2
+rarity = 1
+attack = 6
+defense = 1
+speed = 11
+health = 9
+group = "Four-winged dromaeosaur"
+size_text = "Length 0.8 m · 1 kg"
+flavor_text = "A crow-sized dinosaur with feathered wings on both its arms and its legs. Fossil pigments show its feathers were glossy black."
+epithet = "Four-Winged Glider"

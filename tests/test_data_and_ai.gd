@@ -3,12 +3,16 @@ extends "res://tests/test_case.gd"
 
 func test_catalog_loads_all_dinos() -> void:
 	var catalog := DinoCatalog.load_default()
-	assert_eq(catalog.dinos.size(), 15)
 	var ids := {}
 	for dino in catalog.dinos:
 		assert_false(ids.has(dino.id), "duplicate id %s" % dino.id)
 		ids[dino.id] = true
-		assert_true(dino.display_name != "", "%s has a name" % dino.id)
+		for field in ["display_name", "epithet", "group", "size_text", "flavor_text"]:
+			assert_true(String(dino.get(field)) != "", "%s is missing %s" % [dino.id, field])
+	# Every dino data file must be listed in the catalog, or it never appears in the game.
+	for file in DirAccess.get_files_at("res://data/dinos"):
+		if file.ends_with(".tres"):
+			assert_true(ids.has(StringName(file.get_basename())), "%s isn't in the catalog" % file)
 	assert_eq(catalog.find(&"t_rex").rarity, DinoDef.Rarity.LEGENDARY)
 
 
@@ -21,6 +25,20 @@ func test_starter_parties_get_both_bonuses() -> void:
 			starter.append(catalog.find(id))
 		assert_true(PartyRules.has_era_bond(starter), "%s era bond" % [ids])
 		assert_true(PartyRules.is_balanced(starter), "%s balanced" % [ids])
+
+
+func test_rival_roster_is_valid() -> void:
+	var rivals := RivalDef.load_roster()
+	assert_true(rivals.size() >= 5)
+	var ids := {}
+	var last_difficulty := 0
+	for rival in rivals:
+		assert_false(ids.has(rival.id), "duplicate rival %s" % rival.id)
+		ids[rival.id] = true
+		assert_eq(rival.brings.size(), PartyRules.BRING_SIZE, "%s brings 6" % rival.id)
+		assert_true(PartyRules.has_valid_pick(rival.brings, rival.point_cap), "%s can field a party" % rival.id)
+		assert_true(rival.difficulty >= last_difficulty, "roster is ordered easiest first")
+		last_difficulty = rival.difficulty
 
 
 func test_ai_picks_legal_party() -> void:
@@ -89,3 +107,24 @@ func test_ai_punishes_predictable_biting() -> void:
 		if ai.choose_action(state, 0).kind == BattleAction.Kind.CHARGE:
 			charges += 1
 	assert_true(charges < 10, "charged into a known biter %d/100 times" % charges)
+
+
+## Easy rivals keep their habits readable: they don't adapt to yours.
+func test_ai_without_habit_learning_ignores_habits() -> void:
+	var mine := party([make_dino(6, 1, 5, 15), make_dino(6, 1, 5, 15, DinoDef.DinoType.SKY)])
+	var theirs := party([make_dino(6, 1, 5, 15), make_dino(6, 1, 5, 15, DinoDef.DinoType.SKY)])
+	var state := BattleEngine.create(mine, theirs)
+	for seed_value in 20:
+		var fresh := BattleAI.new(seed_value)
+		fresh.learns_habits = false
+		var watched := BattleAI.new(seed_value)
+		watched.learns_habits = false
+		for i in 10:
+			watched.observe(BattleAction.bite())
+		assert_eq(watched.choose_action(state, 0).kind, fresh.choose_action(state, 0).kind)
+
+
+func test_easiest_rival_does_not_adapt() -> void:
+	var rivals := RivalDef.load_roster()
+	assert_false(rivals[0].learns_habits, "%s should not adapt" % rivals[0].id)
+	assert_true(rivals[rivals.size() - 1].learns_habits, "the hardest rival adapts")

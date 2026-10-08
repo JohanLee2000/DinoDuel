@@ -20,6 +20,8 @@ var clutches_without_epic := 0
 var last_daily_day := -1
 var wins := 0
 var losses := 0
+## Per rival: rival id -> [wins, losses].
+var rival_record: Dictionary = {}
 var eggs_hatched := 0
 var _rng := RandomNumberGenerator.new()
 
@@ -175,14 +177,23 @@ func lineup_defs(catalog: DinoCatalog) -> Array[DinoDef]:
 	return defs
 
 
+## [wins, losses] against one rival.
+func record_against(rival_id: StringName) -> Array:
+	return rival_record.get(rival_id, [0, 0])
+
+
 ## Applies battle rewards and returns what was given: {"amber": int, "clutches": int}.
-func record_battle(won: bool) -> Dictionary:
+func record_battle(won: bool, rival_id: StringName = &"") -> Dictionary:
 	var reward := {"amber": Economy.LOSS_AMBER, "clutches": 0}
 	if won:
 		wins += 1
 		reward = {"amber": Economy.WIN_AMBER, "clutches": Economy.WIN_CLUTCHES}
 	else:
 		losses += 1
+	if rival_id != &"":
+		var record: Array = rival_record.get(rival_id, [0, 0])
+		record[0 if won else 1] += 1
+		rival_record[rival_id] = record
 	amber += reward["amber"]
 	clutches += reward["clutches"]
 	return reward
@@ -202,6 +213,7 @@ func to_dict() -> Dictionary:
 		"last_daily_day": last_daily_day,
 		"wins": wins,
 		"losses": losses,
+		"rival_record": rival_record.duplicate(true),
 		"eggs_hatched": eggs_hatched,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
@@ -234,6 +246,11 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.last_daily_day = int(data.get("last_daily_day", -1))
 	profile.wins = int(data.get("wins", 0))
 	profile.losses = int(data.get("losses", 0))
+	var records: Dictionary = data.get("rival_record", {})
+	for key in records:
+		var pair: Array = records[key]
+		if pair.size() == 2:
+			profile.rival_record[StringName(key)] = [int(pair[0]), int(pair[1])]
 	profile.eggs_hatched = int(data.get("eggs_hatched", 0))
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()

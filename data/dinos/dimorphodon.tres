@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_x31fz"]
+
+[resource]
+script = ExtResource("1_x31fz")
+id = &"dimorphodon"
+display_name = "Dimorphodon"
+dino_type = 1
+era = 1
+rarity = 0
+attack = 5
+defense = 0
+speed = 7
+health = 9
+group = "Big-headed pterosaur"
+size_text = "Wingspan 1.4 m"
+flavor_text = "Found by Mary Anning in 1828. Its name means two-form tooth, for the two kinds of teeth in its large, deep head."
+epithet = "Two-Toothed Flier"
