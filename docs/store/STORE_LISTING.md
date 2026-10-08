@@ -34,7 +34,7 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 
 **Category:** Game › Card. Tags to consider: Card battler, Collectible card game, Dinosaurs.
 
-**Contact details:** a public email address is required (shown on the store page). Website is optional; the GitHub Pages site works if you want one.
+**Contact details:** email `dinoduelstudios@gmail.com` (public on the store page). Website is optional; the GitHub Pages site works if you want one.
 
 **Privacy policy URL:** see `docs/privacy-policy.html`. Once GitHub Pages is on (Settings › Pages › Deploy from a branch › `main` / `/docs`), it's at
 `https://johanlee2000.github.io/DinoDuel/privacy-policy.html`.
