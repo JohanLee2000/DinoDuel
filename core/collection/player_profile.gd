@@ -23,6 +23,8 @@ var losses := 0
 ## Per rival: rival id -> [wins, losses].
 var rival_record: Dictionary = {}
 var eggs_hatched := 0
+## The first battle comes with a coach (see BattleScreen); this flips once it's been played.
+var tutorial_done := false
 var _rng := RandomNumberGenerator.new()
 
 
@@ -215,6 +217,7 @@ func to_dict() -> Dictionary:
 		"losses": losses,
 		"rival_record": rival_record.duplicate(true),
 		"eggs_hatched": eggs_hatched,
+		"tutorial_done": tutorial_done,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
 		"rng_state": str(_rng.state),
@@ -252,6 +255,8 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 		if pair.size() == 2:
 			profile.rival_record[StringName(key)] = [int(pair[0]), int(pair[1])]
 	profile.eggs_hatched = int(data.get("eggs_hatched", 0))
+	# Saves from before the tutorial existed: anyone who has battled already knows the moves.
+	profile.tutorial_done = bool(data.get("tutorial_done", profile.wins + profile.losses > 0))
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()
 	return profile

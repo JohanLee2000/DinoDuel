@@ -217,3 +217,16 @@ func test_save_store_writes_and_recovers_from_backup() -> void:
 
 func _ids(results: Array[HatchResult]) -> Array:
 	return results.map(func(r: HatchResult) -> String: return "%s%s" % [r.dino.id, "*" if r.shiny else ""])
+
+
+func test_tutorial_flag_saves_and_old_saves_infer_it() -> void:
+	var fresh := PlayerProfile.new_game(1)
+	assert_false(fresh.tutorial_done, "new players get the coached first battle")
+	fresh.tutorial_done = true
+	assert_true(PlayerProfile.from_dict(fresh.to_dict(), catalog).tutorial_done, "flag survives a save")
+	var old_save := PlayerProfile.new_game(2).to_dict()
+	old_save.erase("tutorial_done")
+	assert_false(PlayerProfile.from_dict(old_save, catalog).tutorial_done, "old save, never battled")
+	old_save["wins"] = 3
+	assert_true(PlayerProfile.from_dict(old_save, catalog).tutorial_done, "old save that has battled")
+

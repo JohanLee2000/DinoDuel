@@ -29,6 +29,11 @@ static func swap(index: int) -> BattleAction:
 	return action
 
 
+## Bite, Charge or Brace by kind (Swap needs a target, so use swap()).
+static func of_kind(k: Kind) -> BattleAction:
+	return _make(k)
+
+
 static func _make(k: Kind) -> BattleAction:
 	var action := BattleAction.new()
 	action.kind = k

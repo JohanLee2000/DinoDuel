@@ -33,6 +33,7 @@ func _refresh() -> void:
 		daily.text = "Free clutch claimed. Come back tomorrow!"
 		daily.disabled = true
 	daily.pressed.connect(func() -> void:
+		Sound.play(&"clutch_open")
 		profile.claim_daily(today)
 		Session.save()
 		_refresh())
@@ -41,6 +42,7 @@ func _refresh() -> void:
 	var buy := UiKit.button("Buy a clutch for %d Amber" % Economy.CLUTCH_PRICE, UiKit.BUTTON_GRAY)
 	buy.disabled = profile.amber < Economy.CLUTCH_PRICE
 	buy.pressed.connect(func() -> void:
+		Sound.play(&"amber")
 		profile.buy_clutch()
 		Session.save()
 		_refresh())
@@ -77,6 +79,7 @@ func _hatch() -> void:
 	var results := Session.profile.hatch_clutch(Session.catalog)
 	if results.is_empty():
 		return
+	Sound.play(&"clutch_open")
 	# Save before the reveal so closing the app mid-animation can't reroll the clutch.
 	Session.save()
 	var view := HatchView.create(results)

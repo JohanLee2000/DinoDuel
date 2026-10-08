@@ -17,7 +17,7 @@ func _ready() -> void:
 
 	var list := UiKit.vbox(14)
 	for rival in Session.rivals:
-		list.add_child(_rival_panel(rival, problem == ""))
+		list.add_child(_rival_panel(rival, problem == "", rival == Session.rivals[0] and Session.wants_coach()))
 	add_child(UiKit.vscroll(list))
 
 	if Session.autoplay and problem == "":
@@ -36,7 +36,7 @@ func _party_problem() -> String:
 	return ""
 
 
-func _rival_panel(rival: RivalDef, can_fight: bool) -> Control:
+func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Control:
 	var box := UiKit.vbox(10)
 
 	var header := UiKit.hbox(10)
@@ -64,8 +64,10 @@ func _rival_panel(rival: RivalDef, can_fight: bool) -> Control:
 	var record_text := "Not fought yet"
 	if record[0] + record[1] > 0:
 		record_text = "Won %d · Lost %d" % [record[0], record[1]]
-	var record_label := UiKit.label(record_text, 20, Palette.HIGHLIGHT if record[0] > 0 else Palette.TEXT_DIM,
-			HORIZONTAL_ALIGNMENT_LEFT, false)
+	if start_here:
+		record_text = "Start here! A coach shows you the moves."
+	var record_label := UiKit.label(record_text, 20, Palette.HIGHLIGHT if record[0] > 0 or start_here \
+			else Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_LEFT, start_here)
 	record_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	record_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	footer.add_child(record_label)

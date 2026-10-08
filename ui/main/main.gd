@@ -29,6 +29,14 @@ func _ready() -> void:
 	title_label.queue_free()
 	_add_icon_before(_amber_label, &"amber")
 	_add_icon_before(_clutch_label, &"egg")
+	var gear := Button.new()
+	gear.icon = Icons.texture(&"gear", 34)
+	gear.flat = true
+	gear.custom_minimum_size = Vector2(56, 56)
+	gear.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	gear.pressed.connect(func() -> void: SettingsView.open())
+	_clutch_label.get_parent().add_child(gear)
+	Sound.music(&"main")
 	for i in TABS.size():
 		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 26)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -41,6 +49,12 @@ func _ready() -> void:
 		var parts := Session.dev_open_card.split(":")
 		CardViewer.open.call_deferred(Session.catalog.find(StringName(parts[0])), parts.size() > 1)
 		Session.dev_open_card = ""
+	match Session.dev_open:
+		"settings":
+			SettingsView.open.call_deferred()
+		"help":
+			HelpView.open.call_deferred()
+	Session.dev_open = ""
 
 
 func _show_tab(index: int) -> void:

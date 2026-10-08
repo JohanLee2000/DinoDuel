@@ -99,6 +99,7 @@ func _craft(dino: DinoDef, viewer: CardViewer) -> void:
 	var result := Session.profile.craft(dino)
 	if result == null:
 		return
+	Sound.play(&"amber")
 	Session.save()
 	viewer.close()
 	var results: Array[HatchResult] = [result]

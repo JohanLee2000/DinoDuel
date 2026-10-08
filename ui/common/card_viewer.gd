@@ -27,11 +27,13 @@ static func open(dino: DinoDef, shiny := false, known := true, extras: Array[Con
 
 
 func close() -> void:
+	Sound.play(&"back")
 	closed.emit()
 	queue_free()
 
 
 func _ready() -> void:
+	Sound.play(&"card_open")
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var layer := UiKit.modal_layer(0.9)
 	layer.gui_input.connect(_on_layer_input)

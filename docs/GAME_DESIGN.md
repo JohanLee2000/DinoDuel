@@ -93,6 +93,16 @@ The look follows Jo's ChatGPT concept sheet, saved at `docs/concept/card_concept
 ## App layout (decided)
 Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
+## Tutorial (decided 2026-10-08)
+- A new player's **first battle is coached** (`Session.wants_coach()`; done once it ends or the player taps "Skip tips"). The Battle tab marks the first rival "Start here", and the pick screen explains Party Points and Balanced.
+- The battle opens with the "Battle moves" help card. For the first 3 turns the rival's moves are scripted (Bite, Brace, Charge) and the coach suggests the counter (Brace, Charge, Bite) with a pulsing button, so the player meets the whole triangle. After that the rival plays normally and the coach gives one-time tips (type edge, bad matchup, low HP, knocked out).
+- A **? button** in every battle (and How to play in Settings) reopens 4 pages: moves, types, party, eggs and Amber.
+
+## Audio (decided 2026-10-08)
+- Sound effects: Kenney CC0 packs (`assets/audio/CREDITS.md`), played through `Sound` (`app/sound.gd`). Every button taps automatically; battles, eggs and hatching have their own sounds.
+- Music: two loops Jo generates with an AI tool (`docs/MUSIC_BRIEF.md`): `main` for menus, `battle` for fights. Missing files just play silence.
+- Settings (gear in the top bar): sound effects and music on/off, saved per device.
+
 ## Journey (proposal)
 Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
 

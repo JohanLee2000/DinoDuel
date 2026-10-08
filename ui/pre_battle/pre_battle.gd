@@ -15,6 +15,7 @@ var _picked: Array[DinoDef] = []
 
 
 func _ready() -> void:
+	Sound.music(&"main")
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Palette.PANEL
 	panel_style.border_color = Palette.PANEL_BORDER
@@ -53,6 +54,7 @@ func _ready() -> void:
 
 
 func _toggle(dino: DinoDef) -> void:
+	Sound.play(&"card_pick")
 	if dino in _picked:
 		_picked.erase(dino)
 	elif _picked.size() >= PartyRules.PARTY_SIZE:
@@ -84,9 +86,15 @@ func _refresh() -> void:
 	_battle_button.disabled = PartyRules.validate(_picked) != ""
 	_hint.text = "Pick 3 within %d Party Points. Same era = Era bond. Land + Sky + Sea = Balanced." \
 			% PartyRules.POINT_CAP
+	if Session.wants_coach():
+		# First battle: spell it out (the coach takes over once the battle starts).
+		_hint.text = "First battle! Tap 3 of your dinos. The PTS on each card must add up to %d or less. One Land, one Sky and one Sea gives each +2 HP." \
+				% PartyRules.POINT_CAP
+		_hint.add_theme_color_override("font_color", Palette.HIGHLIGHT)
 
 
 func _flash_hint(text: String) -> void:
+	Sound.play(&"error")
 	_hint.text = text
 	_hint.add_theme_color_override("font_color", Palette.HIGHLIGHT)
 	await get_tree().create_timer(2.0).timeout

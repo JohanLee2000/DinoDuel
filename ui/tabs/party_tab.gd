@@ -54,6 +54,7 @@ func _refresh() -> void:
 
 
 func _toggle(id: StringName) -> void:
+	Sound.play(&"card_pick")
 	var lineup := Session.profile.lineup.duplicate()
 	if id in lineup:
 		lineup.erase(id)

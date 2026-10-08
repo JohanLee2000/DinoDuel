@@ -142,7 +142,8 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	pop.tween_property(flipper, "scale:x", 0.0, 0.14).set_delay(0.15)
 	pop.tween_callback(func() -> void:
 		back.visible = false
-		card.visible = true)
+		card.visible = true
+		Sound.play(&"card_flip"))
 	pop.tween_property(flipper, "scale:x", 1.0, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 	var rarity_label := UiKit.title("%s  %s!" % [result.dino.rarity_code(), result.dino.rarity_name()], 46, color,
@@ -168,10 +169,26 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	await pop.finished
 	for label in [rarity_label, caption]:
 		label.create_tween().tween_property(label, "modulate:a", 1.0, 0.2)
+	_play_reveal_sounds(result)
 	_waiting_for_tap = true
 	if Session.autoplay:
 		await get_tree().create_timer(1.2).timeout
 		_advance()
+
+
+func _play_reveal_sounds(result: HatchResult) -> void:
+	var rarity := result.dino.rarity
+	if rarity >= DinoDef.Rarity.EPIC:
+		Sound.play(&"reveal_epic")
+	elif rarity >= DinoDef.Rarity.RARE:
+		Sound.play(&"reveal_rare")
+	await get_tree().create_timer(0.35).timeout
+	if result.shiny or result.upgraded_to_shiny:
+		Sound.play(&"shiny")
+	if result.is_new:
+		Sound.play(&"new_dino")
+	elif result.amber > 0:
+		Sound.play(&"amber")
 
 
 func _caption(result: HatchResult) -> String:

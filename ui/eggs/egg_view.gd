@@ -53,6 +53,8 @@ func advance() -> void:
 func _crack() -> void:
 	stage = Stage.CRACKED
 	_cracks = 1
+	Sound.play(&"egg_crack")
+	Sound.play(&"glow", 0.85 + rarity * 0.12)
 	var tween := create_tween()
 	for angle in [0.22, -0.2, 0.16, -0.12, 0.07, 0.0]:
 		tween.tween_property(self, "rotation", angle, 0.06)
@@ -88,6 +90,7 @@ func _burst() -> void:
 	await tween.finished
 	stage = Stage.GONE
 	visible = false
+	Sound.play(&"egg_burst")
 	burst.emit()
 
 

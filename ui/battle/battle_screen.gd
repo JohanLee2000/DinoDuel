@@ -22,6 +22,19 @@ const BENCH_CARD_WIDTH := 92.0
 ## height make the cards 100% bigger, up to MAX_CARD_SCALE.
 const EXTRA_HEIGHT_PER_SCALE := 900.0
 const MAX_CARD_SCALE := 1.3
+## First battle (tutorial): the rival's scripted moves for the opening turns, and the counter the
+## coach suggests for each, so the player meets the whole triangle once.
+const COACH_RIVAL_MOVES: Array[BattleAction.Kind] = [BattleAction.Kind.BITE, BattleAction.Kind.BRACE,
+		BattleAction.Kind.CHARGE]
+const COACH_PLAYER_MOVES: Array[BattleAction.Kind] = [BattleAction.Kind.BRACE, BattleAction.Kind.CHARGE,
+		BattleAction.Kind.BITE]
+const COACH_SCRIPT_TIPS: Array[String] = [
+	"%s is about to [b]Bite[/b]. [b]Brace[/b] blocks a Bite and bites back. Tap [b]Brace[/b]!",
+	"%s is raising a [b]Brace[/b]. [b]Charge[/b] smashes through it for double damage. Tap [b]Charge[/b]!",
+	"%s is winding up a [b]Charge[/b]. [b]Bite[/b] hits first and cancels it. Tap [b]Bite[/b]!",
+]
+## Room kept free for the coach's tip box when sizing the cards.
+const COACH_PANEL_HEIGHT := 130.0
 
 var _state: BattleState
 var _ai: BattleAI
@@ -35,6 +48,12 @@ var _bench_cards: Array[Dictionary] = [{}, {}]
 var _shown_health: Array = [[], []]
 var _log_lines: Array[String] = []
 var _card_scale := 1.0
+var _coaching := false
+var _coach_panel: PanelContainer
+var _coach_text: RichTextLabel
+var _coach_pulse: Tween
+var _coach_tips_given := {}
+var _last_player_kind := -1
 
 @onready var _slots: Array[Control] = [%PlayerSlot, %EnemySlot]
 @onready var _benches: Array[VBoxContainer] = [%PlayerBench, %EnemyBench]
@@ -47,7 +66,11 @@ var _card_scale := 1.0
 
 
 func _ready() -> void:
+	_coaching = Session.coaching
+	Sound.music(&"battle")
 	var extra_height := get_viewport_rect().size.y - 1280.0
+	if _coaching:
+		extra_height -= COACH_PANEL_HEIGHT
 	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
 	_state = BattleEngine.create(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
@@ -77,6 +100,12 @@ func _ready() -> void:
 	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
 
 	_rival_name.text = Session.rival.display_name
+	var help := UiKit.button("?", UiKit.BUTTON_GRAY, 52, 28)
+	help.custom_minimum_size.x = 64
+	help.pressed.connect(func() -> void: HelpView.open())
+	_turn_label.get_parent().add_child(help)
+	if _coaching:
+		_build_coach()
 	for side in 2:
 		_snapshot_health(side)
 		_rebuild_side(side)
@@ -89,6 +118,8 @@ func _ready() -> void:
 		bonuses.append("Balanced party")
 	if not bonuses.is_empty():
 		_say("Your party bonuses: %s." % ", ".join(bonuses))
+	if _coaching:
+		await HelpView.open(0, true).closed
 	_begin_choice()
 
 
@@ -100,9 +131,14 @@ func _begin_choice() -> void:
 	_hint.text = "Choose your move. %s picks at the same time." % Session.rival.display_name
 	_set_bench_highlight(false)
 	_update_buttons()
+	if _coaching:
+		_coach_turn()
 	if _autopilot:
 		await get_tree().create_timer(0.7).timeout
-		_submit(_autopilot.choose_action(_state, PLAYER))
+		if _coaching and _state.turn <= COACH_PLAYER_MOVES.size():
+			_submit(BattleAction.of_kind(COACH_PLAYER_MOVES[_state.turn - 1]))
+		else:
+			_submit(_autopilot.choose_action(_state, PLAYER))
 
 
 func _update_buttons() -> void:
@@ -135,6 +171,8 @@ func _on_swap_pressed() -> void:
 func _on_bench_pressed(side: int, index: int) -> void:
 	if side != PLAYER or not index in _state.side(PLAYER).bench():
 		return
+	if _phase in [Phase.CHOOSE_ACTION, Phase.CHOOSE_SWAP, Phase.CHOOSE_REPLACEMENT]:
+		Sound.play(&"card_pick")
 	match _phase:
 		Phase.CHOOSE_ACTION, Phase.CHOOSE_SWAP:
 			_submit(BattleAction.swap(index))
@@ -149,8 +187,14 @@ func _submit(action: BattleAction) -> void:
 	_set_bench_highlight(false)
 	_update_buttons()
 	_hint.text = ""
+	_stop_coach_highlight()
+	_last_player_kind = action.kind
 
 	var rival_action := _ai.choose_action(_state, RIVAL)
+	if _coaching and _state.turn <= COACH_RIVAL_MOVES.size():
+		var scripted := BattleAction.of_kind(COACH_RIVAL_MOVES[_state.turn - 1])
+		if BattleEngine.is_legal(_state, RIVAL, scripted):
+			rival_action = scripted
 	var pair: Array[BattleAction] = [action, rival_action]
 	for side in 2:
 		_snapshot_health(side)
@@ -172,6 +216,8 @@ func _after_turn() -> void:
 	if _state.side(PLAYER).needs_replacement():
 		_phase = Phase.CHOOSE_REPLACEMENT
 		_hint.text = "Choose who comes in next."
+		if _coaching:
+			_coach_once(&"replace", "Your dino was knocked out. Tap a [b]benched dino[/b] to send it in.")
 		_set_bench_highlight(true)
 		_update_buttons()
 		if _autopilot:
@@ -205,6 +251,7 @@ func _play(events: Array[Dictionary]) -> void:
 				await _pause()
 			"swap", "replace":
 				var side: int = event["side"]
+				Sound.play(&"swap")
 				_rebuild_side(side)
 				var verb := "swap" if event["type"] == "swap" else "send"
 				if side == RIVAL:
@@ -214,22 +261,26 @@ func _play(events: Array[Dictionary]) -> void:
 			"brace":
 				_popup(_active_cards[event["side"]], "BRACE", Palette.HIGHLIGHT)
 			"blocked":
+				Sound.play(&"block")
 				_popup(_active_cards[event["side"]], "BLOCKED!", Palette.HIGHLIGHT)
 				await _pause(0.4)
 			"bite", "counter", "charge":
 				await _show_hit(event)
 			"charge_cancelled":
+				Sound.play(&"interrupted")
 				_popup(_active_cards[event["side"]], "INTERRUPTED", Palette.TEXT_DIM)
 				_say("%s's charge was interrupted." % _name(event["side"]))
 				await _pause()
 			"meteor":
 				var target: int = event["target_side"]
+				Sound.play(&"meteor")
 				_set_shown_health(target, _state.side(target).active, event["health_after"])
 				_popup(_active_cards[target], "-%d" % event["damage"], Palette.DAMAGE)
 				_active_cards[target].tween_health(event["health_after"])
 				_say("Meteor shower hits %s for %d!" % [_name(target), event["damage"]])
 				await _pause(0.4)
 			"ko":
+				Sound.play(&"ko")
 				_say("[color=#ff6b5e]%s is knocked out![/color]" % _state.side(event["side"]).party[event["index"]].def.display_name)
 				await _pause()
 			"heal":
@@ -253,6 +304,8 @@ func _show_hit(event: Dictionary) -> void:
 	_set_shown_health(target, _state.side(target).active, event["health_after"])
 	target_card.tween_health(event["health_after"])
 	_shake(target_card)
+	# Type-edge hits land a little lower and heavier.
+	Sound.play(&"charge" if event["type"] == "charge" else &"bite", 0.88 if event["advantage"] else 1.0)
 	var label := "-%d" % event["damage"]
 	if event["type"] == "charge":
 		label = "CHARGE -%d" % event["damage"]
@@ -354,6 +407,10 @@ func _show_result() -> void:
 	elif _state.winner == RIVAL:
 		title = "Defeat"
 	%ResultTitle.text = title
+	Sound.play(&"victory" if _state.winner == PLAYER else &"defeat")
+	_stop_coach_highlight()
+	if _coach_panel:
+		_coach_panel.hide()
 	var reward := Session.finish_battle(_state.winner == PLAYER)
 	var gains: Array[String] = []
 	if reward["clutches"] > 0:
@@ -363,6 +420,8 @@ func _show_result() -> void:
 Rewards: %s" % [_state.turn - 1,
 			left, _state.side(PLAYER).party.size(), " + ".join(gains)]
 	%HatchButton.visible = reward["clutches"] > 0
+	if _coaching:
+		%ResultDetail.text += "\n\nTutorial done! Tap ? in any battle to see the rules again."
 	_overlay.show()
 	if _autopilot:
 		await get_tree().create_timer(2.5).timeout
@@ -371,6 +430,107 @@ Rewards: %s" % [_state.turn - 1,
 			Session.go_to_main(Session.Tab.EGGS)
 		else:
 			get_tree().quit()
+
+
+# --- Coach (first battle) -------------------------------------------------------------------
+
+func _build_coach() -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(Palette.PANEL, 0.96)
+	style.border_color = Palette.HIGHLIGHT
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.set_content_margin_all(12)
+	_coach_panel = PanelContainer.new()
+	_coach_panel.add_theme_stylebox_override("panel", style)
+	var row := UiKit.hbox(12)
+	_coach_text = RichTextLabel.new()
+	_coach_text.bbcode_enabled = true
+	_coach_text.fit_content = true
+	_coach_text.scroll_active = false
+	_coach_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_coach_text.add_theme_font_size_override("normal_font_size", 23)
+	_coach_text.add_theme_font_size_override("bold_font_size", 23)
+	_coach_text.add_theme_font_override("bold_font", Fonts.bold())
+	_coach_text.add_theme_color_override("default_color", Palette.TEXT)
+	row.add_child(_coach_text)
+	var skip := UiKit.button("Skip tips", UiKit.BUTTON_GRAY, 52, 20)
+	skip.custom_minimum_size.x = 130
+	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	skip.pressed.connect(_skip_coach)
+	row.add_child(skip)
+	_coach_panel.add_child(row)
+	_coach_panel.hide()
+	var column := _hint.get_parent()
+	column.add_child(_coach_panel)
+	column.move_child(_coach_panel, _hint.get_index() + 1)
+
+
+## Picks this turn's tip: the scripted opening, then one-off tips the first time they apply.
+func _coach_turn() -> void:
+	var turn := _state.turn
+	var rival_name := Session.rival.display_name
+	if turn <= COACH_RIVAL_MOVES.size():
+		var lead := ""
+		if turn > 1 and _last_player_kind == COACH_PLAYER_MOVES[turn - 2]:
+			lead = "Nice! "
+		_coach_show(lead + COACH_SCRIPT_TIPS[turn - 1] % rival_name, COACH_PLAYER_MOVES[turn - 1])
+		return
+	var me := _state.side(PLAYER).active_dino()
+	var them := _state.side(RIVAL).active_dino()
+	var can_swap := not _state.side(PLAYER).bench().is_empty()
+	if turn == COACH_RIVAL_MOVES.size() + 1:
+		_coach_show("That's the whole triangle! From now on %s picks freely, so watch for habits." % rival_name)
+		return
+	if BattleEngine.has_advantage(me, them) and _coach_once(&"edge",
+			"Your type beats theirs: [b]+50% damage[/b]. That's the \"type edge\" on the buttons. Land beats Sky, Sky beats Sea, Sea beats Land."):
+		return
+	if can_swap and BattleEngine.has_advantage(them, me) and _coach_once(&"bad_edge",
+			"Careful: their type beats yours. [b]Swap[/b] to a different type to dodge the extra damage."):
+		return
+	if can_swap and me.health * 10 <= me.max_health * 4 and _coach_once(&"low",
+			"Low on HP? [b]Swap[/b] goes first, and benched dinos heal 1 HP every turn."):
+		return
+	_coach_panel.hide()
+
+
+## Shows a tip only the first time `key` comes up. Returns whether it was shown.
+func _coach_once(key: StringName, text: String) -> bool:
+	if _coach_tips_given.has(key):
+		return false
+	_coach_tips_given[key] = true
+	_coach_show(text)
+	return true
+
+
+func _coach_show(text: String, highlight := -1) -> void:
+	_coach_text.text = text
+	_coach_panel.show()
+	_stop_coach_highlight()
+	if highlight < 0:
+		return
+	var button := _buttons[highlight]
+	button.pivot_offset = button.size / 2
+	_coach_pulse = button.create_tween().set_loops()
+	_coach_pulse.tween_property(button, "scale", Vector2(1.06, 1.06), 0.35)
+	_coach_pulse.tween_property(button, "scale", Vector2.ONE, 0.35)
+
+
+func _stop_coach_highlight() -> void:
+	if _coach_pulse:
+		_coach_pulse.kill()
+		_coach_pulse = null
+	for button in _buttons:
+		button.scale = Vector2.ONE
+
+
+func _skip_coach() -> void:
+	_coaching = false
+	Session.coaching = false
+	Session.profile.tutorial_done = true
+	Session.save()
+	_stop_coach_highlight()
+	_coach_panel.hide()
 
 
 # --- Text helpers ---------------------------------------------------------------------------

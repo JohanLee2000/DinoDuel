@@ -21,6 +21,8 @@ var rivals: Array[RivalDef] = []
 var player_party: Array[DinoDef] = []
 var rival_party: Array[DinoDef] = []
 var battle_seed := 0
+## True during the player's first battle, which comes with a coach (see BattleScreen).
+var coaching := false
 ## A Tab value; kept as int so other scripts can set it from a plain index.
 var current_tab: int = Tab.BATTLE
 ## Debug: the AI plays both sides. Pass `-- --autoplay` on the command line.
@@ -34,11 +36,17 @@ var dev_open_card := ""
 ## Dev: a showcase save for Play Store screenshots (everything collected, no DEV buttons) that
 ## never touches real progress. Pass `--store-shots`.
 var store_shots := false
+## Dev: a brand-new throwaway save whose first battle is coached even under --autoplay, to watch
+## the tutorial. Pass `--tutorial`.
+var dev_tutorial := false
+## Dev: open a popup on launch for screenshots: `--open=settings` or `--open=help`.
+var dev_open := ""
 ## Dev: scroll the Dex to this era on launch (0 Triassic, 1 Jurassic, 2 Cretaceous). `--dex-era=N`.
 var dev_dex_era := -1
 
 
 func _ready() -> void:
+	Sound.setup(get_tree())
 	catalog = DinoCatalog.load_default()
 	rivals = RivalDef.load_roster()
 	rival = rivals[0]
@@ -60,6 +68,10 @@ func _ready() -> void:
 	if store_shots:
 		SaveStore.folder = "user://store_shots"
 		SaveStore.delete_all()
+	dev_tutorial = "--tutorial" in args
+	if dev_tutorial:
+		SaveStore.folder = "user://tutorial"
+		SaveStore.delete_all()
 	if "--fresh-save" in args:
 		SaveStore.delete_all()
 	for arg in args:
@@ -69,6 +81,8 @@ func _ready() -> void:
 			dev_open_dex = StringName(arg.get_slice("=", 1))
 		elif arg.begins_with("--open-card="):
 			dev_open_card = arg.get_slice("=", 1)
+		elif arg.begins_with("--open="):
+			dev_open = arg.get_slice("=", 1)
 		elif arg.begins_with("--dex-era="):
 			dev_dex_era = int(arg.get_slice("=", 1))
 		elif arg.begins_with("--rival="):
@@ -97,6 +111,7 @@ func _showcase_profile() -> PlayerProfile:
 			[&"dusty", false]]:
 		showcase.record_battle(result[1], result[0])
 	showcase.amber = 1240
+	showcase.tutorial_done = true
 	showcase.clutches = 1
 	return showcase
 
@@ -130,7 +145,13 @@ func start_battle(party: Array[DinoDef]) -> void:
 	player_party = party
 	battle_seed = randi()
 	rival_party = rival.make_ai(battle_seed).choose_party(rival.brings, rival.point_cap)
+	coaching = wants_coach()
 	get_tree().change_scene_to_file(BATTLE_SCENE)
+
+
+## Whether the next battle gets the tutorial coach: only the player's first one.
+func wants_coach() -> bool:
+	return not profile.tutorial_done and (not autoplay or dev_tutorial)
 
 
 func rematch() -> void:
@@ -140,5 +161,8 @@ func rematch() -> void:
 ## Applies rewards and saves. Returns {"amber": int, "clutches": int}.
 func finish_battle(won: bool) -> Dictionary:
 	var reward := profile.record_battle(won, rival.id)
+	if coaching:
+		profile.tutorial_done = true
+		coaching = false
 	save()
 	return reward
