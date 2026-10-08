@@ -155,6 +155,15 @@ func wants_coach() -> bool:
 	return not profile.tutorial_done and (not autoplay or dev_tutorial)
 
 
+## Leaving a battle partway (see BattleScreen): recorded as a loss with no reward. A coached first
+## battle stays unfinished, so the coach comes back next time.
+func forfeit_battle() -> void:
+	profile.record_forfeit(rival.id)
+	coaching = false
+	save()
+	go_to_main(Tab.BATTLE)
+
+
 func rematch() -> void:
 	start_battle(player_party)
 

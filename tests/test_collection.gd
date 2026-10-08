@@ -259,3 +259,14 @@ func test_every_partner_gives_a_battle_ready_lineup() -> void:
 		assert_true(PartyRules.has_valid_pick(lineup), "%s can field a party" % id)
 		assert_eq(catalog.find(id).rarity, DinoDef.Rarity.RARE, "%s is Rare" % id)
 
+
+func test_forfeit_is_a_loss_without_amber() -> void:
+	var p := PlayerProfile.new_game(1)
+	var amber := p.amber
+	var clutches := p.clutches
+	p.record_forfeit(&"rae")
+	assert_eq(p.losses, 1)
+	assert_eq(p.record_against(&"rae"), [0, 1])
+	assert_eq(p.amber, amber, "no Amber for quitting")
+	assert_eq(p.clutches, clutches)
+

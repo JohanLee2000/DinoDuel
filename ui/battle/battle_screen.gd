@@ -55,6 +55,8 @@ var _coaching := false
 var _backdrop: BattleBackdrop
 ## The "who comes in?" panel shown for a swap or after a knockout.
 var _picker: Control
+var _leave_button: Button
+var _leave_dialog: Control
 var _coach_panel: PanelContainer
 var _coach_text: RichTextLabel
 var _coach_pulse: Tween
@@ -114,6 +116,10 @@ func _ready() -> void:
 	help.custom_minimum_size.x = 64
 	help.pressed.connect(func() -> void: HelpView.open())
 	_turn_label.get_parent().add_child(help)
+	_leave_button = UiKit.button("Leave", UiKit.BUTTON_GRAY, 52, 24)
+	_leave_button.custom_minimum_size.x = 110
+	_leave_button.pressed.connect(_confirm_leave)
+	_turn_label.get_parent().add_child(_leave_button)
 	if _coaching:
 		_build_coach()
 	for side in 2:
@@ -233,7 +239,8 @@ func _after_turn() -> void:
 		_update_buttons()
 		_show_picker(true)
 		if _autopilot:
-			await get_tree().create_timer(0.7).timeout
+			# Store screenshots need the "who comes in?" panel on screen long enough to capture.
+			await get_tree().create_timer(3.0 if Session.store_shots else 0.7).timeout
 			_replace_player(_autopilot.choose_replacement(_state, PLAYER))
 		return
 	_begin_choice()
@@ -422,6 +429,9 @@ func _set_shown_health(side: int, index: int, health: int) -> void:
 
 func _show_result() -> void:
 	_phase = Phase.OVER
+	_leave_button.hide()
+	if _leave_dialog:
+		_leave_dialog.queue_free()
 	_update_buttons()
 	var left := 0
 	for dino in _state.side(PLAYER).party:
@@ -456,6 +466,41 @@ Rewards: %s" % [_state.turn - 1,
 			Session.go_to_main(Session.Tab.EGGS)
 		else:
 			get_tree().quit()
+
+
+# --- Leaving -------------------------------------------------------------------------------
+
+func _confirm_leave() -> void:
+	if _phase == Phase.OVER or _leave_dialog:
+		return
+	_leave_dialog = UiKit.modal_layer(0.75)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var column := UiKit.vbox(18)
+	column.custom_minimum_size.x = 560
+	column.add_child(UiKit.title("Leave this battle?", 38, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("It counts as a loss against %s, with no Amber." % Session.rival.display_name, 26,
+			Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	var stay := UiKit.button("Keep fighting", UiKit.BUTTON_GREEN, 84, 30)
+	stay.pressed.connect(func() -> void:
+		_leave_dialog.queue_free()
+		_leave_dialog = null)
+	column.add_child(stay)
+	var leave := UiKit.button("Leave battle", UiKit.BUTTON_GRAY, 76, 26)
+	leave.pressed.connect(Session.forfeit_battle)
+	column.add_child(leave)
+	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
+	_leave_dialog.add_child(center)
+	add_child(_leave_dialog)
+
+
+## Android back button: same as Leave (asks first).
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		# A help page or card view on top handles back itself.
+		if get_children().any(func(child: Node) -> bool: return child is HelpView or child is CardViewer):
+			return
+		_confirm_leave()
 
 
 # --- Choosing who comes in ------------------------------------------------------------------

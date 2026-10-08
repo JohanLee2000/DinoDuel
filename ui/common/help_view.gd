@@ -36,6 +36,7 @@ const PAGES := [
 			["", "[b]Era bond[/b]: all 3 from the same era give +1 Attack and +1 Speed each."],
 			["", "[b]Balanced[/b]: one Land, one Sky and one Sea give +2 HP each."],
 			["", "From turn 20 a meteor shower hits both active dinos every turn, but never knocks one out."],
+			["", "[b]Hold any card[/b] to see it bigger, with its stats and a fact about the real animal."],
 		],
 	},
 	{

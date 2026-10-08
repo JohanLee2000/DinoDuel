@@ -100,6 +100,7 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 - A new player's **first battle is coached** (`Session.wants_coach()`; done once it ends or the player taps "Skip tips"). The Battle tab marks the first rival "Start here", and the pick screen explains Party Points and Balanced.
 - The battle opens with the "Battle moves" help card. For the first 3 turns the rival's moves are scripted (Bite, Brace, Charge) and the coach suggests the counter (Brace, Charge, Bite) with a pulsing button, so the player meets the whole triangle. After that the rival plays normally and the coach gives one-time tips (type edge, bad matchup, low HP, knocked out).
 - A **? button** in every battle (and How to play in Settings) reopens 4 pages: moves, types, party, eggs and Amber.
+- **Leaving a battle** (Leave button or Android back, with a confirmation) is a forfeit: a loss in the record, no Amber (decided 2026-10-08; a normal loss pays 10 Amber, so paying forfeits would let players farm it).
 
 ## Audio (decided 2026-10-08)
 - Sound effects: Kenney CC0 packs (`assets/audio/CREDITS.md`), played through `Sound` (`app/sound.gd`). Every button taps automatically; battles, eggs and hatching have their own sounds.

@@ -219,6 +219,15 @@ func record_battle(won: bool, rival_id: StringName = &"") -> Dictionary:
 	return reward
 
 
+## Leaving a battle partway: a loss in the record, but no Amber (or quitting would farm it).
+func record_forfeit(rival_id: StringName = &"") -> void:
+	losses += 1
+	if rival_id != &"":
+		var record: Array = rival_record.get(rival_id, [0, 0])
+		record[1] += 1
+		rival_record[rival_id] = record
+
+
 # --- Saving ---------------------------------------------------------------------------------
 
 func to_dict() -> Dictionary:
