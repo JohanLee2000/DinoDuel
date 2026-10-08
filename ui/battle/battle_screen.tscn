@@ -43,13 +43,13 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 text = "Rival"
 
 [node name="TurnLabel" type="Label" parent="SafeArea/Column/TopBar"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 text = "Turn 1"
 
 [node name="EnemyRow" type="HBoxContainer" parent="SafeArea/Column"]
@@ -70,15 +70,16 @@ layout_mode = 2
 
 [node name="LogPanel" type="PanelContainer" parent="SafeArea/Column"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 116)
+custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 
 [node name="Log" type="RichTextLabel" parent="SafeArea/Column/LogPanel"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 21
-theme_override_font_sizes/bold_font_size = 23
+theme_override_font_sizes/normal_font_size = 28
+theme_override_font_sizes/bold_font_size = 28
 bbcode_enabled = true
+fit_content = true
 scroll_active = false
 
 [node name="PlayerRow" type="HBoxContainer" parent="SafeArea/Column"]
@@ -101,7 +102,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 10
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 26
 text = "Choose an action"
 horizontal_alignment = 1
 
@@ -117,7 +118,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 26
 text = "Bite"
 
 [node name="ChargeButton" type="Button" parent="SafeArea/Column/Actions"]
@@ -125,7 +126,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 26
 text = "Charge"
 
 [node name="BraceButton" type="Button" parent="SafeArea/Column/Actions"]
@@ -133,7 +134,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 26
 text = "Brace"
 
 [node name="SwapButton" type="Button" parent="SafeArea/Column/Actions"]
@@ -141,7 +142,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 92)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 26
 text = "Swap"
 
 [node name="Overlay" type="ColorRect" parent="."]

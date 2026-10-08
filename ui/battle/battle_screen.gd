@@ -21,6 +21,8 @@ const BENCH_CARD_WIDTH := 92.0
 ## up) get bigger cards instead of an empty band above the buttons; this many extra units of
 ## height make the cards 100% bigger, up to MAX_CARD_SCALE.
 const EXTRA_HEIGHT_PER_SCALE := 900.0
+## Height the layout needs at the current text sizes before cards start growing.
+const BASE_LAYOUT_HEIGHT := 1320.0
 const MAX_CARD_SCALE := 1.3
 ## First battle (tutorial): the rival's scripted moves for the opening turns, and the counter the
 ## coach suggests for each, so the player meets the whole triangle once.
@@ -34,7 +36,8 @@ const COACH_SCRIPT_TIPS: Array[String] = [
 	"%s is winding up a [b]Charge[/b]. [b]Bite[/b] hits first and cancels it. Tap [b]Bite[/b]!",
 ]
 ## Room kept free for the coach's tip box when sizing the cards.
-const COACH_PANEL_HEIGHT := 130.0
+const COACH_PANEL_HEIGHT := 175.0
+const PICKER_CARD_WIDTH := 200.0
 
 var _state: BattleState
 var _ai: BattleAI
@@ -50,6 +53,8 @@ var _log_lines: Array[String] = []
 var _card_scale := 1.0
 var _coaching := false
 var _backdrop: BattleBackdrop
+## The "who comes in?" panel shown for a swap or after a knockout.
+var _picker: Control
 var _coach_panel: PanelContainer
 var _coach_text: RichTextLabel
 var _coach_pulse: Tween
@@ -69,7 +74,7 @@ var _last_player_kind := -1
 func _ready() -> void:
 	_coaching = Session.coaching
 	Sound.music(&"battle")
-	var extra_height := get_viewport_rect().size.y - 1280.0
+	var extra_height := get_viewport_rect().size.y - BASE_LAYOUT_HEIGHT
 	if _coaching:
 		extra_height -= COACH_PANEL_HEIGHT
 	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
@@ -131,6 +136,7 @@ func _ready() -> void:
 # --- Player input ---------------------------------------------------------------------------
 
 func _begin_choice() -> void:
+	_hide_picker()
 	_phase = Phase.CHOOSE_ACTION
 	_turn_label.text = "Turn %d" % _state.turn
 	_hint.text = "Choose your move. %s picks at the same time." % Session.rival.display_name
@@ -171,6 +177,7 @@ func _on_swap_pressed() -> void:
 	_hint.text = "Tap a benched dino to swap in."
 	_set_bench_highlight(true)
 	_update_buttons()
+	_show_picker(false)
 
 
 func _on_bench_pressed(side: int, index: int) -> void:
@@ -189,6 +196,7 @@ func _submit(action: BattleAction) -> void:
 	if _phase != Phase.CHOOSE_ACTION and _phase != Phase.CHOOSE_SWAP:
 		return
 	_phase = Phase.ANIMATING
+	_hide_picker()
 	_set_bench_highlight(false)
 	_update_buttons()
 	_hint.text = ""
@@ -221,10 +229,9 @@ func _after_turn() -> void:
 	if _state.side(PLAYER).needs_replacement():
 		_phase = Phase.CHOOSE_REPLACEMENT
 		_hint.text = "Choose who comes in next."
-		if _coaching:
-			_coach_once(&"replace", "Your dino was knocked out. Tap a [b]benched dino[/b] to send it in.")
 		_set_bench_highlight(true)
 		_update_buttons()
+		_show_picker(true)
 		if _autopilot:
 			await get_tree().create_timer(0.7).timeout
 			_replace_player(_autopilot.choose_replacement(_state, PLAYER))
@@ -236,6 +243,7 @@ func _replace_player(index: int) -> void:
 	if _phase != Phase.CHOOSE_REPLACEMENT:
 		return
 	_phase = Phase.ANIMATING
+	_hide_picker()
 	_set_bench_highlight(false)
 	await _play(BattleEngine.replace_active(_state, PLAYER, index))
 	_begin_choice()
@@ -450,6 +458,75 @@ Rewards: %s" % [_state.turn - 1,
 			get_tree().quit()
 
 
+# --- Choosing who comes in ------------------------------------------------------------------
+
+## A panel over the move buttons with the benched dinos as big cards: after a knockout (must pick)
+## or for a swap (can cancel by tapping Cancel or anywhere outside).
+func _show_picker(knocked_out: bool) -> void:
+	_hide_picker()
+	_picker = Control.new()
+	_picker.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.55)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	if not knocked_out:
+		shade.gui_input.connect(func(event: InputEvent) -> void:
+			if event is InputEventMouseButton and event.pressed:
+				_begin_choice())
+	_picker.add_child(shade)
+
+	var column := UiKit.vbox(14)
+	var fallen := _state.side(PLAYER).active_dino().def.display_name
+	column.add_child(UiKit.title("%s is knocked out!" % fallen if knocked_out else "Swap in which dino?", 34,
+			Palette.DAMAGE if knocked_out else Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("Tap who comes in next. Benched dinos keep the HP they have." if knocked_out
+			else "Swap goes first this turn, and the dino you swap out heals on the bench.", 25, Palette.TEXT,
+			HORIZONTAL_ALIGNMENT_CENTER))
+	var row := UiKit.hbox(20, BoxContainer.ALIGNMENT_CENTER)
+	var side := _state.side(PLAYER)
+	for index in side.bench():
+		var dino := side.party[index]
+		var card := DinoCard.create(dino.def, DinoCard.Mode.BATTLE, dino, _is_shiny(PLAYER, dino.def), PICKER_CARD_WIDTH)
+		card.display_health(_shown_health[PLAYER][index])
+		card.highlighted = true
+		card.pressed.connect(_on_bench_pressed.bind(PLAYER, index))
+		row.add_child(card)
+	column.add_child(row)
+	if not knocked_out:
+		var cancel := UiKit.button("Cancel", UiKit.BUTTON_GRAY, 76, 28)
+		cancel.pressed.connect(_begin_choice)
+		column.add_child(cancel)
+
+	var panel := UiKit.panel(column, Palette.PANEL, 22)
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	# Pinned to the bottom: a full-screen column with a stretchy spacer above the panel.
+	var holder := MarginContainer.new()
+	holder.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for margin in [["left", 12], ["right", 12], ["bottom", 24]]:
+		holder.add_theme_constant_override("margin_" + margin[0], margin[1])
+	var stack := VBoxContainer.new()
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(spacer)
+	stack.add_child(panel)
+	holder.add_child(stack)
+	_picker.add_child(holder)
+	_picker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_picker)
+	_picker.modulate.a = 0.0
+	_picker.create_tween().tween_property(_picker, "modulate:a", 1.0, 0.2)
+
+
+func _hide_picker() -> void:
+	if _picker:
+		_picker.queue_free()
+		_picker = null
+
+
 # --- Coach (first battle) -------------------------------------------------------------------
 
 func _build_coach() -> void:
@@ -467,12 +544,12 @@ func _build_coach() -> void:
 	_coach_text.fit_content = true
 	_coach_text.scroll_active = false
 	_coach_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_coach_text.add_theme_font_size_override("normal_font_size", 23)
-	_coach_text.add_theme_font_size_override("bold_font_size", 23)
+	_coach_text.add_theme_font_size_override("normal_font_size", 28)
+	_coach_text.add_theme_font_size_override("bold_font_size", 28)
 	_coach_text.add_theme_font_override("bold_font", Fonts.bold())
 	_coach_text.add_theme_color_override("default_color", Palette.TEXT)
 	row.add_child(_coach_text)
-	var skip := UiKit.button("Skip tips", UiKit.BUTTON_GRAY, 52, 20)
+	var skip := UiKit.button("Skip tips", UiKit.BUTTON_GRAY, 56, 24)
 	skip.custom_minimum_size.x = 130
 	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	skip.pressed.connect(_skip_coach)

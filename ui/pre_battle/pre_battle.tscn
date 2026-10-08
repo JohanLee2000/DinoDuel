@@ -54,7 +54,7 @@ theme_override_constants/separation = 8
 [node name="RivalLabel" type="Label" parent="SafeArea/Column/RivalPanel/RivalBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 26
 text = "Rival brings:"
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -68,7 +68,7 @@ alignment = 1
 [node name="Hint" type="Label" parent="SafeArea/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 24
 text = "Pick 3 dinos within 10 Party Points"
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -89,7 +89,7 @@ columns = 3
 [node name="Summary" type="Label" parent="SafeArea/Column"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "Party Points 0/9"
 horizontal_alignment = 1
 autowrap_mode = 3

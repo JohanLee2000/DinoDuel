@@ -98,7 +98,7 @@ func _ready() -> void:
 	else:
 		_prev = UiKit.button("Back", UiKit.BUTTON_GRAY, 76, 26)
 		_prev.pressed.connect(_turn.bind(-1))
-		_page_label = UiKit.label("", 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
+		_page_label = UiKit.label("", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
 		_page_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_page_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		_next = UiKit.button("Next", UiKit.BUTTON_GREEN, 76, 26)
@@ -179,8 +179,8 @@ func _row(icon: String, text: String) -> Control:
 	label.scroll_active = false
 	label.text = text
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("normal_font_size", 23)
-	label.add_theme_font_size_override("bold_font_size", 23)
+	label.add_theme_font_size_override("normal_font_size", 27)
+	label.add_theme_font_size_override("bold_font_size", 27)
 	label.add_theme_font_override("bold_font", Fonts.bold())
 	label.add_theme_color_override("default_color", Palette.TEXT)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE

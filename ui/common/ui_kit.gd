@@ -9,7 +9,7 @@ const BUTTON_AMBER := Color("ff7a1a")
 
 
 ## Wrapping labels need a width from their parent, so pass wrap = false inside rows and grids.
-static func label(text: String, font_size := 22, color := Palette.TEXT,
+static func label(text: String, font_size := 26, color := Palette.TEXT,
 		align := HORIZONTAL_ALIGNMENT_LEFT, wrap := true) -> Label:
 	var l := Label.new()
 	l.text = text

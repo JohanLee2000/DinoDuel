@@ -47,7 +47,7 @@ func _ready() -> void:
 	_title.offset_top = 70
 	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_title)
-	_hint = UiKit.label("", 26, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
+	_hint = UiKit.label("", 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_hint.offset_top = -200
 	_hint.offset_bottom = -150
@@ -234,7 +234,7 @@ func _show_summary() -> void:
 		var slot := UiKit.vbox(8)
 		var card := DinoCard.create(result.dino, DinoCard.Mode.FULL, null, result.shiny)
 		slot.add_child(card)
-		var caption := UiKit.label(_caption(result), 20, Palette.HIGHLIGHT if result.is_new or result.shiny \
+		var caption := UiKit.label(_caption(result), 22, Palette.HIGHLIGHT if result.is_new or result.shiny \
 				else Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 		caption.custom_minimum_size = Vector2(card.size.x, 0)
 		slot.add_child(caption)

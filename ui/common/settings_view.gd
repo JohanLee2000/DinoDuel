@@ -37,7 +37,7 @@ func _ready() -> void:
 	var done := UiKit.button("Done", UiKit.BUTTON_GREEN, 76, 26)
 	done.pressed.connect(close)
 	column.add_child(done)
-	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 18, Palette.TEXT_DIM,
+	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 22, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER))
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
 
@@ -45,10 +45,10 @@ func _ready() -> void:
 func _volume_row(text: String, volume: float, apply: Callable, preview: bool) -> Control:
 	var box := UiKit.vbox(4)
 	var top := UiKit.hbox(12)
-	var label := UiKit.label(text, 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	var label := UiKit.label(text, 28, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(label)
-	var amount := UiKit.label("", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	var amount := UiKit.label("", 26, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
 	top.add_child(amount)
 	box.add_child(top)
 

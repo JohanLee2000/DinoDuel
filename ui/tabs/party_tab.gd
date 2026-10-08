@@ -10,10 +10,10 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	add_child(UiKit.title("Your party"))
 	add_child(UiKit.label("Bring %d dinos. Before each battle you see your rival's 6 and pick 3." \
-			% PartyRules.BRING_SIZE, 20, Palette.TEXT_DIM))
+			% PartyRules.BRING_SIZE, 24, Palette.TEXT_DIM))
 	_lineup_row = UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	add_child(_lineup_row)
-	_status = UiKit.label("", 20, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
+	_status = UiKit.label("", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	add_child(_status)
 	_grid = UiKit.grid(3)
 	_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER

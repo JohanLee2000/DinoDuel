@@ -11,7 +11,7 @@ var _era_titles: Array[Label] = []
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	add_child(UiKit.title("Dino Dex"))
-	_summary = UiKit.label("", 20, Palette.TEXT_DIM)
+	_summary = UiKit.label("", 24, Palette.TEXT_DIM)
 	add_child(_summary)
 	if OS.is_debug_build() and not Session.store_shots:
 		# Development only: debug builds (editor, USB installs) show this; release builds don't.
@@ -83,7 +83,7 @@ func _open(dino: DinoDef) -> void:
 	var extras: Array[Control] = []
 	if not owned:
 		var hint := "You've battled this one but don't own it yet." if known 				else "Not discovered yet. Hatch eggs to find it, or craft it now."
-		extras.append(UiKit.label(hint, 20, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+		extras.append(UiKit.label(hint, 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 		var craft := UiKit.button("Craft for %d Amber (you have %d)" % [Economy.CRAFT_COST[dino.rarity],
 				profile.amber], UiKit.BUTTON_AMBER)
 		craft.disabled = not profile.can_craft(dino)

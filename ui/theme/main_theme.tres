@@ -5,5 +5,5 @@
 
 [resource]
 default_font = ExtResource("1_body")
-default_font_size = 24
+default_font_size = 26
 Button/fonts/font = ExtResource("2_condensed")

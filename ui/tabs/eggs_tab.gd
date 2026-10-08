@@ -8,7 +8,7 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 14)
 	add_child(UiKit.title("Fossil eggs"))
 	add_child(UiKit.label("Each clutch holds %d eggs, and each egg hatches one dino. Duplicates melt into Amber, which crafts the dinos you're missing in the Dex." \
-			% Economy.EGGS_PER_CLUTCH, 20, Palette.TEXT_DIM))
+			% Economy.EGGS_PER_CLUTCH, 24, Palette.TEXT_DIM))
 	_body = UiKit.vbox(14)
 	add_child(UiKit.vscroll(_body))
 	_refresh()
@@ -57,21 +57,21 @@ func _refresh() -> void:
 
 func _odds_box() -> VBoxContainer:
 	var box := UiKit.vbox(6)
-	box.add_child(UiKit.label("Odds for each egg", 24))
+	box.add_child(UiKit.label("Odds for each egg", 28))
 	var odds := UiKit.grid(2, 6)
 	for rarity in DinoDef.RARITY_NAMES.size():
-		var name_label := UiKit.label(DinoDef.RARITY_NAMES[rarity], 20, Palette.RARITY_COLORS[rarity],
+		var name_label := UiKit.label(DinoDef.RARITY_NAMES[rarity], 24, Palette.RARITY_COLORS[rarity],
 				HORIZONTAL_ALIGNMENT_LEFT, false)
 		name_label.custom_minimum_size = Vector2(200, 0)
 		odds.add_child(name_label)
-		odds.add_child(UiKit.label("%d%%" % roundi(Economy.RARITY_ODDS[rarity] * 100), 20,
+		odds.add_child(UiKit.label("%d%%" % roundi(Economy.RARITY_ODDS[rarity] * 100), 24,
 				Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	box.add_child(odds)
 	var left := Economy.PITY_CLUTCHES - Session.profile.clutches_without_epic
 	box.add_child(UiKit.label("Shiny: 1 in %d eggs (same stats, special look)." % roundi(1.0 / Economy.SHINY_ODDS),
-			18, Palette.TEXT_DIM))
+			22, Palette.TEXT_DIM))
 	box.add_child(UiKit.label("Guaranteed Epic or better at least every %d clutches. Yours: within the next %d." \
-			% [Economy.PITY_CLUTCHES, left], 18, Palette.TEXT_DIM))
+			% [Economy.PITY_CLUTCHES, left], 22, Palette.TEXT_DIM))
 	return box
 
 

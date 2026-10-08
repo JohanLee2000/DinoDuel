@@ -70,16 +70,16 @@ func _ready() -> void:
 			heading += "  ·  SHINY"
 		column.add_child(_centered_label(heading, 28, tier, true))
 		column.add_child(_centered_label("%s · %s era · %s" % [_dino.group, _dino.era_name(), _dino.size_text],
-				20, Palette.TEXT_DIM))
+				24, Palette.TEXT_DIM))
 		var pts := PartyRules.points_of(_dino)
 		column.add_child(_centered_label("Beats %s  ·  Weak to %s  ·  %d Party Point%s" % [
 				DinoDef.TYPE_NAMES[(_dino.dino_type + 1) % 3], DinoDef.TYPE_NAMES[(_dino.dino_type + 2) % 3],
-				pts, "" if pts == 1 else "s"], 20, Palette.ACCENT))
+				pts, "" if pts == 1 else "s"], 24, Palette.ACCENT))
 		if _dino.flavor_text != "":
-			column.add_child(_centered_label(_dino.flavor_text, 21, Palette.TEXT))
+			column.add_child(_centered_label(_dino.flavor_text, 25, Palette.TEXT))
 	for extra in _extras:
 		column.add_child(extra)
-	column.add_child(_centered_label("Tap anywhere to close", 18, Palette.TEXT_DIM))
+	column.add_child(_centered_label("Tap anywhere to close", 22, Palette.TEXT_DIM))
 
 
 func _centered_label(text: String, font_size: int, color: Color, as_title := false) -> Label:
