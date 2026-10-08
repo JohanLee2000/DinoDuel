@@ -3,7 +3,7 @@ extends Control
 
 const TABS := [
 	{"name": "Battle", "script": "res://ui/tabs/battle_tab.gd"},
-	{"name": "Herd", "script": "res://ui/tabs/herd_tab.gd"},
+	{"name": "Party", "script": "res://ui/tabs/party_tab.gd"},
 	{"name": "Eggs", "script": "res://ui/tabs/eggs_tab.gd"},
 	{"name": "Dex", "script": "res://ui/tabs/dex_tab.gd"},
 ]

@@ -4,7 +4,7 @@ extends RefCounted
 
 const EGGS_PER_CLUTCH := 3
 ## Chance per egg, indexed by DinoDef.Rarity. Must add up to 1.
-const RARITY_ODDS: Array[float] = [0.60, 0.25, 0.10, 0.04, 0.01]
+const RARITY_ODDS: Array[float] = [0.50, 0.30, 0.13, 0.05, 0.02]
 const SHINY_ODDS := 1.0 / 40.0
 ## A clutch is guaranteed an Epic or better if the previous (PITY_CLUTCHES - 1) clutches had none.
 const PITY_CLUTCHES := 10
@@ -12,7 +12,7 @@ const PITY_CLUTCHES := 10
 const PITY_ODDS: Array[float] = [0.0, 0.0, 0.0, 0.8, 0.2]
 
 ## Amber for a duplicate, indexed by rarity.
-const MELT_VALUE: Array[int] = [5, 20, 50, 150, 400]
+const MELT_VALUE: Array[int] = [7, 25, 60, 180, 480]
 ## Amber to craft a specific dino, indexed by rarity.
 const CRAFT_COST: Array[int] = [40, 100, 400, 1000, 2000]
 

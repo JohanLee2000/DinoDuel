@@ -1,6 +1,6 @@
 class_name PlayerProfile
 extends RefCounted
-## Everything that's saved about the player: collection, Amber, eggs, herd lineup, Dex, stats.
+## Everything that's saved about the player: collection, Amber, eggs, party lineup, Dex, stats.
 ## Pure data + rules; reading and writing the file lives in app/save_store.gd.
 ##
 ## Egg results come from an RNG whose state is saved, so closing the app mid-hatch and
@@ -141,12 +141,12 @@ func _pick_dino(catalog: DinoCatalog, rarity: int) -> DinoDef:
 	return catalog.dinos[0]
 
 
-# --- Herd and battles -----------------------------------------------------------------------
+# --- Party and battles -----------------------------------------------------------------------
 
 ## Returns "" if the lineup was set, otherwise why not.
 func set_lineup(ids: Array[StringName]) -> String:
-	if ids.size() > HerdRules.BRING_SIZE:
-		return "Bring at most %d" % HerdRules.BRING_SIZE
+	if ids.size() > PartyRules.BRING_SIZE:
+		return "Bring at most %d" % PartyRules.BRING_SIZE
 	var unique := {}
 	for id in ids:
 		if not owns(id):
@@ -221,7 +221,7 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 		var id := StringName(key)
 		if profile.owns(id) and not id in lineup_ids:
 			lineup_ids.append(id)
-	profile.lineup.assign(lineup_ids.slice(0, HerdRules.BRING_SIZE))
+	profile.lineup.assign(lineup_ids.slice(0, PartyRules.BRING_SIZE))
 	profile.clutches_without_epic = int(data.get("clutches_without_epic", 0))
 	profile.last_daily_day = int(data.get("last_daily_day", -1))
 	profile.wins = int(data.get("wins", 0))

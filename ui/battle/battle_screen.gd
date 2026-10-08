@@ -1,5 +1,5 @@
 extends Control
-## Herd Battle screen. Takes the player's secret action, asks the rival AI for its own, resolves
+## Party Battle screen. Takes the player's secret action, asks the rival AI for its own, resolves
 ## the turn with BattleEngine, then replays the engine's event list as simple animations.
 ##
 ## The engine finishes the whole turn instantly, so this screen keeps its own copy of each dino's
@@ -24,9 +24,9 @@ var _ai: BattleAI
 var _autopilot: BattleAI
 var _phase := Phase.ANIMATING
 var _active_cards: Array[DinoCard] = [null, null]
-## Per side: herd index -> bench DinoCard.
+## Per side: party index -> bench DinoCard.
 var _bench_cards: Array[Dictionary] = [{}, {}]
-## Per side: the HP currently on screen for each herd member.
+## Per side: the HP currently on screen for each party member.
 var _shown_health: Array = [[], []]
 var _log_lines: Array[String] = []
 
@@ -41,7 +41,7 @@ var _log_lines: Array[String] = []
 
 
 func _ready() -> void:
-	_state = BattleEngine.create(Session.player_herd, Session.rival_herd)
+	_state = BattleEngine.create(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
 	if Session.autoplay:
 		_autopilot = BattleAI.new(Session.battle_seed + 1)
@@ -78,9 +78,9 @@ func _ready() -> void:
 	if _state.side(PLAYER).era_bond:
 		bonuses.append("Era bond")
 	if _state.side(PLAYER).balanced:
-		bonuses.append("Balanced herd")
+		bonuses.append("Balanced party")
 	if not bonuses.is_empty():
-		_say("Your herd bonuses: %s." % ", ".join(bonuses))
+		_say("Your party bonuses: %s." % ", ".join(bonuses))
 	_begin_choice()
 
 
@@ -222,7 +222,7 @@ func _play(events: Array[Dictionary]) -> void:
 				_say("Meteor shower hits %s for %d!" % [_name(target), event["damage"]])
 				await _pause(0.4)
 			"ko":
-				_say("[color=#ff6b5e]%s is knocked out![/color]" % _state.side(event["side"]).herd[event["index"]].def.display_name)
+				_say("[color=#ff6b5e]%s is knocked out![/color]" % _state.side(event["side"]).party[event["index"]].def.display_name)
 				await _pause()
 			"heal":
 				var side: int = event["side"]
@@ -301,11 +301,11 @@ func _rebuild_side(side: int) -> void:
 	for child in _benches[side].get_children():
 		child.queue_free()
 	_bench_cards[side] = {}
-	for i in battle_side.herd.size():
+	for i in battle_side.party.size():
 		if i == battle_side.active:
 			continue
-		var mini := DinoCard.create(battle_side.herd[i].def, DinoCard.Mode.MINI, battle_side.herd[i],
-				_is_shiny(side, battle_side.herd[i].def), BENCH_CARD_WIDTH)
+		var mini := DinoCard.create(battle_side.party[i].def, DinoCard.Mode.MINI, battle_side.party[i],
+				_is_shiny(side, battle_side.party[i].def), BENCH_CARD_WIDTH)
 		mini.display_health(_shown_health[side][i])
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)
@@ -324,7 +324,7 @@ func _set_bench_highlight(on: bool) -> void:
 
 func _snapshot_health(side: int) -> void:
 	_shown_health[side] = []
-	for dino in _state.side(side).herd:
+	for dino in _state.side(side).party:
 		_shown_health[side].append(dino.health)
 
 
@@ -336,7 +336,7 @@ func _show_result() -> void:
 	_phase = Phase.OVER
 	_update_buttons()
 	var left := 0
-	for dino in _state.side(PLAYER).herd:
+	for dino in _state.side(PLAYER).party:
 		if not dino.is_knocked_out():
 			left += 1
 	var title := "Draw"
@@ -352,7 +352,7 @@ func _show_result() -> void:
 	gains.append("%d Amber" % reward["amber"])
 	%ResultDetail.text = "%d turns · %d of %d dinos still standing
 Rewards: %s" % [_state.turn - 1,
-			left, _state.side(PLAYER).herd.size(), " + ".join(gains)]
+			left, _state.side(PLAYER).party.size(), " + ".join(gains)]
 	%HatchButton.visible = reward["clutches"] > 0
 	_overlay.show()
 	if _autopilot:

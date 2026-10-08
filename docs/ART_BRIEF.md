@@ -34,20 +34,20 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | id | `[DINOSAUR]` | `[TYPE]` | `[RARITY]` | Status |
 |---|---|---|---|---|
 | `t_rex` | Tyrannosaurus rex | LAND | LEGENDARY (UR) | Done |
-| `quetzalcoatlus` | Quetzalcoatlus | SKY | EPIC (SSR) | |
-| `triceratops` | Triceratops | LAND | SUPER RARE (SR) | |
-| `pteranodon` | Pteranodon | SKY | SUPER RARE (SR) | |
-| `mosasaurus` | Mosasaurus | SEA | SUPER RARE (SR) | |
-| `velociraptor` | Velociraptor | LAND | RARE (R) | |
-| `archaeopteryx` | Archaeopteryx | SKY | RARE (R) | |
-| `plesiosaurus` | Plesiosaurus | SEA | RARE (R) | |
-| `liopleurodon` | Liopleurodon | SEA | RARE (R) | |
-| `coelophysis` | Coelophysis | LAND | COMMON (N) | |
-| `stegosaurus` | Stegosaurus | LAND | COMMON (N) | |
-| `eudimorphodon` | Eudimorphodon | SKY | COMMON (N) | |
-| `rhamphorhynchus` | Rhamphorhynchus | SKY | COMMON (N) | |
-| `nothosaurus` | Nothosaurus | SEA | COMMON (N) | |
-| `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | |
+| `quetzalcoatlus` | Quetzalcoatlus | SKY | EPIC (SSR) | Done |
+| `triceratops` | Triceratops | LAND | SUPER RARE (SR) | Done |
+| `pteranodon` | Pteranodon | SKY | SUPER RARE (SR) | In game; the painting shows teeth, but Pteranodon was toothless |
+| `mosasaurus` | Mosasaurus | SEA | LEGENDARY (UR) | Done |
+| `velociraptor` | Velociraptor | LAND | SUPER RARE (SR) | Done |
+| `archaeopteryx` | Archaeopteryx | SKY | RARE (R) | Done |
+| `plesiosaurus` | Plesiosaurus | SEA | RARE (R) | Done |
+| `liopleurodon` | Liopleurodon | SEA | EPIC (SSR) | Done |
+| `coelophysis` | Coelophysis | LAND | COMMON (N) | Done |
+| `stegosaurus` | Stegosaurus | LAND | RARE (R) | Done |
+| `eudimorphodon` | Eudimorphodon | SKY | COMMON (N) | Done |
+| `rhamphorhynchus` | Rhamphorhynchus | SKY | COMMON (N) | Done |
+| `nothosaurus` | Nothosaurus | SEA | RARE (R) | Done |
+| `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | Done |
 
 Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized and fully feathered") helps ChatGPT get the anatomy right.
 

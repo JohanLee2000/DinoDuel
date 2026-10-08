@@ -9,13 +9,13 @@ const MAIN_SCENE := "res://ui/main/main.tscn"
 const PRE_BATTLE_SCENE := "res://ui/pre_battle/pre_battle.tscn"
 const BATTLE_SCENE := "res://ui/battle/battle_screen.tscn"
 
-enum Tab { BATTLE, HERD, EGGS, DEX }
+enum Tab { BATTLE, PARTY, EGGS, DEX }
 
 var catalog: DinoCatalog
 var profile: PlayerProfile
 var rival: RivalDef
-var player_herd: Array[DinoDef] = []
-var rival_herd: Array[DinoDef] = []
+var player_party: Array[DinoDef] = []
+var rival_party: Array[DinoDef] = []
 var battle_seed := 0
 ## A Tab value; kept as int so other scripts can set it from a plain index.
 var current_tab: int = Tab.BATTLE
@@ -78,16 +78,16 @@ func go_to_pre_battle() -> void:
 	get_tree().change_scene_to_file(PRE_BATTLE_SCENE)
 
 
-## The rival picks its herd now, without seeing the player's pick.
-func start_battle(herd: Array[DinoDef]) -> void:
-	player_herd = herd
+## The rival picks its party now, without seeing the player's pick.
+func start_battle(party: Array[DinoDef]) -> void:
+	player_party = party
 	battle_seed = randi()
-	rival_herd = rival.make_ai(battle_seed).choose_herd(rival.brings, rival.point_cap)
+	rival_party = rival.make_ai(battle_seed).choose_party(rival.brings, rival.point_cap)
 	get_tree().change_scene_to_file(BATTLE_SCENE)
 
 
 func rematch() -> void:
-	start_battle(player_herd)
+	start_battle(player_party)
 
 
 ## Applies rewards and saves. Returns {"amber": int, "clutches": int}.

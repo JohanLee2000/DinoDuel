@@ -41,7 +41,7 @@ func make_dino(attack: int, defense: int, speed: int, health: int,
 	return dino
 
 
-func herd(dinos: Array) -> Array[DinoDef]:
+func party(dinos: Array) -> Array[DinoDef]:
 	var result: Array[DinoDef] = []
 	result.assign(dinos)
 	return result

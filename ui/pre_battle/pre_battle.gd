@@ -38,15 +38,15 @@ func _ready() -> void:
 		_grid.add_child(card)
 		_cards.append(card)
 	# Keep last battle's pick if those dinos are still in the lineup.
-	for dino in Session.player_herd:
-		if dino.id in profile.lineup and _picked.size() < HerdRules.HERD_SIZE:
+	for dino in Session.player_party:
+		if dino.id in profile.lineup and _picked.size() < PartyRules.PARTY_SIZE:
 			_picked.append(dino)
 	_battle_button.pressed.connect(func() -> void: Session.start_battle(_picked.duplicate()))
 	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
 	_refresh()
 
 	if Session.autoplay:
-		_picked = BattleAI.new(randi()).choose_herd(profile.lineup_defs(Session.catalog))
+		_picked = BattleAI.new(randi()).choose_party(profile.lineup_defs(Session.catalog))
 		_refresh()
 		await get_tree().create_timer(1.0).timeout
 		Session.start_battle(_picked)
@@ -55,11 +55,11 @@ func _ready() -> void:
 func _toggle(dino: DinoDef) -> void:
 	if dino in _picked:
 		_picked.erase(dino)
-	elif _picked.size() >= HerdRules.HERD_SIZE:
+	elif _picked.size() >= PartyRules.PARTY_SIZE:
 		_flash_hint("You've picked 3. Tap a picked dino to swap it out.")
 		return
-	elif HerdRules.points(_picked) + HerdRules.points_of(dino) > HerdRules.POINT_CAP:
-		_flash_hint("%s would go over the %d-point cap." % [dino.display_name, HerdRules.POINT_CAP])
+	elif PartyRules.points(_picked) + PartyRules.points_of(dino) > PartyRules.POINT_CAP:
+		_flash_hint("%s would go over the %d-point cap." % [dino.display_name, PartyRules.POINT_CAP])
 		return
 	else:
 		_picked.append(dino)
@@ -67,23 +67,23 @@ func _toggle(dino: DinoDef) -> void:
 
 
 func _refresh() -> void:
-	var points := HerdRules.points(_picked)
+	var points := PartyRules.points(_picked)
 	for card in _cards:
 		var is_picked := card.def in _picked
 		card.selected = is_picked
 		card.set_badge("PICKED" if is_picked else "")
-		var fits := _picked.size() < HerdRules.HERD_SIZE \
-				and points + HerdRules.points_of(card.def) <= HerdRules.POINT_CAP
+		var fits := _picked.size() < PartyRules.PARTY_SIZE \
+				and points + PartyRules.points_of(card.def) <= PartyRules.POINT_CAP
 		card.dimmed = not is_picked and not fits
 
-	var parts: Array[String] = ["Herd Points %d/%d" % [points, HerdRules.POINT_CAP]]
-	if _picked.size() == HerdRules.HERD_SIZE:
-		parts.append("Era bond: +1 ATK +1 SPD" if HerdRules.has_era_bond(_picked) else "No era bond")
-		parts.append("Balanced: +2 HP" if HerdRules.is_balanced(_picked) else "Not balanced")
+	var parts: Array[String] = ["Party Points %d/%d" % [points, PartyRules.POINT_CAP]]
+	if _picked.size() == PartyRules.PARTY_SIZE:
+		parts.append("Era bond: +1 ATK +1 SPD" if PartyRules.has_era_bond(_picked) else "No era bond")
+		parts.append("Balanced: +2 HP" if PartyRules.is_balanced(_picked) else "Not balanced")
 	_summary.text = "  ·  ".join(parts)
-	_battle_button.disabled = HerdRules.validate(_picked) != ""
-	_hint.text = "Pick 3 within %d Herd Points. Same era = Era bond. Land + Sky + Sea = Balanced." \
-			% HerdRules.POINT_CAP
+	_battle_button.disabled = PartyRules.validate(_picked) != ""
+	_hint.text = "Pick 3 within %d Party Points. Same era = Era bond. Land + Sky + Sea = Balanced." \
+			% PartyRules.POINT_CAP
 
 
 func _flash_hint(text: String) -> void:

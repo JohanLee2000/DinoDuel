@@ -23,14 +23,19 @@ func _ready() -> void:
 			Economy.WIN_CLUTCHES, Economy.WIN_AMBER, Economy.LOSS_AMBER], 20, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER))
 
-	var ready_to_fight := profile.lineup.size() == HerdRules.BRING_SIZE
+	var lineup := profile.lineup_defs(Session.catalog)
+	var problem := ""
+	if lineup.size() != PartyRules.BRING_SIZE:
+		problem = "Pick %d dinos in the Party tab first." % PartyRules.BRING_SIZE
+	elif not PartyRules.has_valid_pick(lineup):
+		problem = "Your 3 cheapest dinos cost more than %d Party Points. Swap in a cheaper one in the Party tab." 				% PartyRules.POINT_CAP
+	var ready_to_fight := problem == ""
 	var challenge := UiKit.button("Challenge %s" % rival.display_name, UiKit.BUTTON_GREEN, 110, 34)
 	challenge.disabled = not ready_to_fight
 	challenge.pressed.connect(Session.go_to_pre_battle)
 	add_child(challenge)
 	if not ready_to_fight:
-		add_child(UiKit.label("Pick %d dinos in the Herd tab first." % HerdRules.BRING_SIZE, 20,
-				Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+		add_child(UiKit.label(problem, 20, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL

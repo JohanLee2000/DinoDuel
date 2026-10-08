@@ -1,6 +1,6 @@
 class_name Combatant
 extends RefCounted
-## A dino's live state inside one battle. Stats include herd bonuses.
+## A dino's live state inside one battle. Stats include party bonuses.
 
 var def: DinoDef
 var attack: int
@@ -14,10 +14,10 @@ var braced_last_turn := false
 static func from_def(dino: DinoDef, era_bond: bool, balanced: bool) -> Combatant:
 	var c := Combatant.new()
 	c.def = dino
-	c.attack = dino.attack + (HerdRules.ERA_BOND_ATTACK if era_bond else 0)
+	c.attack = dino.attack + (PartyRules.ERA_BOND_ATTACK if era_bond else 0)
 	c.defense = dino.defense
-	c.speed = dino.speed + (HerdRules.ERA_BOND_SPEED if era_bond else 0)
-	c.max_health = dino.health + (HerdRules.BALANCED_HEALTH if balanced else 0)
+	c.speed = dino.speed + (PartyRules.ERA_BOND_SPEED if era_bond else 0)
+	c.max_health = dino.health + (PartyRules.BALANCED_HEALTH if balanced else 0)
 	c.health = c.max_health
 	return c
 

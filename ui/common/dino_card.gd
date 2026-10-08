@@ -310,7 +310,6 @@ func _draw() -> void:
 
 func _draw_overlay() -> void:
 	if not unknown:
-		_draw_corner_brackets()
 		_draw_name_banner()
 		_draw_stats()
 		_draw_type_medallion()
@@ -352,8 +351,8 @@ func _draw_tier_crest() -> void:
 		o.draw_texture_rect(crown, Rect2(origin + Vector2(cw * 0.5 - crown_w / 2, -crown_w * 0.42),
 				Vector2(crown_w, crown_w * 0.62)), false)
 	if not _small():
-		# Herd Point cost, needed when picking a herd.
-		var pts := HerdRules.points_of(def)
+		# Party Point cost, needed when picking a party.
+		var pts := PartyRules.points_of(def)
 		var pill := Rect2(origin + Vector2(cw * 0.12, ch + w * 0.01), Vector2(cw * 0.76, w * 0.065))
 		_draw_panel(pill, tier, pill.size.y / 2)
 		_text_centered(Fonts.display(), "%d PT%s" % [pts, "" if pts == 1 else "S"], pill.get_center(),
@@ -423,21 +422,6 @@ func _draw_stats() -> void:
 				int(box_h * 0.19), Palette.STAT_COLORS[i], false)
 		_text_centered(Fonts.display(), str(values[i]), Vector2(box.get_center().x, box.position.y + box_h * 0.76),
 				int(box_h * 0.34), value_color, true)
-
-
-func _draw_corner_brackets() -> void:
-	if _small():
-		return
-	var w := width
-	var h := card_height()
-	var inset := w * 0.07
-	var arm := w * 0.07
-	var color := Color(tier_color().lightened(0.5), 0.8)
-	var thickness := maxf(1.0, w * 0.006)
-	for corner in [Vector2(inset, h * 0.42), Vector2(w - inset, h * 0.42)]:
-		var dir := 1.0 if corner.x < w / 2 else -1.0
-		_overlay.draw_line(corner, corner + Vector2(dir * arm, 0), color, thickness, true)
-		_overlay.draw_line(corner, corner + Vector2(0, -arm * 0.6), color, thickness, true)
 
 
 func _draw_badge() -> void:

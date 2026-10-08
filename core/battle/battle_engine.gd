@@ -1,6 +1,6 @@
 class_name BattleEngine
 extends RefCounted
-## The Herd Battle rules. Pure functions over BattleState with no UI or randomness, so the
+## The Party Battle rules. Pure functions over BattleState with no UI or randomness, so the
 ## same code can drive AI battles, balance simulations, tests, and server-side PvP later.
 ##
 ## resolve_turn() mutates the state and returns a list of events (plain Dictionaries) that
@@ -14,10 +14,10 @@ const BENCH_HEAL := 1
 const METEOR_START_TURN := 20
 
 
-static func create(player_herd: Array[DinoDef], opponent_herd: Array[DinoDef]) -> BattleState:
+static func create(player_party: Array[DinoDef], opponent_party: Array[DinoDef]) -> BattleState:
 	var state := BattleState.new()
-	state.sides.append(BattleSide.from_herd(player_herd))
-	state.sides.append(BattleSide.from_herd(opponent_herd))
+	state.sides.append(BattleSide.from_party(player_party))
+	state.sides.append(BattleSide.from_party(opponent_party))
 	return state
 
 
@@ -117,13 +117,13 @@ static func resolve_turn(state: BattleState, actions: Array[BattleAction]) -> Ar
 
 
 ## Puts a new active dino in after a knockout. Free; doesn't use up a turn.
-static func replace_active(state: BattleState, side_index: int, herd_index: int) -> Array[Dictionary]:
+static func replace_active(state: BattleState, side_index: int, party_index: int) -> Array[Dictionary]:
 	var side := state.side(side_index)
 	assert(side.needs_replacement(), "Side %d has no knocked-out active dino" % side_index)
-	assert(herd_index in side.bench(), "Dino %d can't come in" % herd_index)
+	assert(party_index in side.bench(), "Dino %d can't come in" % party_index)
 	var from := side.active
-	side.active = herd_index
-	return [{"type": "replace", "side": side_index, "from": from, "to": herd_index}]
+	side.active = party_index
+	return [{"type": "replace", "side": side_index, "from": from, "to": party_index}]
 
 
 static func _hit(side_index: int, kind: String, attacker: Combatant, target: Combatant,
@@ -150,9 +150,9 @@ static func _apply_hits(state: BattleState, hits: Array[Dictionary], events: Arr
 			events.append({"type": "ko", "side": hit["target_side"], "index": target_side.active})
 
 
-static func _ko_reported(events: Array[Dictionary], side_index: int, herd_index: int) -> bool:
+static func _ko_reported(events: Array[Dictionary], side_index: int, party_index: int) -> bool:
 	for event in events:
-		if event["type"] == "ko" and event["side"] == side_index and event["index"] == herd_index:
+		if event["type"] == "ko" and event["side"] == side_index and event["index"] == party_index:
 			return true
 	return false
 
@@ -188,7 +188,7 @@ static func _end_turn(state: BattleState, actions: Array[BattleAction], events: 
 		var side := state.side(i)
 		side.active_dino().braced_last_turn = actions[i].kind == BattleAction.Kind.BRACE
 		for b in side.bench():
-			var dino := side.herd[b]
+			var dino := side.party[b]
 			dino.braced_last_turn = false
 			if dino.health < dino.max_health:
 				dino.health = mini(dino.max_health, dino.health + BENCH_HEAL)

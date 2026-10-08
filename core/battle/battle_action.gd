@@ -7,7 +7,7 @@ enum Kind { BITE, CHARGE, BRACE, SWAP }
 const KIND_NAMES: Array[String] = ["Bite", "Charge", "Brace", "Swap"]
 
 var kind: Kind
-## Herd index to swap to; only used when kind == SWAP.
+## Party index to swap to; only used when kind == SWAP.
 var swap_to := -1
 
 

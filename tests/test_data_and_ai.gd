@@ -12,22 +12,22 @@ func test_catalog_loads_all_dinos() -> void:
 	assert_eq(catalog.find(&"t_rex").rarity, DinoDef.Rarity.LEGENDARY)
 
 
-func test_starter_herds_get_both_bonuses() -> void:
+func test_starter_parties_get_both_bonuses() -> void:
 	var catalog := DinoCatalog.load_default()
 	for ids in [[&"coelophysis", &"eudimorphodon", &"nothosaurus"],
 			[&"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus"]]:
 		var starter: Array[DinoDef] = []
 		for id in ids:
 			starter.append(catalog.find(id))
-		assert_true(HerdRules.has_era_bond(starter), "%s era bond" % [ids])
-		assert_true(HerdRules.is_balanced(starter), "%s balanced" % [ids])
+		assert_true(PartyRules.has_era_bond(starter), "%s era bond" % [ids])
+		assert_true(PartyRules.is_balanced(starter), "%s balanced" % [ids])
 
 
-func test_ai_picks_legal_herd() -> void:
+func test_ai_picks_legal_party() -> void:
 	var rival := load("res://data/rivals/rory.tres") as RivalDef
 	var ai := rival.make_ai(7)
-	var picked := ai.choose_herd(rival.brings, rival.point_cap)
-	assert_eq(HerdRules.validate(picked, rival.point_cap), "")
+	var picked := ai.choose_party(rival.brings, rival.point_cap)
+	assert_eq(PartyRules.validate(picked, rival.point_cap), "")
 
 
 func test_ai_battles_are_legal_finite_and_deterministic() -> void:
@@ -44,15 +44,17 @@ func _ai_battle(seed_value: int) -> String:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var ais: Array[BattleAI] = [BattleAI.new(seed_value), BattleAI.new(seed_value + 1000)]
-	var herds: Array = []
+	var parties: Array = []
 	for i in 2:
-		var pool := catalog.dinos.duplicate()
 		var brought: Array[DinoDef] = []
-		while brought.size() < HerdRules.BRING_SIZE:
-			brought.append(pool.pop_at(rng.randi_range(0, pool.size() - 1)))
-		herds.append(ais[i].choose_herd(brought))
-		assert_eq(HerdRules.validate(herds[i]), "", "seed %d side %d herd" % [seed_value, i])
-	var state := BattleEngine.create(herds[0], herds[1])
+		while not PartyRules.has_valid_pick(brought):
+			var pool := catalog.dinos.duplicate()
+			brought.clear()
+			while brought.size() < PartyRules.BRING_SIZE:
+				brought.append(pool.pop_at(rng.randi_range(0, pool.size() - 1)))
+		parties.append(ais[i].choose_party(brought))
+		assert_eq(PartyRules.validate(parties[i]), "", "seed %d side %d party" % [seed_value, i])
+	var state := BattleEngine.create(parties[0], parties[1])
 	var history := ""
 	while not state.is_over():
 		if state.turn > 60:
@@ -73,10 +75,11 @@ func _ai_battle(seed_value: int) -> String:
 	return history + "winner %d" % state.winner
 
 
+## Uses fixed test dinos (not the catalog) so stat tuning can't change what's being tested:
+## an even matchup where a cancelled Charge costs a full Bite of damage.
 func test_ai_punishes_predictable_biting() -> void:
-	var catalog := DinoCatalog.load_default()
-	var mine: Array[DinoDef] = [catalog.find(&"triceratops"), catalog.find(&"plesiosaurus"), catalog.find(&"coelophysis")]
-	var theirs: Array[DinoDef] = [catalog.find(&"stegosaurus"), catalog.find(&"archaeopteryx"), catalog.find(&"nothosaurus")]
+	var mine := party([make_dino(6, 1, 5, 15), make_dino(6, 1, 5, 15, DinoDef.DinoType.SKY)])
+	var theirs := party([make_dino(6, 1, 5, 15), make_dino(6, 1, 5, 15, DinoDef.DinoType.SKY)])
 	var state := BattleEngine.create(mine, theirs)
 	var charges := 0
 	for seed_value in 100:

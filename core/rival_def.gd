@@ -6,7 +6,7 @@ extends Resource
 @export var display_name: String
 @export_multiline var intro: String
 @export var brings: Array[DinoDef] = []
-@export var point_cap := HerdRules.POINT_CAP
+@export var point_cap := PartyRules.POINT_CAP
 
 @export_group("Personality")
 ## Difficulty. Lower = plays its best-scoring move more often. Higher = more random.

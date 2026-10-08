@@ -1,7 +1,7 @@
-[gd_resource type="Theme" load_steps=3 format=3]
+[gd_resource type="Theme" format=3 uid="uid://qhbblpb8uow4"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/Barlow-Medium.ttf" id="1_body"]
-[ext_resource type="FontFile" path="res://assets/fonts/BarlowCondensed-Bold.ttf" id="2_condensed"]
+[ext_resource type="FontFile" uid="uid://dctvsro013ayw" path="res://assets/fonts/Barlow-Medium.ttf" id="1_body"]
+[ext_resource type="FontFile" uid="uid://bgdt242k1t0h4" path="res://assets/fonts/BarlowCondensed-Bold.ttf" id="2_condensed"]
 
 [resource]
 default_font = ExtResource("1_body")

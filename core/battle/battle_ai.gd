@@ -105,7 +105,7 @@ func choose_replacement(state: BattleState, me: int) -> int:
 	var best := -1
 	var best_score := -INF
 	for i in side.bench():
-		var dino := side.herd[i]
+		var dino := side.party[i]
 		var dealt := float(BattleEngine.damage(dino, enemy, false)) / maxf(1.0, enemy.health)
 		var taken := float(BattleEngine.damage(enemy, dino, false)) / maxf(1.0, dino.health)
 		var score := dealt - taken + rng.randf() * 0.05
@@ -115,26 +115,26 @@ func choose_replacement(state: BattleState, me: int) -> int:
 	return best
 
 
-## Picks HERD_SIZE dinos out of the ones brought, within the point cap.
-func choose_herd(brought: Array[DinoDef], cap: int = HerdRules.POINT_CAP) -> Array[DinoDef]:
+## Picks PARTY_SIZE dinos out of the ones brought, within the point cap.
+func choose_party(brought: Array[DinoDef], cap: int = PartyRules.POINT_CAP) -> Array[DinoDef]:
 	var best: Array[DinoDef] = []
 	var best_score := -INF
-	for combo in _combinations(brought, HerdRules.HERD_SIZE):
-		if HerdRules.validate(combo, cap) != "":
+	for combo in _combinations(brought, PartyRules.PARTY_SIZE):
+		if PartyRules.validate(combo, cap) != "":
 			continue
-		var score := herd_strength(combo) + rng.randf() * 3.0
+		var score := party_strength(combo) + rng.randf() * 3.0
 		if score > best_score:
 			best_score = score
 			best = combo
 	return best
 
 
-## Rough power estimate used for herd picks. Tuned against the balance sim, not exact.
-static func herd_strength(herd: Array[DinoDef]) -> float:
-	var era_bond := HerdRules.has_era_bond(herd)
-	var balanced := HerdRules.is_balanced(herd)
+## Rough power estimate used for party picks. Tuned against the balance sim, not exact.
+static func party_strength(party: Array[DinoDef]) -> float:
+	var era_bond := PartyRules.has_era_bond(party)
+	var balanced := PartyRules.is_balanced(party)
 	var total := 0.0
-	for dino in herd:
+	for dino in party:
 		var c := Combatant.from_def(dino, era_bond, balanced)
 		total += c.attack * 2.0 + c.defense * 3.0 + c.max_health * 0.6 + c.speed * 0.3
 	return total
@@ -154,7 +154,7 @@ static func evaluate(state: BattleState, me: int) -> float:
 
 static func _side_value(side: BattleSide) -> float:
 	var value := 0.0
-	for dino in side.herd:
+	for dino in side.party:
 		if not dino.is_knocked_out():
 			value += 1.0 + float(dino.health) / dino.max_health
 	return value

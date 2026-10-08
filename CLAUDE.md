@@ -1,12 +1,12 @@
 # Dino Duel
 
-Godot 4.7 (GDScript) portrait mobile game for Android: collect dinosaur cards, battle rival AIs in a Herd Battle. Design decisions live in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md); Jo makes the design calls, so propose options for anything not decided there.
+Godot 4.7 (GDScript) portrait mobile game for Android: collect dinosaur cards, battle rival AIs in a Party Battle. Design decisions live in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md); Jo makes the design calls, so propose options for anything not decided there.
 
 ## Layout
-- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `HerdRules`, `core/battle/` (engine, state, AI), and `core/collection/` (`PlayerProfile` save model, `Economy` numbers). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
+- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `PartyRules`, `core/battle/` (engine, state, AI), and `core/collection/` (`PlayerProfile` save model, `Economy` numbers). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
 - `data/`: `.tres` resources (dinos, catalog, rivals). New dinos must be added to `data/dino_catalog.tres`.
 - `app/session.gd`: `Session` autoload (profile, navigation, cross-scene state). `app/save_store.gd`: JSON save in `user://` with backup.
-- `ui/`: `main/` (tab shell), `tabs/` (Battle, Herd, Eggs, Dex; built in code with `UiKit`), `pre_battle/`, `battle/`, `eggs/` (egg + hatch view), shared `common/`.
+- `ui/`: `main/` (tab shell), `tabs/` (Battle, Party, Eggs, Dex; built in code with `UiKit`), `pre_battle/`, `battle/`, `eggs/` (egg + hatch view), shared `common/`.
 - `tests/`: tiny custom test runner; files named `test_*.gd` extending `res://tests/test_case.gd`.
 - `tools/balance_sim.gd`: AI-vs-AI balance report.
 
@@ -19,7 +19,7 @@ GODOT="/c/Users/johan/Downloads/Godot_v4.7.2-stable_win64.exe/Godot_v4.7.2-stabl
 "$GODOT" --path . --write-movie captures/frame.png --fixed-fps 5 --quit-after 600 -- --autoplay  # AI plays a battle + hatches, throwaway save
 "$GODOT" --path . --write-movie captures/dex.png --fixed-fps 5 --quit-after 4 -- --sandbox --tab=3 --open-dex=t_rex  # screenshot a tab/popup
 ```
-Dev flags (after `--`): `--autoplay`, `--sandbox` (reuse the autoplay save), `--tab=N` (0 Battle, 1 Herd, 2 Eggs, 3 Dex), `--open-dex=<id>`, `--open-card=<id>[:shiny]` (full-screen view of any card), `--fresh-save` (wipes the real save). Movie Maker paths are relative to the project folder; keep them in `captures/` (it has a `.gdignore`).
+Dev flags (after `--`): `--autoplay`, `--sandbox` (reuse the autoplay save), `--tab=N` (0 Battle, 1 Party, 2 Eggs, 3 Dex), `--open-dex=<id>`, `--open-card=<id>[:shiny]` (full-screen view of any card), `--fresh-save` (wipes the real save). Movie Maker paths are relative to the project folder; keep them in `captures/` (it has a `.gdignore`).
 
 Android: `"$GODOT" --headless --path . --export-debug "Android" build/android/dino_duel_debug.apk`, then `"$ANDROID_HOME/platform-tools/adb.exe" install -r build/android/dino_duel_debug.apk`. Package `com.leejohan.dinoduel` is permanent.
 Test failures that are script errors print `SCRIPT ERROR` rather than `FAIL`; check output for both.

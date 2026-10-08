@@ -15,7 +15,7 @@ func test_new_game_has_starters_and_a_clutch() -> void:
 	assert_eq(p.amber, 0)
 	var three: Array[DinoDef] = []
 	three.assign(p.lineup_defs(catalog).slice(0, 3))
-	assert_eq(HerdRules.validate(three), "", "starter lineup can battle")
+	assert_eq(PartyRules.validate(three), "", "starter lineup can battle")
 
 
 func test_new_dino_is_kept() -> void:
@@ -65,9 +65,9 @@ func test_hatch_odds_roughly_match_table() -> void:
 			counts[result.dino.rarity] += 1
 			shinies += 1 if result.shiny else 0
 	var total := 12000.0
-	assert_true(absf(counts[0] / total - 0.60) < 0.02, "common %.3f" % (counts[0] / total))
-	assert_true(absf(counts[1] / total - 0.25) < 0.02, "uncommon %.3f" % (counts[1] / total))
-	assert_true(absf(counts[2] / total - 0.10) < 0.015, "rare %.3f" % (counts[2] / total))
+	for rarity in 3:
+		var share: float = counts[rarity] / total
+		assert_true(absf(share - Economy.RARITY_ODDS[rarity]) < 0.02, "tier %d: %.3f" % [rarity, share])
 	assert_true(absf(shinies / total - Economy.SHINY_ODDS) < 0.008, "shiny %.4f" % (shinies / total))
 
 

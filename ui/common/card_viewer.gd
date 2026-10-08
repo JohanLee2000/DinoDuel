@@ -70,8 +70,8 @@ func _ready() -> void:
 		column.add_child(_centered_label(heading, 28, tier, true))
 		column.add_child(_centered_label("%s · %s era · %s" % [_dino.group, _dino.era_name(), _dino.size_text],
 				20, Palette.TEXT_DIM))
-		var pts := HerdRules.points_of(_dino)
-		column.add_child(_centered_label("Beats %s  ·  Weak to %s  ·  %d Herd Point%s" % [
+		var pts := PartyRules.points_of(_dino)
+		column.add_child(_centered_label("Beats %s  ·  Weak to %s  ·  %d Party Point%s" % [
 				DinoDef.TYPE_NAMES[(_dino.dino_type + 1) % 3], DinoDef.TYPE_NAMES[(_dino.dino_type + 2) % 3],
 				pts, "" if pts == 1 else "s"], 20, Palette.ACCENT))
 		if _dino.flavor_text != "":
