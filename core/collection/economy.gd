@@ -29,5 +29,5 @@ const STARTER_BASICS: Array[StringName] = [
 	&"coelophysis", &"eudimorphodon", &"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus",
 ]
 ## The first-launch partner choice: one Land, one Sky, one Sea, all Rare.
-const STARTER_PARTNERS: Array[StringName] = [&"dilophosaurus", &"microraptor", &"tanystropheus"]
+const STARTER_PARTNERS: Array[StringName] = [&"dilophosaurus", &"archaeopteryx", &"tanystropheus"]
 const STARTER_CLUTCHES := 2

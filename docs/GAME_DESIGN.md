@@ -71,7 +71,7 @@ Difficulty knobs per rival: `temperature` (randomness), `*_bias` (a readable hab
 - Odds per egg: N 50%, R 30%, SR 13%, SSR 5%, UR 2%. Shiny 1 in 40 (cosmetic). If 9 clutches in a row had no Epic+, the 10th is guaranteed one (SSR 80% / UR 20%). Odds are shown on the Eggs tab.
 - **Duplicates auto-melt into Amber** (N 7, R 25, SR 60, SSR 180, UR 480). A Shiny duplicate upgrades a non-Shiny copy instead.
 - **Crafting** from the Dex: N 40, R 100, SR 400, SSR 1000, UR 2000 Amber.
-- New players start by **choosing a partner** (decided 2026-10-08): Dilophosaurus (Land), Microraptor (Sky) or Tanystropheus (Sea), all Rare. They also get Coelophysis, Eudimorphodon, Stegosaurus, Rhamphorhynchus and Ichthyosaurus (Stegosaurus + Rhamphorhynchus + Ichthyosaurus is a ready-made Jurassic party with both bonuses; Tanystropheus completes a Triassic one) and **2 clutches**.
+- New players start by **choosing a partner** (decided 2026-10-08): Dilophosaurus (Land), Archaeopteryx (Sky; replaced Microraptor at Jo's request, same day) or Tanystropheus (Sea), all Rare. They also get Coelophysis, Eudimorphodon, Stegosaurus, Rhamphorhynchus and Ichthyosaurus (Stegosaurus + Rhamphorhynchus + Ichthyosaurus is a ready-made Jurassic party with both bonuses; Tanystropheus completes a Triassic one) and **2 clutches**.
 - **Party:** you bring 6; before each battle you see the rival's 6 and pick 3.
 - **Dino Dex:** grouped by era; owned dinos show in full, dinos you've faced show faded, the rest are "???".
 - Results are rolled and saved before the hatch animation plays, so closing the app can't reroll a clutch.

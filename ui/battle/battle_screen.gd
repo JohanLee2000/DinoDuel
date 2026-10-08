@@ -116,7 +116,7 @@ func _ready() -> void:
 	help.custom_minimum_size.x = 64
 	help.pressed.connect(func() -> void: HelpView.open())
 	_turn_label.get_parent().add_child(help)
-	_leave_button = UiKit.button("Leave", UiKit.BUTTON_GRAY, 52, 24)
+	_leave_button = UiKit.button("Leave", UiKit.BUTTON_RED, 52, 24)
 	_leave_button.custom_minimum_size.x = 110
 	_leave_button.pressed.connect(_confirm_leave)
 	_turn_label.get_parent().add_child(_leave_button)
@@ -486,7 +486,7 @@ func _confirm_leave() -> void:
 		_leave_dialog.queue_free()
 		_leave_dialog = null)
 	column.add_child(stay)
-	var leave := UiKit.button("Leave battle", UiKit.BUTTON_GRAY, 76, 26)
+	var leave := UiKit.button("Leave battle", UiKit.BUTTON_RED, 76, 26)
 	leave.pressed.connect(Session.forfeit_battle)
 	column.add_child(leave)
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
