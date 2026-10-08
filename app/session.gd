@@ -8,6 +8,8 @@ signal profile_changed
 const MAIN_SCENE := "res://ui/main/main.tscn"
 const PRE_BATTLE_SCENE := "res://ui/pre_battle/pre_battle.tscn"
 const BATTLE_SCENE := "res://ui/battle/battle_screen.tscn"
+## Debug builds also read dev flags from this file (see _ready).
+const DEV_ARGS_FILE := "user://dev_args.txt"
 
 enum Tab { BATTLE, PARTY, EGGS, DEX }
 
@@ -29,6 +31,11 @@ var autoplay_battles_left := 0
 var dev_open_dex: StringName
 ## Dev: show any card full-screen on launch, owned or not. `--open-card=<id>` or `<id>:shiny`.
 var dev_open_card := ""
+## Dev: a showcase save for Play Store screenshots (everything collected, no DEV buttons) that
+## never touches real progress. Pass `--store-shots`.
+var store_shots := false
+## Dev: scroll the Dex to this era on launch (0 Triassic, 1 Jurassic, 2 Cretaceous). `--dex-era=N`.
+var dev_dex_era := -1
 
 
 func _ready() -> void:
@@ -36,6 +43,10 @@ func _ready() -> void:
 	rivals = RivalDef.load_roster()
 	rival = rivals[0]
 	var args := OS.get_cmdline_user_args()
+	if OS.is_debug_build() and FileAccess.file_exists(DEV_ARGS_FILE):
+		# Phones have no command line, so USB debug installs read dev flags from this file
+		# (pushed with adb), e.g. "--store-shots --tab=3".
+		args.append_array(FileAccess.get_file_as_string(DEV_ARGS_FILE).strip_edges().split(" ", false))
 	autoplay = "--autoplay" in args
 	if autoplay:
 		# Autoplay runs get their own throwaway save so they never touch real progress.
@@ -45,6 +56,10 @@ func _ready() -> void:
 	elif "--sandbox" in args:
 		# Dev: reuse the last autoplay save instead of real progress.
 		SaveStore.folder = "user://autoplay"
+	store_shots = "--store-shots" in args
+	if store_shots:
+		SaveStore.folder = "user://store_shots"
+		SaveStore.delete_all()
 	if "--fresh-save" in args:
 		SaveStore.delete_all()
 	for arg in args:
@@ -54,10 +69,36 @@ func _ready() -> void:
 			dev_open_dex = StringName(arg.get_slice("=", 1))
 		elif arg.begins_with("--open-card="):
 			dev_open_card = arg.get_slice("=", 1)
+		elif arg.begins_with("--dex-era="):
+			dev_dex_era = int(arg.get_slice("=", 1))
+		elif arg.begins_with("--rival="):
+			# Dev: which rival --autoplay challenges.
+			for each in rivals:
+				if each.id == StringName(arg.get_slice("=", 1)):
+					rival = each
 	profile = SaveStore.load_profile(catalog)
 	if profile == null:
-		profile = PlayerProfile.new_game(randi())
+		profile = _showcase_profile() if store_shots else PlayerProfile.new_game(randi())
 		save()
+
+
+## Dev: the save the store screenshots show. Built directly rather than with
+## PlayerProfile.unlock_all, so it keeps working after that is deleted for release.
+func _showcase_profile() -> PlayerProfile:
+	# Seed 136's first egg is Brachiosaurus, so it's left out here and hatches as a new UR.
+	var showcase := PlayerProfile.new_game(136)
+	for dino in catalog.dinos:
+		if dino.id != &"brachiosaurus":
+			showcase.owned[dino.id] = dino.id in [&"t_rex", &"mosasaurus", &"quetzalcoatlus"]
+	var lineup: Array[StringName] = [&"t_rex", &"pteranodon", &"mosasaurus", &"velociraptor",
+			&"triceratops", &"quetzalcoatlus"]
+	showcase.set_lineup(lineup)
+	for result in [[&"rae", true], [&"rae", true], [&"fern", true], [&"fern", false], [&"cora", true],
+			[&"dusty", false]]:
+		showcase.record_battle(result[1], result[0])
+	showcase.amber = 1240
+	showcase.clutches = 1
+	return showcase
 
 
 ## Call after every change to the profile. Saves are small, so saving often is cheap and means

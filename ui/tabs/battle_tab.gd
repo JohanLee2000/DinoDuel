@@ -22,7 +22,7 @@ func _ready() -> void:
 
 	if Session.autoplay and problem == "":
 		await get_tree().create_timer(0.8).timeout
-		Session.go_to_pre_battle(Session.rivals[0])
+		Session.go_to_pre_battle(Session.rival)
 
 
 ## Why the player can't battle right now, or "" if they can.

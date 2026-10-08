@@ -17,6 +17,11 @@ const MATCHUP_TEXT := {
 }
 const BUTTON_COLORS: Array[Color] = [Color("d92b3a"), Color("ff7a1a"), Color("2e7bff"), Color("34445e")]
 const BENCH_CARD_WIDTH := 92.0
+## The layout is designed for a 1280-unit-tall screen. Taller phones (most modern ones, 19.5:9 and
+## up) get bigger cards instead of an empty band above the buttons; this many extra units of
+## height make the cards 100% bigger, up to MAX_CARD_SCALE.
+const EXTRA_HEIGHT_PER_SCALE := 900.0
+const MAX_CARD_SCALE := 1.3
 
 var _state: BattleState
 var _ai: BattleAI
@@ -29,6 +34,7 @@ var _bench_cards: Array[Dictionary] = [{}, {}]
 ## Per side: the HP currently on screen for each party member.
 var _shown_health: Array = [[], []]
 var _log_lines: Array[String] = []
+var _card_scale := 1.0
 
 @onready var _slots: Array[Control] = [%PlayerSlot, %EnemySlot]
 @onready var _benches: Array[VBoxContainer] = [%PlayerBench, %EnemyBench]
@@ -41,6 +47,8 @@ var _log_lines: Array[String] = []
 
 
 func _ready() -> void:
+	var extra_height := get_viewport_rect().size.y - 1280.0
+	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
 	_state = BattleEngine.create(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
 	if Session.autoplay:
@@ -292,7 +300,8 @@ func _rebuild_side(side: int) -> void:
 	if _active_cards[side]:
 		_active_cards[side].queue_free()
 	var card := DinoCard.create(battle_side.active_dino().def, DinoCard.Mode.BATTLE,
-			battle_side.active_dino(), _is_shiny(side, battle_side.active_dino().def))
+			battle_side.active_dino(), _is_shiny(side, battle_side.active_dino().def),
+			DinoCard.WIDTHS[DinoCard.Mode.BATTLE] * _card_scale)
 	card.display_health(_shown_health[side][battle_side.active])
 	_slots[side].custom_minimum_size = card.size
 	_slots[side].add_child(card)
@@ -305,7 +314,7 @@ func _rebuild_side(side: int) -> void:
 		if i == battle_side.active:
 			continue
 		var mini := DinoCard.create(battle_side.party[i].def, DinoCard.Mode.MINI, battle_side.party[i],
-				_is_shiny(side, battle_side.party[i].def), BENCH_CARD_WIDTH)
+				_is_shiny(side, battle_side.party[i].def), BENCH_CARD_WIDTH * _card_scale)
 		mini.display_health(_shown_health[side][i])
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)

@@ -4,6 +4,8 @@ extends VBoxContainer
 
 var _body: VBoxContainer
 var _summary: Label
+var _scroll: ScrollContainer
+var _era_titles: Array[Label] = []
 
 
 func _ready() -> void:
@@ -11,7 +13,7 @@ func _ready() -> void:
 	add_child(UiKit.title("Dino Dex"))
 	_summary = UiKit.label("", 20, Palette.TEXT_DIM)
 	add_child(_summary)
-	if OS.is_debug_build():
+	if OS.is_debug_build() and not Session.store_shots:
 		# Development only: debug builds (editor, USB installs) show this; release builds don't.
 		# TODO(release): delete this button and PlayerProfile.unlock_all (docs/RELEASE_CHECKLIST.md).
 		var unlock := UiKit.button("DEV: unlock all dinos", UiKit.BUTTON_GRAY, 56, 22)
@@ -21,8 +23,12 @@ func _ready() -> void:
 			_refresh())
 		add_child(unlock)
 	_body = UiKit.vbox(18)
-	add_child(UiKit.vscroll(_body))
+	_scroll = UiKit.vscroll(_body)
+	add_child(_scroll)
 	_refresh()
+	if Session.dev_dex_era >= 0:
+		_scroll_to_era(Session.dev_dex_era)
+		Session.dev_dex_era = -1
 	if Session.dev_open_dex:
 		_open.call_deferred(Session.catalog.find(Session.dev_open_dex))
 		Session.dev_open_dex = &""
@@ -31,6 +37,7 @@ func _ready() -> void:
 func _refresh() -> void:
 	for child in _body.get_children():
 		child.queue_free()
+	_era_titles.clear()
 	var profile := Session.profile
 	var shinies := 0
 	for id in profile.owned:
@@ -41,8 +48,10 @@ func _refresh() -> void:
 	for era in DinoDef.ERA_NAMES.size():
 		var dinos := Session.catalog.dinos.filter(func(d: DinoDef) -> bool: return d.era == era)
 		var owned := dinos.filter(func(d: DinoDef) -> bool: return profile.owns(d.id)).size()
-		_body.add_child(UiKit.title("%s  %d/%d" % [DinoDef.ERA_NAMES[era], owned, dinos.size()], 28,
-				Palette.HIGHLIGHT if owned == dinos.size() else Palette.TEXT))
+		var era_title := UiKit.title("%s  %d/%d" % [DinoDef.ERA_NAMES[era], owned, dinos.size()], 28,
+				Palette.HIGHLIGHT if owned == dinos.size() else Palette.TEXT)
+		_era_titles.append(era_title)
+		_body.add_child(era_title)
 		var row := UiKit.grid(3, 12)
 		row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		for dino in dinos:
@@ -58,6 +67,13 @@ func _refresh() -> void:
 			card.pressed.connect(_open.bind(dino))
 			row.add_child(card)
 		_body.add_child(row)
+
+
+## Dev (--dex-era): scrolls so that era's heading is at the top, once the grid has been laid out.
+func _scroll_to_era(era: int) -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	_scroll.scroll_vertical = int(_era_titles[era].position.y)
 
 
 func _open(dino: DinoDef) -> void:
