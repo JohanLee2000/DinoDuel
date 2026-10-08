@@ -21,7 +21,7 @@ GODOT="/c/Users/johan/Downloads/Godot_v4.7.2-stable_win64.exe/Godot_v4.7.2-stabl
 ```
 Dev flags (after `--`): `--autoplay`, `--sandbox` (reuse the autoplay save), `--tab=N` (0 Battle, 1 Party, 2 Eggs, 3 Dex), `--open-dex=<id>`, `--open-card=<id>[:shiny]` (full-screen view of any card), `--fresh-save` (wipes the real save). Movie Maker paths are relative to the project folder; keep them in `captures/` (it has a `.gdignore`).
 
-Android: `"$GODOT" --headless --path . --export-debug "Android" build/android/dino_duel_debug.apk`, then `"$ANDROID_HOME/platform-tools/adb.exe" install -r build/android/dino_duel_debug.apk`. Package `com.leejohan.dinoduel` is permanent.
+Android: `"$GODOT" --headless --path . --export-debug "Android" build/android/dino_duel_debug.apk`, then `"$ANDROID_HOME/platform-tools/adb.exe" install -r build/android/dino_duel_debug.apk`. Package `com.dinoduelstudios.dinoduel` (changed from com.leejohan.dinoduel on 2026-10-08) becomes permanent once uploaded to Google Play.
 Test failures that are script errors print `SCRIPT ERROR` rather than `FAIL`; check output for both.
 
 ## Conventions

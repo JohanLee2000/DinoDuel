@@ -82,6 +82,7 @@ func _owned_sorted() -> Array[DinoDef]:
 func _empty_slot() -> Control:
 	var slot := PanelContainer.new()
 	slot.custom_minimum_size = DinoCard.size_for(DinoCard.Mode.MINI)
+	slot.mouse_filter = Control.MOUSE_FILTER_PASS  # let drags reach the scroll area
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(1, 1, 1, 0.04)
 	style.border_color = Color(1, 1, 1, 0.2)

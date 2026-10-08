@@ -81,6 +81,8 @@ static func style_button(b: Button, color: Color) -> void:
 
 static func panel(content: Control, color := Palette.PANEL, margin := 14) -> PanelContainer:
 	var p := PanelContainer.new()
+	# Panels default to STOP, which would swallow drags meant for a parent ScrollContainer.
+	p.mouse_filter = Control.MOUSE_FILTER_PASS
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(color, 0.92)
 	style.border_color = Palette.PANEL_BORDER

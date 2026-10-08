@@ -18,9 +18,9 @@ config/name="Dino Duel"
 run/main_scene="res://ui/main/main.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://assets/branding/app_icon_512.png"
 boot_splash/bg_color=Color(0.0352941, 0.0588235, 0.109804, 1)
 boot_splash/image="res://assets/branding/logo.png"
+config/icon="res://assets/branding/app_icon_512.png"
 
 [autoload]
 
@@ -43,8 +43,8 @@ theme/custom="res://ui/theme/main_theme.tres"
 [importer_defaults]
 
 texture={
-"compress/mode": 1,
-"compress/lossy_quality": 0.85
+"compress/lossy_quality": 0.85,
+"compress/mode": 1
 }
 
 [rendering]

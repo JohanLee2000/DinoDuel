@@ -133,7 +133,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Dilophosaurus | Land | Jurassic | R | 7 | 1 | 7 | 12 |
 | Dimorphodon | Sky | Jurassic | N | 5 | 0 | 7 | 9 |
 | Pterodactylus | Sky | Jurassic | N | 4 | 1 | 9 | 9 |
-| Spinosaurus | Sea | Cretaceous | SSR | 8 | 1 | 5 | 18 |
+| Spinosaurus | Land | Cretaceous | SSR | 8 | 1 | 5 | 18 |
 | Ankylosaurus | Land | Cretaceous | SR | 6 | 3 | 2 | 19 |
 | Parasaurolophus | Land | Cretaceous | N | 4 | 1 | 5 | 13 |
 | Archelon | Sea | Cretaceous | R | 5 | 3 | 2 | 17 |

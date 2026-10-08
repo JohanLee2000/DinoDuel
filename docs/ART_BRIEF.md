@@ -48,21 +48,21 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `rhamphorhynchus` | Rhamphorhynchus | SKY | COMMON (N) | Done |
 | `nothosaurus` | Nothosaurus | SEA | RARE (R) | Done |
 | `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | Done |
-| `postosuchus` | Postosuchus | LAND | RARE (R) | Needed |
-| `plateosaurus` | Plateosaurus | LAND | COMMON (N) | Needed |
-| `icarosaurus` | Icarosaurus | SKY | COMMON (N) | Needed |
-| `tanystropheus` | Tanystropheus | SEA | RARE (R) | Needed |
-| `shonisaurus` | Shonisaurus | SEA | EPIC (SSR) | Needed |
-| `allosaurus` | Allosaurus | LAND | SUPER RARE (SR) | Needed |
-| `brachiosaurus` | Brachiosaurus | LAND | LEGENDARY (UR) | Needed |
-| `dilophosaurus` | Dilophosaurus | LAND | RARE (R) | Needed |
-| `dimorphodon` | Dimorphodon | SKY | COMMON (N) | Needed |
-| `pterodactylus` | Pterodactylus | SKY | COMMON (N) | Needed |
-| `spinosaurus` | Spinosaurus | SEA | EPIC (SSR) | Needed |
-| `ankylosaurus` | Ankylosaurus | LAND | SUPER RARE (SR) | Needed |
-| `parasaurolophus` | Parasaurolophus | LAND | COMMON (N) | Needed |
-| `archelon` | Archelon | SEA | RARE (R) | Needed |
-| `microraptor` | Microraptor | SKY | RARE (R) | Needed |
+| `postosuchus` | Postosuchus | LAND | RARE (R) | Done |
+| `plateosaurus` | Plateosaurus | LAND | COMMON (N) | Done |
+| `icarosaurus` | Icarosaurus | SKY | COMMON (N) | Done |
+| `tanystropheus` | Tanystropheus | SEA | RARE (R) | Done |
+| `shonisaurus` | Shonisaurus | SEA | EPIC (SSR) | Done |
+| `allosaurus` | Allosaurus | LAND | SUPER RARE (SR) | Done |
+| `brachiosaurus` | Brachiosaurus | LAND | LEGENDARY (UR) | Done |
+| `dilophosaurus` | Dilophosaurus | LAND | RARE (R) | Done |
+| `dimorphodon` | Dimorphodon | SKY | COMMON (N) | Done |
+| `pterodactylus` | Pterodactylus | SKY | COMMON (N) | Done |
+| `spinosaurus` | Spinosaurus | LAND | EPIC (SSR) | Done |
+| `ankylosaurus` | Ankylosaurus | LAND | SUPER RARE (SR) | Done |
+| `parasaurolophus` | Parasaurolophus | LAND | COMMON (N) | Done |
+| `archelon` | Archelon | SEA | RARE (R) | Done |
+| `microraptor` | Microraptor | SKY | RARE (R) | Done |
 
 Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized and fully feathered") helps ChatGPT get the anatomy right.
 
