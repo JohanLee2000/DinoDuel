@@ -142,6 +142,16 @@ func test_lineup_rules() -> void:
 	assert_eq(p.lineup.size(), 2)
 
 
+func test_unlock_all_keeps_shinies() -> void:
+	var p := PlayerProfile.new_game(1)
+	p.add_dino(_dino(&"coelophysis"), true)
+	p.mark_seen(&"t_rex")
+	p.unlock_all(catalog)
+	assert_eq(p.owned.size(), catalog.dinos.size())
+	assert_true(p.is_shiny(&"coelophysis"))
+	assert_true(p.seen.is_empty())
+
+
 func test_seen_clears_when_owned() -> void:
 	var p := PlayerProfile.new_game(1)
 	p.mark_seen(&"t_rex")

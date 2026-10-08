@@ -11,6 +11,14 @@ func _ready() -> void:
 	add_child(UiKit.title("Dino Dex"))
 	_summary = UiKit.label("", 20, Palette.TEXT_DIM)
 	add_child(_summary)
+	if OS.is_debug_build():
+		# Development only: debug builds (editor, USB installs) show this; release builds don't.
+		var unlock := UiKit.button("DEV: unlock all dinos", UiKit.BUTTON_GRAY, 56, 22)
+		unlock.pressed.connect(func() -> void:
+			Session.profile.unlock_all(Session.catalog)
+			Session.save()
+			_refresh())
+		add_child(unlock)
 	_body = UiKit.vbox(18)
 	add_child(UiKit.vscroll(_body))
 	_refresh()

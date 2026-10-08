@@ -67,6 +67,14 @@ func add_dino(dino: DinoDef, shiny: bool) -> HatchResult:
 	return result
 
 
+## Development helper: owns every dino in the catalog (keeps existing Shiny copies).
+func unlock_all(catalog: DinoCatalog) -> void:
+	for dino in catalog.dinos:
+		if not owns(dino.id):
+			owned[dino.id] = false
+		seen.erase(dino.id)
+
+
 func can_craft(dino: DinoDef) -> bool:
 	return not owns(dino.id) and amber >= Economy.CRAFT_COST[dino.rarity]
 
