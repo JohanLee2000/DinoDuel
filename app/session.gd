@@ -112,6 +112,7 @@ func _showcase_profile() -> PlayerProfile:
 		showcase.record_battle(result[1], result[0])
 	showcase.amber = 1240
 	showcase.tutorial_done = true
+	showcase.partner_chosen = true
 	showcase.clutches = 1
 	return showcase
 

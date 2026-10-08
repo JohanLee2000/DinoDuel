@@ -18,8 +18,8 @@ func test_catalog_loads_all_dinos() -> void:
 
 func test_starter_parties_get_both_bonuses() -> void:
 	var catalog := DinoCatalog.load_default()
-	for ids in [[&"coelophysis", &"eudimorphodon", &"nothosaurus"],
-			[&"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus"]]:
+	for ids in [[&"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus"],
+			[&"coelophysis", &"eudimorphodon", &"tanystropheus"]]:
 		var starter: Array[DinoDef] = []
 		for id in ids:
 			starter.append(catalog.find(id))

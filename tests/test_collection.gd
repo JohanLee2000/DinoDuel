@@ -9,8 +9,12 @@ func _dino(id: StringName) -> DinoDef:
 
 func test_new_game_has_starters_and_a_clutch() -> void:
 	var p := PlayerProfile.new_game(1)
+	assert_eq(p.owned.size(), 5, "5 basics before the partner")
+	assert_false(p.partner_chosen)
+	assert_true(p.choose_partner(&"tanystropheus"))
 	assert_eq(p.owned.size(), 6)
 	assert_eq(p.lineup.size(), 6)
+	assert_eq(p.partner, &"tanystropheus")
 	assert_eq(p.clutches, Economy.STARTER_CLUTCHES)
 	assert_eq(p.amber, 0)
 	var three: Array[DinoDef] = []
@@ -49,6 +53,7 @@ func test_shiny_duplicate_upgrades_then_melts() -> void:
 
 func test_hatch_uses_a_clutch_and_gives_three() -> void:
 	var p := PlayerProfile.new_game(1)
+	p.clutches = 1
 	assert_eq(p.hatch_clutch(catalog).size(), 3)
 	assert_eq(p.clutches, 0)
 	assert_eq(p.hatch_clutch(catalog).size(), 0, "no clutch, no eggs")
@@ -229,4 +234,28 @@ func test_tutorial_flag_saves_and_old_saves_infer_it() -> void:
 	assert_false(PlayerProfile.from_dict(old_save, catalog).tutorial_done, "old save, never battled")
 	old_save["wins"] = 3
 	assert_true(PlayerProfile.from_dict(old_save, catalog).tutorial_done, "old save that has battled")
+
+
+func test_partner_is_chosen_once_from_the_starter_three() -> void:
+	var p := PlayerProfile.new_game(1)
+	assert_false(p.choose_partner(&"t_rex"), "not a starter partner")
+	assert_true(p.choose_partner(&"microraptor"))
+	assert_false(p.choose_partner(&"dilophosaurus"), "only one partner")
+	assert_false(p.owns(&"dilophosaurus"))
+	var reloaded := PlayerProfile.from_dict(p.to_dict(), catalog)
+	assert_true(reloaded.partner_chosen)
+	assert_eq(reloaded.partner, &"microraptor")
+	var old_save := PlayerProfile.new_game(2).to_dict()
+	old_save.erase("partner_chosen")
+	assert_true(PlayerProfile.from_dict(old_save, catalog).partner_chosen, "old saves already have their 6")
+
+
+func test_every_partner_gives_a_battle_ready_lineup() -> void:
+	for id in Economy.STARTER_PARTNERS:
+		var p := PlayerProfile.new_game(3)
+		p.choose_partner(id)
+		var lineup := p.lineup_defs(catalog)
+		assert_eq(lineup.size(), PartyRules.BRING_SIZE, "%s lineup" % id)
+		assert_true(PartyRules.has_valid_pick(lineup), "%s can field a party" % id)
+		assert_eq(catalog.find(id).rarity, DinoDef.Rarity.RARE, "%s is Rare" % id)
 

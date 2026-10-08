@@ -49,6 +49,8 @@ func _ready() -> void:
 		var parts := Session.dev_open_card.split(":")
 		CardViewer.open.call_deferred(Session.catalog.find(StringName(parts[0])), parts.size() > 1)
 		Session.dev_open_card = ""
+	if not Session.profile.partner_chosen:
+		PartnerPick.open.call_deferred()
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()

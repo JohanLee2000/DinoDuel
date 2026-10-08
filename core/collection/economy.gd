@@ -22,8 +22,12 @@ const LOSS_AMBER := 10
 const CLUTCH_PRICE := 150
 const DAILY_CLUTCHES := 1
 
-const STARTER_DINOS: Array[StringName] = [
-	&"coelophysis", &"eudimorphodon", &"nothosaurus",
-	&"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus",
+## New players get these 5, then pick one partner from STARTER_PARTNERS to make the 6 they bring.
+## Stegosaurus, Rhamphorhynchus and Ichthyosaurus are a ready-made Jurassic party (era bond and
+## Balanced); Tanystropheus completes a Triassic one with Coelophysis and Eudimorphodon.
+const STARTER_BASICS: Array[StringName] = [
+	&"coelophysis", &"eudimorphodon", &"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus",
 ]
-const STARTER_CLUTCHES := 1
+## The first-launch partner choice: one Land, one Sky, one Sea, all Rare.
+const STARTER_PARTNERS: Array[StringName] = [&"dilophosaurus", &"microraptor", &"tanystropheus"]
+const STARTER_CLUTCHES := 2

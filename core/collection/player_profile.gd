@@ -25,17 +25,35 @@ var rival_record: Dictionary = {}
 var eggs_hatched := 0
 ## The first battle comes with a coach (see BattleScreen); this flips once it's been played.
 var tutorial_done := false
+## New games start by picking a partner (Economy.STARTER_PARTNERS); saves from before that have
+## their 6 starters already, so they count as chosen.
+var partner_chosen := false
+var partner: StringName = &""
 var _rng := RandomNumberGenerator.new()
 
 
 static func new_game(seed_value: int) -> PlayerProfile:
 	var profile := PlayerProfile.new()
 	profile._rng.seed = seed_value
-	for id in Economy.STARTER_DINOS:
+	for id in Economy.STARTER_BASICS:
 		profile.owned[id] = false
-	profile.lineup.assign(Economy.STARTER_DINOS)
+	profile.lineup.assign(Economy.STARTER_BASICS)
 	profile.clutches = Economy.STARTER_CLUTCHES
 	return profile
+
+
+## Adds the chosen partner to the collection and the lineup. Only once, and only a starter partner.
+func choose_partner(id: StringName) -> bool:
+	if partner_chosen or not id in Economy.STARTER_PARTNERS:
+		return false
+	if not owns(id):
+		owned[id] = false
+	seen.erase(id)
+	if not id in lineup and lineup.size() < PartyRules.BRING_SIZE:
+		lineup.append(id)
+	partner = id
+	partner_chosen = true
+	return true
 
 
 # --- Collection -----------------------------------------------------------------------------
@@ -218,6 +236,8 @@ func to_dict() -> Dictionary:
 		"rival_record": rival_record.duplicate(true),
 		"eggs_hatched": eggs_hatched,
 		"tutorial_done": tutorial_done,
+		"partner_chosen": partner_chosen,
+		"partner": String(partner),
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
 		"rng_state": str(_rng.state),
@@ -257,6 +277,8 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.eggs_hatched = int(data.get("eggs_hatched", 0))
 	# Saves from before the tutorial existed: anyone who has battled already knows the moves.
 	profile.tutorial_done = bool(data.get("tutorial_done", profile.wins + profile.losses > 0))
+	profile.partner_chosen = bool(data.get("partner_chosen", true))
+	profile.partner = StringName(data.get("partner", ""))
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()
 	return profile
