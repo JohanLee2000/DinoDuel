@@ -82,5 +82,5 @@ func _confirm_choice() -> void:
 		return
 	Sound.play(&"new_dino")
 	Session.save()
-	# Reload the tabs so they show the full party of 6.
-	Session.go_to_main(Session.Tab.BATTLE)
+	# Reload the tabs so they show the full party of 6, starting where the first step is: hatching.
+	Session.go_to_main(Session.Tab.EGGS)

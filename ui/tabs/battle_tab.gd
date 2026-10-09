@@ -17,7 +17,8 @@ func _ready() -> void:
 
 	var list := UiKit.vbox(14)
 	for rival in Session.rivals:
-		list.add_child(_rival_panel(rival, problem == "", rival == Session.rivals[0] and Session.wants_coach()))
+		list.add_child(_rival_panel(rival, problem == "", rival == Session.rivals[0] and Session.wants_coach() \
+				and (not Session.profile.first_steps_active or Session.profile.next_first_step() == &"battle")))
 	add_child(UiKit.vscroll(list))
 
 	if Session.autoplay and problem == "":

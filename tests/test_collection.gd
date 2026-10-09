@@ -270,3 +270,46 @@ func test_forfeit_is_a_loss_without_amber() -> void:
 	assert_eq(p.amber, amber, "no Amber for quitting")
 	assert_eq(p.clutches, clutches)
 
+
+func test_first_steps_follow_progress_and_pay_once() -> void:
+	var p := PlayerProfile.new_game(5)
+	assert_true(p.first_steps_active)
+	assert_eq(p.next_first_step(), &"partner")
+	p.choose_partner(&"tanystropheus")
+	assert_eq(p.next_first_step(), &"hatch")
+	p.clutches = 1
+	var hatched := p.hatch_clutch(catalog)
+	assert_eq(p.next_first_step(), &"dex")
+	p.opened_dex_card = true
+	assert_eq(p.next_first_step(), &"party")
+	var new_dino: StringName = &""
+	for result in hatched:
+		if not p._is_starter(result.dino.id):
+			new_dino = result.dino.id
+	if new_dino != &"":
+		var lineup: Array[StringName] = p.lineup.slice(0, 5)
+		lineup.append(new_dino)
+		assert_eq(p.set_lineup(lineup), "")
+	assert_eq(p.next_first_step(), &"battle")
+	assert_false(p.claim_first_steps_reward(), "not finished yet")
+	p.record_battle(true, &"rae")
+	assert_eq(p.next_first_step(), &"")
+	var clutches := p.clutches
+	assert_true(p.claim_first_steps_reward())
+	assert_eq(p.clutches, clutches + Economy.FIRST_STEPS_CLUTCHES)
+	assert_false(p.first_steps_active)
+	assert_false(p.claim_first_steps_reward(), "only once")
+
+
+func test_first_steps_party_step_cannot_get_stuck() -> void:
+	var p := PlayerProfile.new_game(6)
+	p.choose_partner(&"dilophosaurus")
+	p.eggs_hatched = 3  # hatched, but (say) only duplicates of starters
+	assert_true(p.first_step_done(&"party"), "nothing new to add, so the step is done")
+
+
+func test_old_saves_skip_first_steps() -> void:
+	var old_save := PlayerProfile.new_game(7).to_dict()
+	old_save.erase("first_steps_active")
+	assert_false(PlayerProfile.from_dict(old_save, catalog).first_steps_active)
+

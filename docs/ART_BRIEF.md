@@ -107,3 +107,14 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 - Purely AI-generated images may not be protected by copyright, so others could reuse them, and another user could get a similar image. That's acceptable for a card game, but it's why keeping your prompts on file is worthwhile.
 - Don't put living artists' names, other franchises (e.g. Jurassic Park), or logos in prompts.
 - Don't use images from the DinosaurDatabase project unless they're licensed for commercial use.
+
+## Story intro panels (optional)
+
+The new-player intro (`ui/main/story_intro.gd`) shows four panels. Until these exist it builds them from the battle backgrounds, an amber-glowing egg and two cards. To replace one, generate a **2:3 portrait (1024 x 1536)**, keep the **bottom third calm and dark** (the caption sits there), and save it as `assets/story/panel_N.webp`; the game picks it up automatically. Same painterly, cinematic style as the cards. No text, logos or UI in the image.
+
+| File | Caption | Prompt idea |
+|---|---|---|
+| `panel_1.webp` | 66 million years ago, the dinosaurs vanished. Their fossils didn't. | A vast prehistoric landscape at the moment of the asteroid impact: a fiery streak in an orange sky over volcanoes and a lone silhouetted dinosaur, the lower third fading into dark cracked earth with a half-buried fossil skull. |
+| `panel_2.webp` | You've found a way to wake them: fossil eggs sealed in amber, ready to hatch. | A modern fossil hunter's lantern-lit dig site at night; in the centre a large speckled dinosaur egg cradled in glowing golden amber, cracks of warm light on its shell, tools and brushes around it; dark rock in the lower third. |
+| `panel_3.webp` | Other collectors are hunting too. Battle them, win their eggs, and fill your Dino Dex. | Two rival dinosaurs facing off across a rocky arena under a stormy sky, a Tyrannosaurus and a Mosasaurus rising from crashing surf, dramatic rim light, dust and spray; dark foreground in the lower third. |
+| `panel_4.webp` | Every hunter needs a partner. Choose yours. | Three small young dinosaurs side by side on a sunlit ridge at dawn, a Dilophosaurus, an Archaeopteryx perched on a rock and a Tanystropheus at the water's edge, looking toward the viewer; soft clouds below the ridge in the lower third. |

@@ -10,6 +10,8 @@ const TABS := [
 
 var _buttons: Array[Button] = []
 var _current: Control
+var _first_steps: FirstStepsBar
+var _tab_glow: Tween
 
 @onready var _content: MarginContainer = %Content
 @onready var _nav_bar: HBoxContainer = %NavBar
@@ -43,6 +45,11 @@ func _ready() -> void:
 		button.pressed.connect(_show_tab.bind(i))
 		_nav_bar.add_child(button)
 		_buttons.append(button)
+	_first_steps = FirstStepsBar.new()
+	_first_steps.go_to_tab.connect(_show_tab)
+	var column := _content.get_parent()
+	column.add_child(_first_steps)
+	column.move_child(_first_steps, _content.get_index())
 	Session.profile_changed.connect(_update_bar)
 	_show_tab(Session.current_tab)
 	if Session.dev_open_card != "":
@@ -50,13 +57,19 @@ func _ready() -> void:
 		CardViewer.open.call_deferred(Session.catalog.find(StringName(parts[0])), parts.size() > 1)
 		Session.dev_open_card = ""
 	if not Session.profile.partner_chosen:
-		PartnerPick.open.call_deferred()
+		_start_new_player.call_deferred()
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()
 		"help":
 			HelpView.open.call_deferred()
 	Session.dev_open = ""
+
+
+## Brand-new players: the story panels, then the partner pick.
+func _start_new_player() -> void:
+	await StoryIntro.open().finished
+	PartnerPick.open()
 
 
 func _show_tab(index: int) -> void:
@@ -76,6 +89,29 @@ func _update_bar() -> void:
 	_clutch_label.text = str(profile.clutches)
 	var eggs_waiting := profile.clutches > 0 or profile.can_claim_daily(SaveStore.today())
 	_buttons[Session.Tab.EGGS].text = "Eggs (!)" if eggs_waiting else "Eggs"
+	_first_steps.refresh()
+	_glow_tab(_first_steps.next_tab())
+
+
+## Pulses the tab button the First steps checklist wants next (unless it's already open).
+func _glow_tab(index: int) -> void:
+	if _tab_glow:
+		_tab_glow.kill()
+		_tab_glow = null
+	for i in _buttons.size():
+		_buttons[i].modulate = Color.WHITE
+		UiKit.style_button(_buttons[i], UiKit.BUTTON_GREEN if i == Session.current_tab else Palette.PANEL)
+	if index < 0 or index == Session.current_tab:
+		return
+	var button := _buttons[index]
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var outlined := (button.get_theme_stylebox(state) as StyleBoxFlat).duplicate() as StyleBoxFlat
+		outlined.border_color = Palette.HIGHLIGHT
+		outlined.set_border_width_all(3)
+		button.add_theme_stylebox_override(state, outlined)
+	_tab_glow = button.create_tween().set_loops()
+	_tab_glow.tween_property(button, "modulate", Color(1.6, 1.4, 0.7), 0.5).set_trans(Tween.TRANS_SINE)
+	_tab_glow.tween_property(button, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_SINE)
 
 
 func _add_icon_before(label: Label, icon_name: StringName) -> void:

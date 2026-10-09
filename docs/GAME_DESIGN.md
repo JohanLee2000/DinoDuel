@@ -96,6 +96,11 @@ One painted scene per type in `assets/battle/` (Land: volcanic wasteland, Sea: s
 ## App layout (decided)
 Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
+## New-player intro (decided 2026-10-08)
+- **Story panels** first: four skippable full-screen panels, one line each ("66 million years ago, the dinosaurs vanished. Their fossils didn't." / fossil eggs sealed in amber / rival collectors / "Every hunter needs a partner. Choose yours."), then the partner pick. Panels use `assets/story/panel_N.webp` if present (prompts in docs/ART_BRIEF.md), otherwise existing art.
+- **First steps checklist** (new games only), a banner under the top bar; the next step's tab glows with a gold outline: choose a partner, hatch your eggs, meet your dinos (open one in the Dex), build your party (swap in a hatched dino), win your first battle. Finishing all gives **1 bonus clutch**. Steps are read from the save (`PlayerProfile.first_step_done`), so they can't drift.
+- Order: partner → hatch the 2 starting clutches → party → coached first battle. After the partner pick the game opens on the Eggs tab; Rookie Rae's "Start here" only shows once battling is the next step.
+
 ## Tutorial (decided 2026-10-08)
 - A new player's **first battle is coached** (`Session.wants_coach()`; done once it ends or the player taps "Skip tips"). The Battle tab marks the first rival "Start here", and the pick screen explains Party Points and Balanced.
 - The battle opens with the "Battle moves" help card. For the first 3 turns the rival's moves are scripted (Bite, Brace, Charge) and the coach suggests the counter (Brace, Charge, Bite) with a pulsing button, so the player meets the whole triangle. After that the rival plays normally and the coach gives one-time tips (type edge, bad matchup, low HP, knocked out).

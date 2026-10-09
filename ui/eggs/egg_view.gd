@@ -94,6 +94,12 @@ func _burst() -> void:
 	burst.emit()
 
 
+## Shows the egg cracked and glowing without any tap animation (the story intro uses this).
+func show_glowing(glow: float) -> void:
+	_cracks = 1
+	_set_glow(glow)
+
+
 func _set_glow(value: float) -> void:
 	_glow = value
 	queue_redraw()

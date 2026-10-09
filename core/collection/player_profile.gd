@@ -29,6 +29,10 @@ var tutorial_done := false
 ## their 6 starters already, so they count as chosen.
 var partner_chosen := false
 var partner: StringName = &""
+## The new-player "First steps" checklist is showing (new games only; off once its reward is claimed).
+var first_steps_active := false
+## First steps that can't be read from the rest of the save.
+var opened_dex_card := false
 var _rng := RandomNumberGenerator.new()
 
 
@@ -39,6 +43,7 @@ static func new_game(seed_value: int) -> PlayerProfile:
 		profile.owned[id] = false
 	profile.lineup.assign(Economy.STARTER_BASICS)
 	profile.clutches = Economy.STARTER_CLUTCHES
+	profile.first_steps_active = true
 	return profile
 
 
@@ -228,6 +233,57 @@ func record_forfeit(rival_id: StringName = &"") -> void:
 		rival_record[rival_id] = record
 
 
+# --- First steps (new players) ----------------------------------------------------------------
+
+## The checklist in order. Most steps are read from the save, so they can't get out of sync.
+const FIRST_STEPS: Array[StringName] = [&"partner", &"hatch", &"dex", &"party", &"battle"]
+
+
+func first_step_done(step: StringName) -> bool:
+	match step:
+		&"partner":
+			return partner_chosen
+		&"hatch":
+			return eggs_hatched > 0
+		&"dex":
+			return opened_dex_card
+		&"party":
+			return _party_has_a_new_dino() or (eggs_hatched > 0 and not _owns_a_new_dino())
+		&"battle":
+			return wins > 0
+	return false
+
+
+## The first step not done yet, or &"" when all are.
+func next_first_step() -> StringName:
+	for step in FIRST_STEPS:
+		if not first_step_done(step):
+			return step
+	return &""
+
+
+## Gives the checklist's bonus clutch once everything is done, and retires the checklist.
+func claim_first_steps_reward() -> bool:
+	if not first_steps_active or next_first_step() != &"":
+		return false
+	clutches += Economy.FIRST_STEPS_CLUTCHES
+	first_steps_active = false
+	return true
+
+
+func _is_starter(id: StringName) -> bool:
+	return id in Economy.STARTER_BASICS or id == partner
+
+
+func _party_has_a_new_dino() -> bool:
+	return lineup.size() == PartyRules.BRING_SIZE and lineup.any(func(id: StringName) -> bool: return not _is_starter(id))
+
+
+## Whether there's anything beyond the starters to add (all-duplicate hatches can't block the step).
+func _owns_a_new_dino() -> bool:
+	return owned.keys().any(func(id: StringName) -> bool: return not _is_starter(id))
+
+
 # --- Saving ---------------------------------------------------------------------------------
 
 func to_dict() -> Dictionary:
@@ -247,6 +303,8 @@ func to_dict() -> Dictionary:
 		"tutorial_done": tutorial_done,
 		"partner_chosen": partner_chosen,
 		"partner": String(partner),
+		"first_steps_active": first_steps_active,
+		"opened_dex_card": opened_dex_card,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
 		"rng_state": str(_rng.state),
@@ -288,6 +346,9 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.tutorial_done = bool(data.get("tutorial_done", profile.wins + profile.losses > 0))
 	profile.partner_chosen = bool(data.get("partner_chosen", true))
 	profile.partner = StringName(data.get("partner", ""))
+	# Saves from before the checklist existed are past the new-player stage.
+	profile.first_steps_active = bool(data.get("first_steps_active", false))
+	profile.opened_dex_card = bool(data.get("opened_dex_card", false))
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()
 	return profile

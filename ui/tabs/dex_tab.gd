@@ -93,6 +93,9 @@ func _open(dino: DinoDef) -> void:
 		viewer.closed.connect(_refresh)
 	else:
 		CardViewer.open(dino, profile.is_shiny(dino.id))
+		if not profile.opened_dex_card:
+			profile.opened_dex_card = true
+			Session.save()
 
 
 func _craft(dino: DinoDef, viewer: CardViewer) -> void:
