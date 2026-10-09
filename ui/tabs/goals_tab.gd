@@ -46,7 +46,7 @@ func _refresh() -> void:
 	var all_done := profile.quests.all(func(q: Dictionary) -> bool: return Goals.quest_done(q))
 	_body.add_child(_row("Finish all 3 quests", "A bonus for clearing the day.",
 			1 if all_done else 0, 1, "+%d egg clutch" % Goals.QUEST_BONUS_CLUTCHES, profile.quest_bonus_claimed,
-			func() -> bool: return Goals.claim_quest_bonus(profile), true))
+			func() -> bool: return Goals.claim_quest_bonus(profile)))
 
 	# Collection.
 	_body.add_child(UiKit.title("Collection", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
@@ -60,7 +60,7 @@ func _refresh() -> void:
 		var progress := Goals.era_progress(profile, catalog, era)
 		_body.add_child(_row("Complete the %s" % DinoDef.ERA_NAMES[era], "Discover every %s dino. Earns a gold badge in the Dex." % DinoDef.ERA_NAMES[era],
 				progress[0], progress[1], "+%d egg clutch" % Goals.ERA_CLUTCHES, Goals.era_claimed(profile, era),
-				func() -> bool: return Goals.claim_era(profile, catalog, era), true))
+				func() -> bool: return Goals.claim_era(profile, catalog, era)))
 
 	# Achievements: ready to claim first, then in progress, then the ones already claimed.
 	var unlocked := 0
@@ -91,7 +91,7 @@ func _restore_scroll(value: int) -> void:
 
 ## One goal: title, description, progress bar, reward, and Claim / Done.
 func _row(title: String, description: String, progress: int, target: int, reward: String, claimed: bool,
-		claim: Callable, gives_eggs := false) -> Control:
+		claim: Callable) -> Control:
 	var done := progress >= target
 	var row := UiKit.hbox(14)
 	var text := UiKit.vbox(4)
@@ -113,7 +113,7 @@ func _row(title: String, description: String, progress: int, target: int, reward
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 26)
 		button.pressed.connect(func() -> void:
 			if claim.call():
-				Sound.play(&"clutch_open" if gives_eggs else &"amber")
+				Sound.play(&"amber")
 				Session.save()
 				_refresh())
 		side.add_child(button)
@@ -143,7 +143,7 @@ func _milestone_chip(index: int) -> Control:
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 52, 22)
 		button.pressed.connect(func() -> void:
 			if Goals.claim_milestone(profile, index):
-				Sound.play(&"clutch_open" if milestone[2] > 0 else &"amber")
+				Sound.play(&"amber")
 				Session.save()
 				_refresh())
 		box.add_child(button)

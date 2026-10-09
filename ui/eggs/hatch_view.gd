@@ -130,7 +130,9 @@ func _show_egg() -> void:
 func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	var rarity := result.dino.rarity
 	var color := Palette.RARITY_COLORS[rarity]
-	var card_center := _screen() / 2 + Vector2(0, 10)
+	var screen := _screen()
+	# Room below the card for its caption, the Share button and the hint.
+	var card_center := Vector2(screen.x / 2, minf(screen.y / 2 + 10, screen.y - 735))
 
 	var fx := RevealFx.create(rarity)
 	fx.size = Vector2.ONE * 1000
@@ -203,25 +205,28 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 		_advance()
 
 
-## "Share" in the top-right corner of each reveal (the title is hidden then, so it's free).
+## "Share" under the card, above "Tap to continue".
 func _add_share_button(result: HatchResult) -> void:
-	var share := UiKit.button("Share", UiKit.BUTTON_AMBER, 64, 26)
-	share.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	share.offset_left = -190
-	share.offset_right = -24
-	share.offset_top = 56
-	share.offset_bottom = 120
+	var share := UiKit.pill_button("Share", &"share")
+	share.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	share.offset_left = -170
+	share.offset_right = 170
+	share.offset_top = -294
+	share.offset_bottom = -218
 	share.pressed.connect(func() -> void:
 		share.disabled = true
-		share.text = "..."
+		UiKit.set_pill_text(share, "Opening...")
 		await ShareCard.share_dino(result.dino, result.shiny or result.upgraded_to_shiny, true)
 		if is_instance_valid(share):
 			share.disabled = false
-			share.text = "Share")
+			UiKit.set_pill_text(share, "Share"))
 	_content.add_child(share)
 	_stage_nodes.append(share)
 	share.modulate.a = 0.0
-	share.create_tween().tween_property(share, "modulate:a", 1.0, 0.2)
+	share.resized.connect(func() -> void: share.pivot_offset = share.size / 2, CONNECT_ONE_SHOT)
+	var appear := share.create_tween().set_parallel()
+	appear.tween_property(share, "modulate:a", 1.0, 0.25)
+	appear.tween_property(share, "scale", Vector2.ONE, 0.3).from(Vector2.ONE * 0.85).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _play_reveal_sounds(result: HatchResult) -> void:

@@ -86,6 +86,10 @@ const SVG := {
 	&"move_swap": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#ffffff" stroke="#0b1220" stroke-opacity="0.55" stroke-width="3" stroke-linejoin="round">
 <path d="M8 17 L44 17 L44 8 L59 21 L44 34 L44 25 L8 25 Z"/>
 <path d="M56 39 L20 39 L20 30 L5 43 L20 56 L20 47 L56 47 Z"/></g></svg>""",
+	# Share: three connected dots.
+	&"share": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g stroke="#ffffff" stroke-width="5" stroke-linecap="round">
+<line x1="20" y1="32" x2="44" y2="16"/><line x1="20" y1="32" x2="44" y2="48"/></g>
+<g fill="#ffffff"><circle cx="46" cy="14" r="9"/><circle cx="18" cy="32" r="9"/><circle cx="46" cy="50" r="9"/></g></svg>""",
 	# Volume slider knob.
 	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.

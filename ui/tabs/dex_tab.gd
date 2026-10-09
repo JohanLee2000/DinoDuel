@@ -93,7 +93,9 @@ func _open(dino: DinoDef) -> void:
 		craft.pressed.connect(_craft.bind(dino, viewer))
 		viewer.closed.connect(_refresh)
 	else:
-		var share := UiKit.button("Share", UiKit.BUTTON_AMBER, 76, 28)
+		var share := UiKit.pill_button("Share", &"share")
+		share.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		share.custom_minimum_size.x = 340
 		share.pressed.connect(func() -> void:
 			share.disabled = true
 			await ShareCard.share_dino(dino, profile.is_shiny(dino.id), false)

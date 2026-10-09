@@ -44,6 +44,49 @@ static func button(text: String, color: Color, height := 84, font_size := 30) ->
 
 ## A glossy, glowing button: lighter top border, darker bottom edge, a soft glow in its own
 ## color, and it sinks when pressed. Dark text on bright colors, light text on dark ones.
+## A modern pill button: frosted glass, thin light border, and an icon + text centered together
+## (used for Share). Change its text with set_pill_text.
+static func pill_button(text: String, icon_name: StringName, height := 76, font_size := 30) -> Button:
+	var b := Button.new()
+	b.custom_minimum_size = Vector2(0, height)
+	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(1, 1, 1, {"normal": 0.14, "hover": 0.2, "pressed": 0.26, "disabled": 0.08, "focus": 0.14}[state])
+		style.border_color = Color(1, 1, 1, 0.45)
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(height / 2)
+		style.shadow_color = Color(0, 0, 0, 0.35)
+		style.shadow_size = 10
+		b.add_theme_stylebox_override(state, style)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var row := hbox(14)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var icon_px := int(height * 0.42)
+	var glyph := TextureRect.new()
+	glyph.texture = Icons.texture(icon_name, icon_px)
+	glyph.custom_minimum_size = Vector2(icon_px, icon_px)
+	glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(glyph)
+	var caption := label(text, font_size, Color.WHITE, HORIZONTAL_ALIGNMENT_LEFT, false)
+	caption.add_theme_font_override("font", Fonts.bold())
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(caption)
+	center.add_child(row)
+	b.add_child(center)
+	b.set_meta("caption", caption)
+	return b
+
+
+static func set_pill_text(b: Button, text: String) -> void:
+	(b.get_meta("caption") as Label).text = text
+
+
 static func style_button(b: Button, color: Color) -> void:
 	var text_color := Palette.INK if color.get_luminance() > 0.45 else Palette.TEXT
 	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
