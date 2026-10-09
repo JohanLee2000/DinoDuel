@@ -16,6 +16,7 @@ const MATCHUP_TEXT := {
 	"2-0": "Brace beats Bite!", "0-2": "Brace beats Bite!",
 }
 const BUTTON_COLORS: Array[Color] = [Color("d92b3a"), Color("ff7a1a"), Color("2e7bff"), Color("34445e")]
+const MOVE_ICON_SIZE := 40
 const BENCH_CARD_WIDTH := 92.0
 ## The layout is designed for a 1280-unit-tall screen. Taller phones (most modern ones, 19.5:9 and
 ## up) get bigger cards instead of an empty band above the buttons; this many extra units of
@@ -105,6 +106,9 @@ func _ready() -> void:
 	%LogPanel.add_theme_stylebox_override("panel", log_style)
 	for i in _buttons.size():
 		UiKit.style_button(_buttons[i], BUTTON_COLORS[i])
+		_buttons[i].icon = Icons.texture(Icons.MOVES[i], MOVE_ICON_SIZE)
+		_buttons[i].add_theme_constant_override("icon_max_width", MOVE_ICON_SIZE)
+		_buttons[i].icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_buttons[0].pressed.connect(func() -> void: _submit(BattleAction.bite()))
 	_buttons[1].pressed.connect(func() -> void: _submit(BattleAction.charge()))
 	_buttons[2].pressed.connect(func() -> void: _submit(BattleAction.brace()))
@@ -170,7 +174,7 @@ func _begin_choice() -> void:
 func _update_buttons() -> void:
 	var me := _state.side(PLAYER).active_dino()
 	var them := _state.side(RIVAL).active_dino()
-	var edge := " (type edge)" if BattleEngine.has_advantage(me, them) else ""
+	var edge := " +50%" if BattleEngine.has_advantage(me, them) else ""
 	_buttons[0].text = "Bite: %d dmg%s\nbeats Charge" % [BattleEngine.damage(me, them, false), edge]
 	_buttons[1].text = "Charge: %d dmg%s\nbeats Brace, acts last" % [BattleEngine.damage(me, them, true), edge]
 	var can_brace := BattleEngine.is_legal(_state, PLAYER, BattleAction.brace())
@@ -403,6 +407,9 @@ func _rebuild_side(side: int) -> void:
 	for child in _benches[side].get_children():
 		child.queue_free()
 	_bench_cards[side] = {}
+	var bench_label := UiKit.label("BENCH", 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
+	bench_label.add_theme_font_override("font", Fonts.condensed_bold())
+	_benches[side].add_child(bench_label)
 	for i in battle_side.party.size():
 		if i == battle_side.active:
 			continue
@@ -635,7 +642,7 @@ func _coach_turn() -> void:
 		_coach_show("That's the whole triangle! From now on %s picks freely, so watch for habits." % rival_name)
 		return
 	if BattleEngine.has_advantage(me, them) and _coach_once(&"edge",
-			"Your type beats theirs: [b]+50% damage[/b]. That's the \"type edge\" on the buttons. Land beats Sky, Sky beats Sea, Sea beats Land."):
+			"Your type beats theirs: [b]+50% damage[/b]. That's the [b]+50%[/b] on the move buttons. Land beats Sky, Sky beats Sea, Sea beats Land."):
 		return
 	if can_swap and BattleEngine.has_advantage(them, me) and _coach_once(&"bad_edge",
 			"Careful: their type beats yours. [b]Swap[/b] to a different type to dodge the extra damage."):

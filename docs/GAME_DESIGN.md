@@ -50,6 +50,9 @@ Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces o
 - **Balanced party:** one Land, one Sky, one Sea: +2 max Health each.
 - **Meteor shower (stall breaker):** from turn 20, both active dinos take rising damage at the end of each turn. It can bring a dino to 1 HP but never knocks one out itself (this cut draws from ~13% to under 1% in the balance sim).
 
+### Battle screen
+Move buttons carry icons (jaws Bite, arrow Charge, shield Brace, arrows Swap; also on the How to play page) and show **+50%** when the player has the type edge (shorter than "(type edge)", so the icon fits). Each side's benched dinos sit under a **BENCH** label, and knocked-out dinos get a red **K.O.** stamp over a darkened card (2026-10-09).
+
 ### AI rivals
 The AI simulates every (its move, your move) pair one turn ahead, guesses your move from both reasoning and **your habits so far** (it learns if you always Bite), then picks with some randomness. `temperature` is the difficulty knob per rival; `*_bias` values give a rival a learnable personality. Balance sim (600 battles): the AI beats always-Bite 91%, always-Charge 100%, always-Brace 87%.
 

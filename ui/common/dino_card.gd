@@ -59,6 +59,12 @@ var dimmed := false:
 	set(value):
 		dimmed = value
 		modulate = Color(1, 1, 1, 0.4) if value else Color.WHITE
+## In battle: darkens the card and stamps "K.O." across it.
+var knocked_out := false:
+	set(value):
+		knocked_out = value
+		if _overlay:
+			_overlay.queue_redraw()
 ## Shiny copies get a color-shifting frame and a holo sheen. Cosmetic only.
 var shiny := false
 ## Undiscovered dinos show the card back (used by the Dex).
@@ -146,13 +152,13 @@ static func _bar_height(w: float) -> float:
 
 func display_health(health: int) -> void:
 	shown_health = health
-	dimmed = health <= 0
+	knocked_out = health <= 0
 
 
 ## Animates the HP bar to `health`.
 func tween_health(health: int, duration := 0.35) -> void:
 	create_tween().tween_property(self, "shown_health", float(health), duration)
-	dimmed = health <= 0
+	knocked_out = health <= 0
 
 
 func set_badge(text: String) -> void:
@@ -358,6 +364,29 @@ func _draw_overlay() -> void:
 		_draw_badge()
 	if combatant:
 		_draw_health_bar()
+	if knocked_out:
+		_draw_knocked_out()
+
+
+func _draw_knocked_out() -> void:
+	var w := width
+	var h := card_height()
+	var shade := StyleBoxFlat.new()
+	shade.bg_color = Color(0.02, 0.03, 0.07, 0.62)
+	shade.set_corner_radius_all(int(w * 0.07))
+	_overlay.draw_style_box(shade, Rect2(0, 0, w, h))
+	# A tilted red stamp in the middle.
+	var font_size := int(w * 0.3)
+	var stamp := Vector2(w * 0.78, font_size * 1.15)
+	_overlay.draw_set_transform(Vector2(w, h) / 2, -0.26, Vector2.ONE)
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color(0, 0, 0, 0.35)
+	box.border_color = Palette.DAMAGE
+	box.set_border_width_all(maxi(2, int(w * 0.025)))
+	box.set_corner_radius_all(int(w * 0.04))
+	_overlay.draw_style_box(box, Rect2(-stamp / 2, stamp))
+	_text_centered(Fonts.display(), "K.O.", Vector2.ZERO, font_size, Palette.DAMAGE, true)
+	_overlay.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 ## Tier crest: a shield badge with N / R / SR / SSR / UR, crowned for SSR and UR.

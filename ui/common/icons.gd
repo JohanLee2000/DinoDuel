@@ -4,6 +4,9 @@ extends RefCounted
 ## they stay crisp from a tiny bench card to the full-screen card view.
 ## Style follows the concept sheet in docs/concept/: glossy medallions with glowing rims.
 
+## Move icons in BattleAction.Kind order (Bite, Charge, Brace, Swap).
+const MOVES: Array[StringName] = [&"move_bite", &"move_charge", &"move_brace", &"move_swap"]
+
 const SVG := {
 	# Types: Land = mountain, Sea = wave, Sky = bird.
 	&"type_land": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
@@ -70,6 +73,19 @@ const SVG := {
 <rect x="33" y="44" width="62" height="7" fill="#7a5a2e"/>
 <ellipse cx="64" cy="53" rx="42" ry="8" fill="#c4a96e"/>
 </svg>""",
+	# Battle moves (white, for the colored move buttons and the help pages).
+	&"move_bite": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#ffffff" stroke="#0b1220" stroke-opacity="0.55" stroke-width="3" stroke-linejoin="round">
+<path d="M6 27 Q32 4 58 27 L53 31 L49 23 L44 31 L40 23 L35 31 L32 23 L29 31 L24 23 L20 31 L15 23 L11 31 Z"/>
+<path d="M6 37 Q32 60 58 37 L53 33 L49 41 L44 33 L40 41 L35 33 L32 41 L29 33 L24 41 L20 33 L15 41 L11 33 Z"/></g></svg>""",
+	&"move_charge": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#ffffff" stroke="#0b1220" stroke-opacity="0.55" stroke-width="3" stroke-linejoin="round">
+<path d="M22 22 L40 22 L40 10 L61 32 L40 54 L40 42 L22 42 Z"/>
+<rect x="3" y="22" width="13" height="5" rx="2.5"/><rect x="7" y="30" width="11" height="5" rx="2.5"/><rect x="3" y="38" width="13" height="5" rx="2.5"/></g></svg>""",
+	&"move_brace": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g stroke="#0b1220" stroke-opacity="0.55" stroke-width="3" stroke-linejoin="round">
+<path d="M32 5 L55 13 L55 31 Q55 49 32 59 Q9 49 9 31 L9 13 Z" fill="#ffffff"/></g>
+<path d="M32 14 L46 19 L46 31 Q46 43 32 50 Z" fill="#000000" fill-opacity="0.18"/></svg>""",
+	&"move_swap": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="#ffffff" stroke="#0b1220" stroke-opacity="0.55" stroke-width="3" stroke-linejoin="round">
+<path d="M8 17 L44 17 L44 8 L59 21 L44 34 L44 25 L8 25 Z"/>
+<path d="M56 39 L20 39 L20 30 L5 43 L20 56 L20 47 L56 47 Z"/></g></svg>""",
 	# Volume slider knob.
 	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.

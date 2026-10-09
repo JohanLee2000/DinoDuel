@@ -24,7 +24,7 @@ const PAGES := [
 			["type_land", "[b]Land beats Sky[/b]: it pounces on pterosaurs on the ground."],
 			["type_sky", "[b]Sky beats Sea[/b]: it dives on marine reptiles."],
 			["type_sea", "[b]Sea beats Land[/b]: it ambushes at the water's edge."],
-			["", "Hitting a type you beat does [b]+50% damage[/b]. The move buttons say \"type edge\" when you have it."],
+			["", "Hitting a type you beat does [b]+50% damage[/b]. The move buttons show [b]+50%[/b] when you have it."],
 			["", "Damage is Attack (x1.5 type edge, x2 Charge) minus the target's Defense, at least 1. Faster dinos hit first."],
 		],
 	},
@@ -160,11 +160,20 @@ func _row(icon: String, text: String) -> Control:
 		style.bg_color = Color(MOVE_COLORS[index])
 		style.set_corner_radius_all(10)
 		chip.add_theme_stylebox_override("panel", style)
-		chip.custom_minimum_size = Vector2(118, 48)
+		chip.custom_minimum_size = Vector2(150, 48)
 		chip.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		var inside := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
+		var glyph := TextureRect.new()
+		glyph.texture = Icons.texture(Icons.MOVES[index], 30)
+		glyph.custom_minimum_size = Vector2(30, 30)
+		glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		inside.add_child(glyph)
 		var move_name := UiKit.title(BattleAction.KIND_NAMES[index], 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
 		move_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		chip.add_child(move_name)
+		inside.add_child(move_name)
+		chip.add_child(inside)
 		row.add_child(chip)
 	elif icon != "":
 		var image := TextureRect.new()
