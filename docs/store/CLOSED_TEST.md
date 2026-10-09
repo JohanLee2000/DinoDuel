@@ -42,6 +42,22 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.5.1 (version code 9)
+
+```
+<en-US>
+Dino Duel 0.5.1
+- Daily check-in: a free clutch every day plus a bonus that builds to a Rare clutch on day 7
+- Rare clutches (500 Amber) with much better odds
+- Sets: collect dino families and themes for Amber and badges
+- Punchier battles with hit effects, and a new results screen
+- UR and Shiny cards shine as you tilt your phone
+- Bigger text and much faster tabs
+- Your progress is now part of your phone's Google backup
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.5.0 (version code 8)
 
 ```
@@ -159,4 +175,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | 2026-10-08 | Tester with a Redmi A3: "device isn't compatible" (32-bit Android) | 0.3.1: Play build includes armeabi-v7a |
 | 2026-10-09 | Jo playtest: hard to tell moves apart, unclear which dinos are benched or knocked out, battle lost when switching apps, no way to show off pulls, stats unexplained | 0.4.1: move icons, BENCH label, K.O. stamp, battle resume, Share button, stats pages in How to play |
 | 2026-10-09 | Jo playtest: worried about battery drain and heat, wanted a bigger roster, a way to start over, and a way for new players to see the tour again | 0.5.0: frame cap and idle throttle, 15 new dinos, Restart game and Professaur's tour in Settings |
+| 2026-10-09 | Jo playtest: text too small and gray text hard to read, switching tabs slow, Goals list jumped to the top on every claim, wanted daily login rewards, better eggs, set collections and punchier battles | 0.5.1: bigger and lighter text, thumbnails for fast tabs, Goals keeps its place, daily check-in streak, Rare clutch, sets, battle effects, results panel |
 | | | |
