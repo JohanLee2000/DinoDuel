@@ -49,7 +49,7 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `nothosaurus` | Nothosaurus | SEA | RARE (R) | Done |
 | `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | Done |
 | `postosuchus` | Postosuchus | LAND | RARE (R) | Done |
-| `plateosaurus` | Plateosaurus | LAND | COMMON (N) | Done |
+| `plateosaurus` | Plateosaurus | LAND | RARE (R) | Done |
 | `icarosaurus` | Icarosaurus | SKY | COMMON (N) | Done |
 | `tanystropheus` | Tanystropheus | SEA | RARE (R) | Done |
 | `shonisaurus` | Shonisaurus | SEA | EPIC (SSR) | Done |
@@ -64,11 +64,11 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `archelon` | Archelon | SEA | RARE (R) | Done |
 | `microraptor` | Microraptor | SKY | RARE (R) | Done |
 | `cymbospondylus` | Cymbospondylus | SEA | LEGENDARY (UR) | Needed |
-| `smok` | Smok | LAND | EPIC (SSR) | Needed |
+| `liliensternus` | Liliensternus | LAND | EPIC (SSR) | Needed |
 | `herrerasaurus` | Herrerasaurus | LAND | SUPER RARE (SR) | Needed |
 | `desmatosuchus` | Desmatosuchus | LAND | SUPER RARE (SR) | Needed |
 | `raeticodactylus` | Raeticodactylus | SKY | SUPER RARE (SR) | Needed |
-| `sharovipteryx` | Sharovipteryx | SKY | RARE (R) | Needed |
+| `sharovipteryx` | Sharovipteryx | SKY | COMMON (N) | Needed |
 | `placodus` | Placodus | SEA | RARE (R) | Needed |
 | `torvosaurus` | Torvosaurus | LAND | LEGENDARY (UR) | Needed |
 | `cryolophosaurus` | Cryolophosaurus | LAND | EPIC (SSR) | Needed |
@@ -116,7 +116,7 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `archelon` | An Archelon, a Late Cretaceous giant sea turtle about 4.6 m long: huge flippers, hooked beak, broad leathery shell rather than a hard one. Habitat: warm shallow Cretaceous sea with light rays. |
 | `microraptor` | A Microraptor, an Early Cretaceous crow-sized feathered dinosaur: long flight feathers on both arms and legs (four wings), glossy iridescent black feathers, long tail with a feather fan, gliding between trees. Habitat: Early Cretaceous forest in China. |
 | `cymbospondylus` | A Cymbospondylus youngorum, a Middle Triassic giant ichthyosaur up to 17 m long: very long slender body, a long narrow snout with conical teeth, four flippers, a long eel-like tail with only a small low tail fin, and no dorsal fin (unlike later dolphin-shaped ichthyosaurs, so it should not look like Shonisaurus). Habitat: open Triassic ocean, sunbeams through deep blue water, a school of squid-like prey scattering. |
-| `smok` | A Smok wawelski, a Late Triassic predatory archosaur 5–6 m long from Poland: a large deep skull with big serrated teeth and powerful jaws, walking on its hind legs with short arms, small bony scutes along the back, long tail. Not a true dinosaur. Habitat: humid Late Triassic river plain with horsetails and conifers. |
+| `liliensternus` | A Liliensternus, a Late Triassic predatory dinosaur from Germany, 5 m long or more: lean but powerful two-legged hunter, long low skull with curved serrated teeth, long neck, grasping clawed hands, long tail. Bigger and bulkier than Coelophysis, and with no tall double crest (that's Dilophosaurus); at most a low ridge on the snout. Habitat: Late Triassic Germany, a seasonal floodplain with conifers and a herd of Plateosaurus in the distance. |
 | `herrerasaurus` | A Herrerasaurus, one of the earliest dinosaurs, a Late Triassic predator 3–6 m long from Argentina: slender two-legged build, long narrow skull with curved serrated teeth, grasping three-fingered hands, long tail. Habitat: the Triassic Ischigualasto valley, red badlands with ferns and conifers. |
 | `desmatosuchus` | A Desmatosuchus, a Late Triassic armored aetosaur about 4.5 m long: low wide body covered in interlocking bony plates, long curved spikes jutting sideways from the shoulders, small head with a pig-like shovel snout, four sturdy legs. Not a dinosaur. Habitat: Late Triassic Arizona river forest with tall conifers. |
 | `raeticodactylus` | A Raeticodactylus, a Late Triassic pterosaur with a 1.35 m wingspan from the Swiss Alps: long skin wings, a tall thin bony crest on top of the snout, long jaws with small multi-pointed teeth, a long stiff tail. Habitat: Late Triassic tropical lagoon coast. |

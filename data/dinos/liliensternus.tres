@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_lili1"]
+
+[resource]
+script = ExtResource("1_lili1")
+id = &"liliensternus"
+display_name = "Liliensternus"
+dino_type = 0
+era = 0
+rarity = 3
+attack = 8
+defense = 1
+speed = 8
+health = 15
+group = "Coelophysoid theropod"
+size_text = "Length 5–9 m"
+flavor_text = "The best-known meat-eating dinosaur of Triassic Europe, from Germany. Young ones were about 5 m long, and scraps of bone hint that adults reached 7–9 m."
+epithet = "Triassic Stalker"

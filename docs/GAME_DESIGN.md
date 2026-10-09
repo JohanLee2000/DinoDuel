@@ -157,7 +157,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Liopleurodon | Sea | Jurassic | SSR | 9 | 2 | 3 | 16 |
 | Mosasaurus | Sea | Cretaceous | UR | 10 | 1 | 5 | 20 |
 | Postosuchus | Land | Triassic | R | 7 | 2 | 5 | 12 |
-| Plateosaurus | Land | Triassic | N | 5 | 2 | 3 | 14 |
+| Plateosaurus | Land | Triassic | R | 6 | 2 | 3 | 16 |
 | Icarosaurus | Sky | Triassic | N | 5 | 0 | 10 | 9 |
 | Tanystropheus | Sea | Triassic | R | 7 | 1 | 4 | 13 |
 | Shonisaurus | Sea | Triassic | SSR | 7 | 3 | 4 | 18 |
@@ -172,11 +172,11 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Archelon | Sea | Cretaceous | R | 5 | 3 | 2 | 17 |
 | Microraptor | Sky | Cretaceous | R | 6 | 1 | 11 | 9 |
 | Cymbospondylus | Sea | Triassic | UR | 9 | 2 | 3 | 24 |
-| Smok | Land | Triassic | SSR | 9 | 1 | 5 | 16 |
+| Liliensternus | Land | Triassic | SSR | 8 | 1 | 8 | 15 |
 | Herrerasaurus | Land | Triassic | SR | 8 | 1 | 7 | 14 |
 | Desmatosuchus | Land | Triassic | SR | 6 | 4 | 2 | 18 |
 | Raeticodactylus | Sky | Triassic | SR | 6 | 1 | 10 | 13 |
-| Sharovipteryx | Sky | Triassic | R | 5 | 1 | 11 | 10 |
+| Sharovipteryx | Sky | Triassic | N | 4 | 0 | 11 | 9 |
 | Placodus | Sea | Triassic | R | 6 | 2 | 4 | 15 |
 | Torvosaurus | Land | Jurassic | UR | 10 | 2 | 4 | 19 |
 | Cryolophosaurus | Land | Jurassic | SSR | 8 | 1 | 7 | 16 |
