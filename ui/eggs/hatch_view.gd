@@ -11,6 +11,13 @@ extends Control
 signal finished
 
 const CARD_WIDTH := 440.0
+## Bottom controls, measured up from the screen's bottom edge (Jo: keep them well clear of it).
+const SKIP_BOTTOM := 130.0
+const BUTTON_HEIGHT := 76.0
+const HINT_BOTTOM := SKIP_BOTTOM + BUTTON_HEIGHT + 20.0
+const SHARE_BOTTOM := HINT_BOTTOM + 64.0
+## Room above the revealed card for its rarity label.
+const CARD_TOP_ROOM := 130.0
 const BACKDROP := "res://assets/eggs/hatch_background.webp"
 ## Where the stone slab's top is in the backdrop painting (fraction of its height); the egg sits there.
 const SLAB_Y := 0.74
@@ -69,8 +76,8 @@ func _ready() -> void:
 	_content.add_child(_title)
 	_hint = UiKit.label("", 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	_hint.offset_top = -200
-	_hint.offset_bottom = -150
+	_hint.offset_top = -HINT_BOTTOM - 54
+	_hint.offset_bottom = -HINT_BOTTOM
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_hint)
 	# Outlined so they read over the painted backdrop.
@@ -82,8 +89,8 @@ func _ready() -> void:
 	_skip.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_skip.offset_left = -170
 	_skip.offset_right = 170
-	_skip.offset_top = -120
-	_skip.offset_bottom = -44
+	_skip.offset_top = -SKIP_BOTTOM - BUTTON_HEIGHT
+	_skip.offset_bottom = -SKIP_BOTTOM
 	_skip.pressed.connect(_show_summary)
 	_content.add_child(_skip)
 	if _results.size() == 1:
@@ -131,8 +138,11 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	var rarity := result.dino.rarity
 	var color := Palette.RARITY_COLORS[rarity]
 	var screen := _screen()
-	# Room below the card for its caption, the Share button and the hint.
-	var card_center := Vector2(screen.x / 2, minf(screen.y / 2 + 10, screen.y - 735))
+	# The card sits just above its caption, the Share button and the hint; on short screens it
+	# shrinks a little so its rarity label still fits above it.
+	var card_bottom := screen.y - SHARE_BOTTOM - BUTTON_HEIGHT - 76
+	var card_width := minf(CARD_WIDTH, (card_bottom - CARD_TOP_ROOM) / DinoCard.ASPECT)
+	var card_center := Vector2(screen.x / 2, card_bottom - card_width * DinoCard.ASPECT / 2)
 
 	var fx := RevealFx.create(rarity)
 	fx.size = Vector2.ONE * 1000
@@ -148,7 +158,7 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 		_flash_and_shake(rarity)
 
 	# The card pops up face down, then flips over.
-	var card := DinoCard.create(result.dino, DinoCard.Mode.LARGE, null, result.shiny, CARD_WIDTH)
+	var card := DinoCard.create(result.dino, DinoCard.Mode.LARGE, null, result.shiny, card_width)
 	card.inspect_on_hold = false
 	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var flipper := Control.new()
@@ -211,8 +221,8 @@ func _add_share_button(result: HatchResult) -> void:
 	share.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	share.offset_left = -170
 	share.offset_right = 170
-	share.offset_top = -294
-	share.offset_bottom = -218
+	share.offset_top = -SHARE_BOTTOM - BUTTON_HEIGHT
+	share.offset_bottom = -SHARE_BOTTOM
 	share.pressed.connect(func() -> void:
 		share.disabled = true
 		UiKit.set_pill_text(share, "Opening...")
