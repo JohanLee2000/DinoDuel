@@ -103,10 +103,10 @@ func _ready() -> void:
 ## Dev: the save the store screenshots show. Built directly rather than with
 ## PlayerProfile.unlock_all, so it keeps working after that is deleted for release.
 func _showcase_profile() -> PlayerProfile:
-	# Seed 136's first egg is Brachiosaurus, so it's left out here and hatches as a new UR.
+	# Seed 136's first egg is Cymbospondylus, so it's left out here and hatches as a new UR.
 	var showcase := PlayerProfile.new_game(136)
 	for dino in catalog.dinos:
-		if dino.id != &"brachiosaurus":
+		if dino.id != &"cymbospondylus":
 			showcase.owned[dino.id] = dino.id in [&"t_rex", &"mosasaurus", &"quetzalcoatlus"]
 	var lineup: Array[StringName] = [&"t_rex", &"pteranodon", &"mosasaurus", &"velociraptor",
 			&"triceratops", &"quetzalcoatlus"]
