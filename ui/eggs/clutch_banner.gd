@@ -12,6 +12,7 @@ const HEIGHT := 300.0
 const NEST := Vector2(0.5, 0.62)
 
 var clutches := 0
+var rare_clutches := 0
 var _image: TextureRect
 var _glow: TextureRect
 var _press_position := Vector2.INF
@@ -88,14 +89,17 @@ func _ready() -> void:
 	words.offset_top = -96
 	words.offset_bottom = -12
 	words.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var has_clutches := clutches > 0
-	var headline := UiKit.title("%d clutch%s ready!" % [clutches, "" if clutches == 1 else "es"] if has_clutches
+	var total := clutches + rare_clutches
+	var has_clutches := total > 0
+	var headline := UiKit.title("%d clutch%s ready!" % [total, "" if total == 1 else "es"] if has_clutches
 			else "No clutches right now", 36, Palette.HIGHLIGHT if has_clutches else Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	headline.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	headline.add_theme_constant_override("shadow_offset_y", 3)
 	words.add_child(headline)
-	words.add_child(UiKit.label("Tap to hatch" if has_clutches else "Win a battle or claim today's free clutch.", 24,
-			Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	var hint := "Win a battle or check in daily for a free clutch."
+	if has_clutches:
+		hint = "Tap to hatch" if rare_clutches == 0 else "Tap to hatch  ·  %d Rare" % rare_clutches
+	words.add_child(UiKit.label(hint, 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	frame.add_child(words)
 
 	if has_clutches:
@@ -117,7 +121,7 @@ func _place_glow() -> void:
 ## Embers floating up out of the amber.
 func _embers() -> CPUParticles2D:
 	var embers := CPUParticles2D.new()
-	embers.amount = 18 if clutches > 0 else 6
+	embers.amount = 18 if clutches + rare_clutches > 0 else 6
 	embers.lifetime = 3.0
 	embers.preprocess = 3.0
 	embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
@@ -143,7 +147,7 @@ func _embers() -> CPUParticles2D:
 
 ## A tap (not a scroll) hatches a clutch.
 func _gui_input(event: InputEvent) -> void:
-	if clutches <= 0:
+	if clutches + rare_clutches <= 0:
 		return
 	if event is InputEventMouseMotion and _press_position != Vector2.INF:
 		if _press_position.distance_to(event.global_position) > DinoCard.TAP_SLOP:

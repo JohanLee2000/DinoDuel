@@ -52,6 +52,7 @@ Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces o
 
 ### Battle screen
 Move buttons carry icons (jaws Bite, arrow Charge, shield Brace, arrows Swap; also on the How to play page) and show **+50%** when the player has the type edge (shorter than "(type edge)", so the icon fits). Each side's benched dinos sit under a **BENCH** label, and knocked-out dinos get a red **K.O.** stamp over a darkened card (2026-10-09).
+**Battle effects (2026-10-09):** the attacker winds up (longer for a Charge) and strikes toward the other card; the hit lands with a white flash, an impact burst (gold for a type edge), and a big damage number that pops out with its caption (CHARGE, COUNTER, TYPE EDGE). Big hits (Charge, type edge, knockout) add a short hit-stop and shake the board; a knockout slams the K.O. stamp down. Blocks flash blue, the meteor hits orange, and a dino coming in pops into place. Cosmetic only (`ui/battle/battle_screen.gd`, `ui/battle/hit_burst.gd`).
 
 ### AI rivals
 The AI simulates every (its move, your move) pair one turn ahead, guesses your move from both reasoning and **your habits so far** (it learns if you always Bite), then picks with some randomness. `temperature` is the difficulty knob per rival; `*_bias` values give a rival a learnable personality. Balance sim (600 battles): the AI beats always-Bite 91%, always-Charge 100%, always-Brace 87%.
@@ -70,8 +71,11 @@ Difficulty knobs per rival: `temperature` (randomness), `*_bias` (a readable hab
 
 ## Collection (decided)
 - Rewards come as a **clutch of 3 fossil eggs**; each egg hatches **one dino**. First tap cracks the egg and its **glow shows the rarity**; second tap hatches it.
-- Clutches are **earned only**: win a battle (1 clutch + 25 Amber; a loss gives 10 Amber), one free clutch per calendar day, or buy one for 150 Amber. No real-money eggs.
+- Clutches are **earned only**: win a battle (1 clutch + 25 Amber; a loss gives 10 Amber), the daily check-in, or buy one for 150 Amber. No real-money eggs.
 - Odds per egg: N 50%, R 30%, SR 13%, SSR 5%, UR 2%. Shiny 1 in 40 (cosmetic). If 9 clutches in a row had no Epic+, the 10th is guaranteed one (SSR 80% / UR 20%). Odds are shown on the Eggs tab.
+- **Rare clutch (Jo, 2026-10-09):** 500 Amber, also 3 eggs, odds N 30%, R 40%, SR 16%, SSR 9%, UR 5%. Same look and hatch as a normal clutch; counts toward the pity timer like any clutch.
+- **Daily check-in (Jo, 2026-10-09):** replaces the plain daily clutch. Pops up on the first visit of a new day (after the new-player intro), and is on the Eggs and Goals tabs. Every day gives the free clutch plus a streak bonus: day 1 +25 Amber, 2 +50, 3 +1 clutch, 4 +75, 5 +100, 6 +1 clutch, 7 **a Rare clutch**, then back to day 1. Missing a day **pauses** the streak instead of resetting it.
+- **Tilt shine (2026-10-09):** in the full-screen card view, UR and Shiny cards catch the light: tilting the phone (gravity sensor, `input_devices/sensors/enable_gravity`; no measurable battery cost on the A35) or dragging the card slides a glare and the holo sheen across them.
 - **Duplicates auto-melt into Amber** (N 7, R 25, SR 60, SSR 180, UR 480). A Shiny duplicate upgrades a non-Shiny copy instead.
 - **Crafting** from the Dex: N 40, R 100, SR 400, SSR 1000, UR 2000 Amber.
 - New players start by **choosing a partner** (decided 2026-10-08): Dilophosaurus (Land), Archaeopteryx (Sky; replaced Microraptor at Jo's request, same day) or Tanystropheus (Sea), all Rare. They also get five Commons: Coelophysis, Eudimorphodon, Protoceratops, Rhamphorhynchus and Hesperornis (Protoceratops + Rhamphorhynchus + Hesperornis is Balanced; Tanystropheus completes a Triassic party with both bonuses). Stegosaurus and Ichthyosaurus were starters until Jo moved them to SR and R (2026-10-09); they were swapped out so the rival ladder keeps its tuning and **2 clutches**.
@@ -120,8 +124,9 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 
 ## Goals (decided 2026-10-09)
 A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/collection/goals.gd`, tests in `tests/test_goals.gd`.
-- **Daily quests:** 3 a day from a pool of 11 (win 2, battle 3, hatch 3, win with a Land/Sky/Sea dino, era bond, balanced party, flawless, 12 turns or fewer, beat a 3-star+ rival), never two of the same kind. 25-50 Amber each; all 3 done gives a **bonus clutch**. Same quests all day for a player; reset at local midnight like the daily clutch. Forfeits don't count; losses count only for "battle 3 times".
+- **Daily quests:** 3 a day from a pool of 11 (win 2, battle 3, hatch 3, win with a Land/Sky/Sea dino, era bond, balanced party, flawless, 12 turns or fewer, beat a 3-star+ rival), never two of the same kind. 25-50 Amber each; all 3 done gives a **bonus clutch**. Same quests all day for a player; reset at local midnight like the daily check-in. Forfeits don't count; losses count only for "battle 3 times".
 - **Collection:** milestones at 5/10/15/20/25/30/35/40/45 dinos discovered (50 Amber, 1 clutch, 150 Amber, 2 clutches, 300 Amber, 3 clutches, 400 Amber, 3 clutches, 5 clutches; 35-45 added with the 45-dino roster) and **1 clutch per completed era**, which also turns the Dex era heading gold ("★ Complete"). New players can claim the 5-dino milestone right after picking a partner.
+- **Sets (Jo, 2026-10-09):** complete a set for 30 Amber per dino in it and a gold ★ badge (Goals and the full card view list each dino's sets). Six **families** split all 45 dinos: Hunters (11), Plant-Eaters (7), Croc Cousins (3), Pterosaurs (8), Feathers & Gliders (6), Sea Reptiles (10). Eight **themes** cross types and overlap: Famous Five, Crested Heads, Ichthyosaurs, Giants, Horns & Armor, Gliders, Bird Origins, Sea Monsters. Lists in `core/collection/dino_sets.gd`.
 - **Achievements:** 18, in-game only (Jo chose to stay offline: no Google Play Games for now, which would need internet, a privacy-policy and Data safety change, and Play Console setup). Each gives 50-500 Amber when claimed. Battles, hatches and crafts feed their counters (`PlayerProfile.stats`).
 
 ## Journey (proposal)

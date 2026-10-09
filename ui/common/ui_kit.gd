@@ -8,6 +8,8 @@ const BUTTON_GRAY := Color("1c2c48")
 const BUTTON_AMBER := Color("ff7a1a")
 ## Actions that give something up, like leaving a battle.
 const BUTTON_RED := Color("d92b3a")
+## Rare clutches, in Super Rare purple.
+const BUTTON_RARE := Color("8a46e6")
 
 
 ## Wrapping labels need a width from their parent, so pass wrap = false inside rows and grids.

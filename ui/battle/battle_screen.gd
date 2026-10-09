@@ -39,6 +39,8 @@ const COACH_SCRIPT_TIPS: Array[String] = [
 ## Room kept free for the coach's tip box when sizing the cards.
 const COACH_PANEL_HEIGHT := 175.0
 const PICKER_CARD_WIDTH := 200.0
+const HIT_COLOR := Color("ff6b5e")
+const METEOR_COLOR := Color("ff8a3d")
 
 var _state: BattleState
 var _ai: BattleAI
@@ -63,6 +65,7 @@ var _coach_text: RichTextLabel
 var _coach_pulse: Tween
 var _coach_tips_given := {}
 var _last_player_kind := -1
+var _screen_shake_tween: Tween
 
 @onready var _slots: Array[Control] = [%PlayerSlot, %EnemySlot]
 @onready var _benches: Array[VBoxContainer] = [%PlayerBench, %EnemyBench]
@@ -291,6 +294,7 @@ func _play(events: Array[Dictionary]) -> void:
 				var side: int = event["side"]
 				Sound.play(&"swap")
 				_rebuild_side(side)
+				_enter(_active_cards[side])
 				var verb := "swap" if event["type"] == "swap" else "send"
 				if side == RIVAL:
 					verb += "s"
@@ -301,7 +305,10 @@ func _play(events: Array[Dictionary]) -> void:
 				_popup(_active_cards[event["side"]], "BRACE", Palette.HIGHLIGHT)
 			"blocked":
 				Sound.play(&"block")
-				_popup(_active_cards[event["side"]], "BLOCKED!", Palette.HIGHLIGHT)
+				var blocker := _active_cards[event["side"]]
+				HitBurst.spawn(self, blocker.get_global_rect().get_center(), Palette.ACCENT, 80.0 * _card_scale, 6)
+				_shake(blocker, 0.6)
+				_popup(blocker, "BLOCKED!", Palette.HIGHLIGHT)
 				await _pause(0.4)
 			"bite", "counter", "charge":
 				await _show_hit(event)
@@ -314,8 +321,12 @@ func _play(events: Array[Dictionary]) -> void:
 				var target: int = event["target_side"]
 				Sound.play(&"meteor")
 				_set_shown_health(target, _state.side(target).active, event["health_after"])
-				_popup(_active_cards[target], "-%d" % event["damage"], Palette.DAMAGE)
-				_active_cards[target].tween_health(event["health_after"])
+				var struck := _active_cards[target]
+				HitBurst.spawn(self, struck.get_global_rect().get_center(), METEOR_COLOR, 130.0 * _card_scale, 14)
+				_flash(struck)
+				_screen_shake(14.0)
+				_damage_number(struck, event["damage"], "METEOR", METEOR_COLOR, true)
+				struck.tween_health(event["health_after"])
 				_say("Meteor shower hits %s for %d!" % [_name(target), event["damage"]])
 				await _pause(0.4)
 			"ko":
@@ -334,27 +345,50 @@ func _show_hit(event: Dictionary) -> void:
 	var target: int = event["target_side"]
 	var attacker_card := _active_cards[side]
 	var target_card := _active_cards[target]
-	var lunge := Vector2(0, -36 if side == PLAYER else 36)
-	# The charge sound builds up during the lunge; its slam is timed to land with the hit.
-	if event["type"] == "charge":
+	var charge: bool = event["type"] == "charge"
+	var knockout: bool = event["health_after"] <= 0
+	var big: bool = event["advantage"] or charge or knockout
+	# The charge sound builds up during the wind-up; its slam is timed to land with the hit.
+	if charge:
 		Sound.play(&"charge", 0.88 if event["advantage"] else 1.0)
-	var tween := create_tween()
-	tween.tween_property(attacker_card, "position", lunge, 0.12)
-	tween.tween_property(attacker_card, "position", Vector2.ZERO, 0.15)
-	await tween.finished
+	# Wind up (lean back, longer for a Charge), then strike toward the other card.
+	var toward := -1.0 if side == PLAYER else 1.0
+	attacker_card.pivot_offset = attacker_card.size / 2
+	var wind_up := 0.16 if charge else 0.07
+	var strike := create_tween()
+	strike.tween_property(attacker_card, "position:y", -toward * (18.0 if charge else 8.0) * _card_scale,
+			wind_up).set_trans(Tween.TRANS_SINE)
+	strike.parallel().tween_property(attacker_card, "scale", Vector2(0.96, 0.96), wind_up)
+	strike.tween_property(attacker_card, "position:y", toward * (62.0 if charge else 44.0) * _card_scale,
+			0.09).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	strike.parallel().tween_property(attacker_card, "scale", Vector2(1.08, 1.08), 0.09)
+	await strike.finished
 
+	# Impact.
 	_set_shown_health(target, _state.side(target).active, event["health_after"])
 	target_card.tween_health(event["health_after"])
-	_shake(target_card)
-	# Type-edge hits land a little lower and heavier.
-	if event["type"] != "charge":
+	if not charge:
+		# Type-edge hits land a little lower and heavier.
 		Sound.play(&"bite", 0.88 if event["advantage"] else 1.0)
-	var label := "-%d" % event["damage"]
-	if event["type"] == "charge":
-		label = "CHARGE -%d" % event["damage"]
-	elif event["type"] == "counter":
-		label = "COUNTER -%d" % event["damage"]
-	_popup(target_card, label, Palette.DAMAGE)
+	var rect := target_card.get_global_rect()
+	var contact := rect.get_center() - Vector2(0, toward * rect.size.y * 0.18)
+	var color := Palette.HIGHLIGHT if event["advantage"] else HIT_COLOR
+	HitBurst.spawn(self, contact, color, (120.0 if big else 85.0) * _card_scale, 14 if big else 9)
+	_flash(target_card)
+	_shake(target_card, 1.8 if knockout else (1.3 if big else 1.0))
+	if big:
+		_screen_shake(18.0 if knockout else 9.0)
+	var caption: String = {"charge": "CHARGE", "counter": "COUNTER"}.get(event["type"], "")
+	if event["advantage"]:
+		caption = "TYPE EDGE" if caption == "" else caption + "  TYPE EDGE"
+	_damage_number(target_card, event["damage"], caption, color, big)
+	if big:
+		# A beat of hit-stop so the big ones land.
+		await _pause(0.08)
+
+	var back := create_tween()
+	back.tween_property(attacker_card, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	back.parallel().tween_property(attacker_card, "scale", Vector2.ONE, 0.22)
 	var verb: String = {"bite": "bites", "counter": "counter-bites", "charge": "charges"}[event["type"]]
 	var edge := " [color=#ffd166](type edge!)[/color]" if event["advantage"] else ""
 	_say("%s %s for %d.%s" % [_name(side), verb, event["damage"], edge])
@@ -365,10 +399,73 @@ func _pause(seconds := STEP_PAUSE) -> void:
 	await get_tree().create_timer(seconds).timeout
 
 
-func _shake(card: DinoCard) -> void:
+func _shake(card: DinoCard, strength := 1.0) -> void:
 	var tween := create_tween()
-	for offset in [12.0, -10.0, 6.0, 0.0]:
-		tween.tween_property(card, "position:x", offset, 0.05)
+	for offset in [12.0, -10.0, 6.0, -3.0, 0.0]:
+		tween.tween_property(card, "position:x", offset * strength, 0.045)
+
+
+## The whole board jolts (the background stays put, so it reads as an impact).
+func _screen_shake(strength: float) -> void:
+	var board: Control = $SafeArea
+	if _screen_shake_tween:
+		_screen_shake_tween.kill()
+	_screen_shake_tween = create_tween()
+	for i in 6:
+		var falloff := 1.0 - i / 6.0
+		var offset := Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * strength * falloff
+		_screen_shake_tween.tween_property(board, "position", offset, 0.035)
+	_screen_shake_tween.tween_property(board, "position", Vector2.ZERO, 0.05)
+
+
+## A white flash on a card that's just been hit.
+func _flash(card: DinoCard) -> void:
+	card.modulate = Color(2.2, 2.2, 2.2)
+	card.create_tween().tween_property(card, "modulate", Color.WHITE, 0.18)
+
+
+## A card arriving after a swap or knockout pops into place.
+func _enter(card: DinoCard) -> void:
+	card.pivot_offset = card.size / 2
+	card.scale = Vector2(0.82, 0.82)
+	card.modulate.a = 0.0
+	var tween := card.create_tween().set_parallel()
+	tween.tween_property(card, "scale", Vector2.ONE, 0.24).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(card, "modulate:a", 1.0, 0.14)
+
+
+## A big damage number that pops out of the card, then floats up and fades. `caption` (CHARGE,
+## TYPE EDGE...) sits small above it.
+func _damage_number(card: DinoCard, damage: int, caption: String, color: Color, big: bool) -> void:
+	var box := UiKit.vbox(-6)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if caption != "":
+		box.add_child(_outlined_label(caption, 26, color))
+	box.add_child(_outlined_label("-%d" % damage, 84 if big else 64, color))
+	add_child(box)
+	box.reset_size()
+	var center := card.get_global_rect().get_center()
+	box.global_position = center - box.size / 2 + Vector2(randf_range(-20.0, 20.0), -card.size.y * 0.12)
+	box.pivot_offset = box.size / 2
+	box.scale = Vector2(1.9, 1.9)
+	var tween := box.create_tween()
+	tween.tween_property(box, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(box, "position:y", box.position.y - 80, 0.75).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(box, "modulate:a", 0.0, 0.45).set_delay(0.3)
+	tween.tween_callback(box.queue_free)
+
+
+func _outlined_label(text: String, font_size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_font_override("font", Fonts.condensed_bold())
+	label.add_theme_color_override("font_color", color.lightened(0.15))
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.add_theme_constant_override("outline_size", maxi(8, font_size / 6))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
 
 
 ## A floating label that drifts up from a card and fades out.

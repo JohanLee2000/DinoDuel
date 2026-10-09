@@ -87,7 +87,7 @@ func _script() -> Array[Dictionary]:
 		{"text": "[b]Party[/b]: the %d dinos you bring. Before each battle you see your rival's %d and pick %d, up to %d Party Points." \
 				% [PartyRules.BRING_SIZE, PartyRules.BRING_SIZE, PartyRules.PARTY_SIZE, PartyRules.POINT_CAP],
 				"tab": Session.Tab.PARTY, "target": _main.tab_rect.bind(Session.Tab.PARTY)},
-		{"text": "[b]Eggs[/b]: crack open your clutches here. There's a free clutch every day, and " + clutches_line,
+		{"text": "[b]Eggs[/b]: crack open your clutches here. Check in every day for a free one, and " + clutches_line,
 				"tab": Session.Tab.EGGS, "target": _main.tab_rect.bind(Session.Tab.EGGS)},
 		{"text": "[b]Dex[/b]: every dino you've discovered. Hold any card to see it up close, and craft the ones you're missing with Amber.",
 				"tab": Session.Tab.DEX, "target": _main.tab_rect.bind(Session.Tab.DEX)},

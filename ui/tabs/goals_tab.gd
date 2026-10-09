@@ -1,6 +1,7 @@
 extends VBoxContainer
-## Goals tab: today's three quests (plus a bonus clutch for all three), collection rewards
-## (milestones and full eras), and achievements. Rules live in core/collection/goals.gd.
+## Goals tab: the daily check-in, today's three quests (plus a bonus clutch for all three),
+## collection rewards (milestones, full eras and sets), and achievements. Rules live in
+## core/collection/goals.gd and core/collection/dino_sets.gd.
 
 var _body: VBoxContainer
 var _scroll: ScrollContainer
@@ -27,6 +28,8 @@ func _refresh() -> void:
 		child.queue_free()
 	var profile := Session.profile
 	var catalog := Session.catalog
+
+	_body.add_child(_checkin_strip())
 
 	# Daily quests.
 	var header := UiKit.hbox(10)
@@ -62,6 +65,25 @@ func _refresh() -> void:
 				progress[0], progress[1], "+%d egg clutch" % Goals.ERA_CLUTCHES, Goals.era_claimed(profile, era),
 				func() -> bool: return Goals.claim_era(profile, catalog, era)))
 
+	# Sets: ready to claim first, then the rest in order, earned badges last.
+	var set_ids := DinoSets.ids()
+	var earned := set_ids.filter(func(id: StringName) -> bool: return DinoSets.claimed(profile, id)).size()
+	_body.add_child(UiKit.title("Sets  %d/%d" % [earned, set_ids.size()], 30, Palette.HIGHLIGHT,
+			HORIZONTAL_ALIGNMENT_LEFT, false))
+	_body.add_child(UiKit.label("Collect every dino in a set for Amber and a badge. Families split all %d dinos; themes mix them up." \
+			% catalog.dinos.size(), 22, Palette.TEXT_DIM))
+	var set_rank := {}
+	for i in set_ids.size():
+		var id: StringName = set_ids[i]
+		set_rank[id] = (2 if DinoSets.claimed(profile, id) else (0 if DinoSets.ready(profile, id) else 1)) * 100 + i
+	set_ids.sort_custom(func(a: StringName, b: StringName) -> bool: return set_rank[a] < set_rank[b])
+	for id in set_ids:
+		var counts := DinoSets.progress(profile, id)
+		var kind := "Family" if DinoSets.FAMILIES.has(id) else "Theme"
+		_body.add_child(_row(DinoSets.title_of(id), "%s · %s" % [kind, DinoSets.blurb(id)], counts[0], counts[1],
+				"+%d Amber" % DinoSets.reward(id), DinoSets.claimed(profile, id),
+				func() -> bool: return DinoSets.claim(profile, id), _set_members(id), true))
+
 	# Achievements: ready to claim first, then in progress, then the ones already claimed.
 	var unlocked := 0
 	for id in Goals.ACHIEVEMENTS:
@@ -90,15 +112,21 @@ func _restore_scroll(value: int) -> void:
 
 
 ## One goal: title, description, progress bar, reward, and Claim / Done.
+## `extra` goes under the description; `badge` rows show a gold star once claimed (sets).
 func _row(title: String, description: String, progress: int, target: int, reward: String, claimed: bool,
-		claim: Callable) -> Control:
+		claim: Callable, extra: Control = null, badge := false) -> Control:
 	var done := progress >= target
 	var row := UiKit.hbox(14)
 	var text := UiKit.vbox(4)
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text.add_child(UiKit.label(title, 26, Palette.TEXT_DIM if claimed else Palette.TEXT))
+	if badge and claimed:
+		text.add_child(UiKit.label("★ " + title, 26, Palette.HIGHLIGHT))
+	else:
+		text.add_child(UiKit.label(title, 26, Palette.TEXT_DIM if claimed else Palette.TEXT))
 	if description != "":
 		text.add_child(UiKit.label(description, 21, Palette.TEXT_DIM))
+	if extra:
+		text.add_child(extra)
 	if target > 1:
 		text.add_child(_bar(mini(progress, target), target))
 	row.add_child(text)
@@ -108,7 +136,8 @@ func _row(title: String, description: String, progress: int, target: int, reward
 	side.add_child(UiKit.label(reward, 22, Palette.HIGHLIGHT if not claimed else Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER, false))
 	if claimed:
-		side.add_child(UiKit.label("✔ Claimed", 24, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
+		side.add_child(UiKit.label("★ Badge" if badge else "✔ Claimed", 24, Palette.HIGHLIGHT if badge else Palette.HEAL,
+				HORIZONTAL_ALIGNMENT_CENTER, false))
 	elif done:
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 26)
 		button.pressed.connect(func() -> void:
@@ -128,6 +157,62 @@ func _row(title: String, description: String, progress: int, target: int, reward
 		glow.set_border_width_all(2)
 		panel.add_theme_stylebox_override("panel", glow)
 	return panel
+
+
+## The dinos in a set: owned ones bright, missing ones dim.
+func _set_members(id: StringName) -> RichTextLabel:
+	var names: Array[String] = []
+	for dino_id in DinoSets.members(id):
+		var dino := Session.catalog.find(dino_id)
+		var color := Palette.TEXT if Session.profile.owns(dino_id) else Color(Palette.TEXT_DIM, 0.6)
+		names.append("[color=#%s]%s[/color]" % [color.to_html(), dino.display_name])
+	var list := RichTextLabel.new()
+	list.bbcode_enabled = true
+	list.fit_content = true
+	list.scroll_active = false
+	list.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	list.add_theme_font_size_override("normal_font_size", 21)
+	list.text = " · ".join(names)
+	return list
+
+
+## A week of dots for the daily check-in, with a Claim button that opens the full view.
+func _checkin_strip() -> Control:
+	var profile := Session.profile
+	var row := UiKit.hbox(14)
+	var text := UiKit.vbox(8)
+	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text.add_child(UiKit.title("Daily check-in", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	var dots := UiKit.hbox(8)
+	for day in Economy.CHECKIN_BONUSES.size():
+		var state := CheckInView.day_state(day)
+		var dot := PanelContainer.new()
+		dot.custom_minimum_size = Vector2(40, 40)
+		var style := StyleBoxFlat.new()
+		style.set_corner_radius_all(20)
+		style.bg_color = Palette.HEAL if state == 0 else Color(1, 1, 1, 0.06)
+		if Economy.CHECKIN_BONUSES[day].has("rare_clutches") and state != 0:
+			style.bg_color = Color(CheckInView.RARE_TINT, 0.35)
+		style.border_color = Palette.HIGHLIGHT if state == 1 else Palette.PANEL_BORDER
+		style.set_border_width_all(3 if state == 1 else 1)
+		dot.add_theme_stylebox_override("panel", style)
+		dot.add_child(UiKit.label("✔" if state == 0 else str(day + 1), 20, Palette.INK if state == 0 else Palette.TEXT,
+				HORIZONTAL_ALIGNMENT_CENTER, false))
+		dots.add_child(dot)
+	text.add_child(dots)
+	row.add_child(text)
+	var side := UiKit.vbox(6)
+	side.custom_minimum_size.x = 190
+	side.alignment = BoxContainer.ALIGNMENT_CENTER
+	if profile.can_claim_daily(SaveStore.today()):
+		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 26)
+		button.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
+		side.add_child(button)
+		_pulse(button)
+	else:
+		side.add_child(UiKit.label("✔ Done today", 24, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
+	row.add_child(side)
+	return UiKit.panel(row, Palette.PANEL, 14)
 
 
 func _milestone_chip(index: int) -> Control:

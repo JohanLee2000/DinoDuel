@@ -35,6 +35,7 @@ var autoplay_battles_left := 0
 var dev_open_dex: StringName
 ## Dev: show any card full-screen on launch, owned or not. `--open-card=<id>` or `<id>:shiny`.
 var dev_open_card := ""
+var _checkin_prompted := false
 ## Dev: a showcase save for Play Store screenshots (everything collected, no DEV buttons) that
 ## never touches real progress. Pass `--store-shots`.
 var store_shots := false
@@ -220,6 +221,17 @@ func _defs(ids: Array) -> Array[DinoDef]:
 		if dino:
 			defs.append(dino)
 	return defs
+
+
+## Whether the main screen should pop up the daily check-in: once per launch on a day it hasn't
+## been claimed, never during the new-player intro or in dev runs. Asking uses up the prompt.
+func take_checkin_prompt() -> bool:
+	if _checkin_prompted or autoplay or store_shots or dev_tutorial:
+		return false
+	if not (profile.partner_chosen and profile.tour_done and profile.can_claim_daily(SaveStore.today())):
+		return false
+	_checkin_prompted = true
+	return true
 
 
 ## Whether the next battle gets the tutorial coach: only the player's first one.

@@ -67,14 +67,22 @@ func _ready() -> void:
 		_start_new_player.call_deferred()
 	elif not Session.profile.tour_done:
 		ProfessorTour.start.call_deferred(self)
+	elif Session.dev_open == "" and Session.dev_open_card == "" and Session.take_checkin_prompt():
+		_open_checkin.call_deferred()
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()
+		"checkin":
+			_open_checkin.call_deferred()
 		"help":
 			HelpView.open.call_deferred()
 		_ when Session.dev_open.begins_with("help:"):
 			HelpView.open.call_deferred(int(Session.dev_open.get_slice(":", 1)) - 1)
 	Session.dev_open = ""
+
+
+func _open_checkin() -> void:
+	CheckInView.open().closed.connect(func() -> void: show_tab(Session.current_tab))
 
 
 ## Brand-new players: their name, the story panels, then the partner pick. Picking reloads this
@@ -124,7 +132,7 @@ func _update_bar() -> void:
 	var profile := Session.profile
 	_amber_label.text = str(profile.amber)
 	_clutch_label.text = str(profile.clutches)
-	var eggs_waiting := profile.clutches > 0 or profile.can_claim_daily(SaveStore.today())
+	var eggs_waiting := profile.clutches > 0 or profile.rare_clutches > 0 or profile.can_claim_daily(SaveStore.today())
 	_buttons[Session.Tab.EGGS].text = "Eggs (!)" if eggs_waiting else "Eggs"
 	_buttons[Session.Tab.GOALS].text = "Goals (!)" if Goals.anything_to_claim(profile, Session.catalog) else "Goals"
 	_first_steps.refresh()

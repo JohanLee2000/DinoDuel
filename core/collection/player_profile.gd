@@ -14,10 +14,14 @@ var owned: Dictionary = {}
 var seen: Dictionary = {}
 var amber := 0
 var clutches := 0
+## Rare clutches (Economy.RARE_CLUTCH_ODDS), hatched the same way as normal ones.
+var rare_clutches := 0
 ## The 6 dinos you bring to battles.
 var lineup: Array[StringName] = []
 var clutches_without_epic := 0
 var last_daily_day := -1
+## Daily check-in streak: which of the 7 days (0-6) the next check-in is.
+var checkin_day := 0
 var wins := 0
 var losses := 0
 ## Per rival: rival id -> [wins, losses].
@@ -145,15 +149,18 @@ func craft(dino: DinoDef) -> HatchResult:
 
 # --- Eggs -----------------------------------------------------------------------------------
 
-## Opens one clutch. Returns an empty array if there are no clutches to open.
-func hatch_clutch(catalog: DinoCatalog) -> Array[HatchResult]:
+## Opens one clutch (a rare one if `rare`). Returns an empty array if there's none to open.
+func hatch_clutch(catalog: DinoCatalog, rare := false) -> Array[HatchResult]:
 	var results: Array[HatchResult] = []
-	if clutches <= 0:
+	if (rare_clutches if rare else clutches) <= 0:
 		return results
-	clutches -= 1
+	if rare:
+		rare_clutches -= 1
+	else:
+		clutches -= 1
 	var rarities: Array[int] = []
 	for i in Economy.EGGS_PER_CLUTCH:
-		rarities.append(_roll(Economy.RARITY_ODDS))
+		rarities.append(_roll(Economy.RARE_CLUTCH_ODDS if rare else Economy.RARITY_ODDS))
 	var has_epic := rarities.any(func(r: int) -> bool: return r >= DinoDef.Rarity.EPIC)
 	if not has_epic and clutches_without_epic >= Economy.PITY_CLUTCHES - 1:
 		rarities[rarities.size() - 1] = _roll(Economy.PITY_ODDS)
@@ -176,16 +183,31 @@ func buy_clutch() -> bool:
 	return true
 
 
-## `today` is a day number (see SaveStore.today()). One free clutch per calendar day.
+func buy_rare_clutch() -> bool:
+	if amber < Economy.RARE_CLUTCH_PRICE:
+		return false
+	amber -= Economy.RARE_CLUTCH_PRICE
+	rare_clutches += 1
+	return true
+
+
+## `today` is a day number (see SaveStore.today()). One check-in per calendar day.
 func can_claim_daily(today: int) -> bool:
 	return today != last_daily_day
 
 
+## The daily check-in: a free clutch plus today's streak bonus (Economy.CHECKIN_BONUSES), then
+## the streak moves on a day. Days missed in between don't matter; the streak just waits.
 func claim_daily(today: int) -> bool:
 	if not can_claim_daily(today):
 		return false
 	last_daily_day = today
 	clutches += Economy.DAILY_CLUTCHES
+	var bonus: Dictionary = Economy.CHECKIN_BONUSES[checkin_day]
+	amber += int(bonus.get("amber", 0))
+	clutches += int(bonus.get("clutches", 0))
+	rare_clutches += int(bonus.get("rare_clutches", 0))
+	checkin_day = (checkin_day + 1) % Economy.CHECKIN_BONUSES.size()
 	return true
 
 
@@ -324,9 +346,11 @@ func to_dict() -> Dictionary:
 		"seen": seen.keys(),
 		"amber": amber,
 		"clutches": clutches,
+		"rare_clutches": rare_clutches,
 		"lineup": lineup.duplicate(),
 		"clutches_without_epic": clutches_without_epic,
 		"last_daily_day": last_daily_day,
+		"checkin_day": checkin_day,
 		"wins": wins,
 		"losses": losses,
 		"rival_record": rival_record.duplicate(true),
@@ -365,6 +389,7 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 			profile.seen[id] = true
 	profile.amber = maxi(0, int(data.get("amber", 0)))
 	profile.clutches = maxi(0, int(data.get("clutches", 0)))
+	profile.rare_clutches = maxi(0, int(data.get("rare_clutches", 0)))
 	var lineup_ids: Array[StringName] = []
 	for key in data.get("lineup", []):
 		var id := StringName(key)
@@ -373,6 +398,7 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.lineup.assign(lineup_ids.slice(0, PartyRules.BRING_SIZE))
 	profile.clutches_without_epic = int(data.get("clutches_without_epic", 0))
 	profile.last_daily_day = int(data.get("last_daily_day", -1))
+	profile.checkin_day = posmod(int(data.get("checkin_day", 0)), Economy.CHECKIN_BONUSES.size())
 	profile.wins = int(data.get("wins", 0))
 	profile.losses = int(data.get("losses", 0))
 	var records: Dictionary = data.get("rival_record", {})

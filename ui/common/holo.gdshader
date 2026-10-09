@@ -6,10 +6,12 @@ uniform float radius = 8.0;
 uniform float strength = 0.3;
 uniform float rainbow = 1.0;
 uniform vec4 tint : source_color = vec4(1.0, 0.85, 0.45, 1.0);
+// Shifts the sheen with the phone's tilt in the full-screen card view (see CardViewer).
+uniform vec2 tilt = vec2(0.0);
 
 void fragment() {
 	float t = TIME * 0.18;
-	float band = fract((UV.x * 0.8 + UV.y) * 1.1 - t);
+	float band = fract((UV.x * 0.8 + UV.y) * 1.1 - t + tilt.x * 0.6 + tilt.y * 0.4);
 	vec3 spectrum = 0.55 + 0.45 * cos(6.2831 * (band * 1.5 + vec3(0.0, 0.33, 0.67)));
 	vec3 col = mix(tint.rgb, spectrum, rainbow);
 	float shine = smoothstep(0.0, 0.35, band) * smoothstep(0.75, 0.35, band);

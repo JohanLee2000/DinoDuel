@@ -16,6 +16,19 @@ const MELT_VALUE: Array[int] = [7, 25, 60, 180, 480]
 ## Amber to craft a specific dino, indexed by rarity.
 const CRAFT_COST: Array[int] = [40, 100, 400, 1000, 2000]
 
+## Rare clutches (Jo, 2026-10-09): same 3 eggs and the same hatch, better odds, bought with Amber
+## (and the 7th day of the daily check-in). Indexed by rarity; must add up to 1.
+const RARE_CLUTCH_PRICE := 500
+const RARE_CLUTCH_ODDS: Array[float] = [0.30, 0.40, 0.16, 0.09, 0.05]
+
+## Daily check-in: each day gives DAILY_CLUTCHES plus the bonus for the streak day it's on, then
+## moves to the next day (after day 7, back to day 1). Missing a day pauses the streak instead of
+## resetting it (Jo, 2026-10-09). Keys: "amber", "clutches", "rare_clutches".
+const CHECKIN_BONUSES: Array[Dictionary] = [
+	{"amber": 25}, {"amber": 50}, {"clutches": 1}, {"amber": 75}, {"amber": 100}, {"clutches": 1},
+	{"rare_clutches": 1},
+]
+
 const WIN_AMBER := 25
 const WIN_CLUTCHES := 1
 const LOSS_AMBER := 10

@@ -44,7 +44,7 @@ const PAGES := [
 		"title": "Eggs and Amber",
 		"rows": [
 			["egg", "Win a battle: a clutch of [b]3 eggs[/b] and %d Amber. Lose: %d Amber."],
-			["egg", "Claim a free clutch every day, or buy one for %d Amber."],
+			["egg", "Check in every day for a free clutch and a bonus that grows all week. Or buy one for %d Amber, or a [b]Rare clutch[/b] (better odds) for %d."],
 			["", "Tap an egg to crack it: its glow shows how rare it is. 1 in %d is a [b]Shiny[/b] with a special look."],
 			["amber", "Duplicates melt into Amber. Spend it in the Dex to craft the dinos you're missing."],
 		],
@@ -285,7 +285,7 @@ func _fill_numbers(text: String) -> String:
 	if text.begins_with("Win a battle"):
 		return text % [Economy.WIN_AMBER, Economy.LOSS_AMBER]
 	if text.contains("buy one for"):
-		return text % Economy.CLUTCH_PRICE
+		return text % [Economy.CLUTCH_PRICE, Economy.RARE_CLUTCH_PRICE]
 	if text.contains("1 in %d"):
 		return text % roundi(1.0 / Economy.SHINY_ODDS)
 	return text

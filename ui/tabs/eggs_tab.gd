@@ -1,5 +1,5 @@
 extends VBoxContainer
-## Eggs tab: hatch clutches, claim the daily clutch, buy clutches with Amber, see the odds.
+## Eggs tab: hatch clutches (normal and Rare), the daily check-in, buy clutches with Amber, see the odds.
 
 var _body: VBoxContainer
 
@@ -21,52 +21,63 @@ func _refresh() -> void:
 
 	var banner := ClutchBanner.new()
 	banner.clutches = profile.clutches
-	banner.hatch_pressed.connect(_hatch)
+	banner.rare_clutches = profile.rare_clutches
+	banner.hatch_pressed.connect(func() -> void: _hatch(profile.clutches <= 0))
 	_body.add_child(banner)
 	var hatch := UiKit.button("Hatch a clutch", UiKit.BUTTON_GREEN, 110, 34)
 	hatch.disabled = profile.clutches <= 0
-	hatch.pressed.connect(_hatch)
+	hatch.pressed.connect(_hatch.bind(false))
 	_body.add_child(hatch)
+	if profile.rare_clutches > 0:
+		var rare := UiKit.button("Hatch a Rare clutch (%d)" % profile.rare_clutches, UiKit.BUTTON_RARE, 96, 32)
+		rare.pressed.connect(_hatch.bind(true))
+		_body.add_child(rare)
 
-	var today := SaveStore.today()
-	var daily := UiKit.button("Claim today's free clutch", UiKit.BUTTON_AMBER)
-	if not profile.can_claim_daily(today):
-		daily.text = "Free clutch claimed. Come back tomorrow!"
-		daily.disabled = true
-	daily.pressed.connect(func() -> void:
-		Sound.play(&"clutch_open")
-		profile.claim_daily(today)
-		Session.save()
-		_refresh())
-	_body.add_child(daily)
+	var checkin := UiKit.button("Daily check-in: free clutch + %s" % CheckInView.bonus_text(profile.checkin_day),
+			UiKit.BUTTON_AMBER)
+	if not profile.can_claim_daily(SaveStore.today()):
+		checkin.text = "Checked in today. Come back tomorrow!"
+		checkin.disabled = true
+	checkin.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
+	_body.add_child(checkin)
 
-	var buy := UiKit.button("Buy a clutch for %d Amber" % Economy.CLUTCH_PRICE, UiKit.BUTTON_GRAY)
-	buy.disabled = profile.amber < Economy.CLUTCH_PRICE
-	buy.pressed.connect(func() -> void:
-		Sound.play(&"amber")
-		profile.buy_clutch()
-		Session.save()
-		_refresh())
-	_body.add_child(buy)
+	var shop := UiKit.hbox(12)
+	for offer in [[false, Economy.CLUTCH_PRICE], [true, Economy.RARE_CLUTCH_PRICE]]:
+		var rare: bool = offer[0]
+		var price: int = offer[1]
+		var buy := UiKit.button("%s\n%d Amber" % ["Buy a Rare clutch" if rare else "Buy a clutch", price],
+				UiKit.BUTTON_GRAY, 96, 26)
+		buy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		buy.disabled = profile.amber < price
+		buy.pressed.connect(func() -> void:
+			if profile.buy_rare_clutch() if rare else profile.buy_clutch():
+				Sound.play(&"amber")
+				Session.save()
+				_refresh())
+		shop.add_child(buy)
+	_body.add_child(shop)
 
 	_body.add_child(UiKit.panel(_odds_box()))
 
 	if Session.autoplay and profile.clutches > 0 and profile.tour_done:
 		await get_tree().create_timer(0.8).timeout
-		_hatch()
+		_hatch(false)
 
 
 func _odds_box() -> VBoxContainer:
 	var box := UiKit.vbox(6)
 	box.add_child(UiKit.label("Odds for each egg", 28))
-	var odds := UiKit.grid(2, 6)
+	var odds := UiKit.grid(3, 6)
+	for heading in ["", "Clutch", "Rare clutch"]:
+		var label := UiKit.label(heading, 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_LEFT, false)
+		label.custom_minimum_size = Vector2(200 if heading == "" else 150, 0)
+		odds.add_child(label)
 	for rarity in DinoDef.RARITY_NAMES.size():
-		var name_label := UiKit.label(DinoDef.RARITY_NAMES[rarity], 24, Palette.RARITY_COLORS[rarity],
-				HORIZONTAL_ALIGNMENT_LEFT, false)
-		name_label.custom_minimum_size = Vector2(200, 0)
-		odds.add_child(name_label)
-		odds.add_child(UiKit.label("%d%%" % roundi(Economy.RARITY_ODDS[rarity] * 100), 24,
-				Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
+		odds.add_child(UiKit.label(DinoDef.RARITY_NAMES[rarity], 24, Palette.RARITY_COLORS[rarity],
+				HORIZONTAL_ALIGNMENT_LEFT, false))
+		for table in [Economy.RARITY_ODDS, Economy.RARE_CLUTCH_ODDS]:
+			odds.add_child(UiKit.label("%d%%" % roundi(table[rarity] * 100), 24, Palette.TEXT,
+					HORIZONTAL_ALIGNMENT_LEFT, false))
 	box.add_child(odds)
 	var left := Economy.PITY_CLUTCHES - Session.profile.clutches_without_epic
 	box.add_child(UiKit.label("Shiny: 1 in %d eggs (same stats, special look)." % roundi(1.0 / Economy.SHINY_ODDS),
@@ -76,8 +87,8 @@ func _odds_box() -> VBoxContainer:
 	return box
 
 
-func _hatch() -> void:
-	var results := Session.profile.hatch_clutch(Session.catalog)
+func _hatch(rare := false) -> void:
+	var results := Session.profile.hatch_clutch(Session.catalog, rare)
 	if results.is_empty():
 		return
 	Sound.play(&"clutch_open")

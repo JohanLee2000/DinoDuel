@@ -329,6 +329,8 @@ static func anything_to_claim(profile: PlayerProfile, catalog: DinoCatalog) -> b
 	for era in DinoDef.ERA_NAMES.size():
 		if era_ready(profile, catalog, era):
 			return true
+	if DinoSets.any_ready(profile):
+		return true
 	for id in ACHIEVEMENTS:
 		if not achievement_claimed(profile, id) and achievement_unlocked(profile, catalog, id):
 			return true

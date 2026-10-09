@@ -32,6 +32,7 @@ const HOLD_SECONDS := 0.45
 const FRAME_SHADER := preload("res://ui/common/card_frame.gdshader")
 const HABITAT_SHADER := preload("res://ui/common/habitat.gdshader")
 const HOLO_SHADER := preload("res://ui/common/holo.gdshader")
+const TILT_SHADER := preload("res://ui/common/tilt_shine.gdshader")
 const CARD_BACK_PATH := "res://assets/branding/card_back.png"
 ## Placeholder backdrops per type until the paintings exist: top, middle, bottom, horizon, rays.
 const HABITATS := [
@@ -65,6 +66,12 @@ var knocked_out := false:
 		knocked_out = value
 		if _overlay:
 			_overlay.queue_redraw()
+## Size of the K.O. stamp; it starts big and slams down to 1 (see tween_health).
+var stamp_scale := 1.0:
+	set(value):
+		stamp_scale = value
+		if _overlay:
+			_overlay.queue_redraw()
 ## Shiny copies get a color-shifting frame and a holo sheen. Cosmetic only.
 var shiny := false
 ## Undiscovered dinos show the card back (used by the Dex).
@@ -77,6 +84,8 @@ var shown_health := 0.0:
 			_overlay.queue_redraw()
 
 var _overlay: Control
+## Shaders that follow the phone's tilt (see enable_tilt_shine / set_tilt).
+var _tilt_materials: Array[ShaderMaterial] = []
 var _badge_text := ""
 var _press_position := Vector2.INF
 var _press_serial := 0
@@ -155,9 +164,13 @@ func display_health(health: int) -> void:
 	knocked_out = health <= 0
 
 
-## Animates the HP bar to `health`.
+## Animates the HP bar to `health`. A knockout slams the K.O. stamp down onto the card.
 func tween_health(health: int, duration := 0.35) -> void:
 	create_tween().tween_property(self, "shown_health", float(health), duration)
+	if health <= 0 and not knocked_out:
+		stamp_scale = 2.6
+		create_tween().tween_property(self, "stamp_scale", 1.0, 0.24).set_delay(duration * 0.6) \
+				.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	knocked_out = health <= 0
 
 
@@ -312,6 +325,33 @@ func _add_holo(rect: Rect2) -> void:
 	material.set_shader_parameter("strength", 0.26)
 	holo.material = material
 	add_child(holo)
+	_tilt_materials.append(material)
+
+
+## Full-screen view of a UR or Shiny card: adds a glare that moves with set_tilt().
+func enable_tilt_shine() -> void:
+	var border := width * BORDER
+	var rect := Rect2(border, border, width - border * 2, card_height() - border * 2)
+	var glare := ColorRect.new()
+	glare.position = rect.position
+	glare.size = rect.size
+	glare.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var material := ShaderMaterial.new()
+	material.shader = TILT_SHADER
+	material.set_shader_parameter("rect_size", rect.size)
+	material.set_shader_parameter("radius", width * 0.05)
+	material.set_shader_parameter("rainbow", 1.0 if shiny or def.rarity == DinoDef.Rarity.LEGENDARY else 0.3)
+	glare.material = material
+	# Under the frame and the stats overlay, over the art.
+	add_child(glare)
+	move_child(glare, _overlay.get_index() if _overlay else get_child_count() - 1)
+	_tilt_materials.append(material)
+
+
+## -1..1 on each axis.
+func set_tilt(tilt: Vector2) -> void:
+	for material in _tilt_materials:
+		material.set_shader_parameter("tilt", tilt)
 
 
 # --- Input ----------------------------------------------------------------------------------
@@ -378,7 +418,7 @@ func _draw_knocked_out() -> void:
 	# A tilted red stamp in the middle.
 	var font_size := int(w * 0.3)
 	var stamp := Vector2(w * 0.78, font_size * 1.15)
-	_overlay.draw_set_transform(Vector2(w, h) / 2, -0.26, Vector2.ONE)
+	_overlay.draw_set_transform(Vector2(w, h) / 2, -0.26, Vector2.ONE * stamp_scale)
 	var box := StyleBoxFlat.new()
 	box.bg_color = Color(0, 0, 0, 0.35)
 	box.border_color = Palette.DAMAGE
