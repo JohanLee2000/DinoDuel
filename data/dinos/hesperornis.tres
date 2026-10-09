@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_oddar"]
+
+[resource]
+script = ExtResource("1_oddar")
+id = &"hesperornis"
+display_name = "Hesperornis"
+dino_type = 2
+era = 2
+rarity = 0
+attack = 5
+defense = 0
+speed = 6
+health = 10
+group = "Diving bird"
+size_text = "Length 1.5–2 m"
+flavor_text = "A flightless seabird with teeth in its beak. It swam with powerful feet like a giant loon, hunting fish in the shallow sea that once split North America."
+epithet = "Toothed Diver"

@@ -32,7 +32,22 @@
 [ext_resource type="Resource" path="res://data/dinos/parasaurolophus.tres" id="112_au5i8"]
 [ext_resource type="Resource" path="res://data/dinos/archelon.tres" id="113_o4i6s"]
 [ext_resource type="Resource" path="res://data/dinos/microraptor.tres" id="114_f0kit"]
+[ext_resource type="Resource" path="res://data/dinos/cymbospondylus.tres" id="200_ats9r"]
+[ext_resource type="Resource" path="res://data/dinos/smok.tres" id="201_ihkr4"]
+[ext_resource type="Resource" path="res://data/dinos/herrerasaurus.tres" id="202_b1gc7"]
+[ext_resource type="Resource" path="res://data/dinos/desmatosuchus.tres" id="203_uwo09"]
+[ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="204_xz07g"]
+[ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="205_7wl5k"]
+[ext_resource type="Resource" path="res://data/dinos/placodus.tres" id="206_6ibfb"]
+[ext_resource type="Resource" path="res://data/dinos/torvosaurus.tres" id="207_uewza"]
+[ext_resource type="Resource" path="res://data/dinos/cryolophosaurus.tres" id="208_gcukk"]
+[ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="209_u50pz"]
+[ext_resource type="Resource" path="res://data/dinos/dakosaurus.tres" id="210_og276"]
+[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="211_k9i4q"]
+[ext_resource type="Resource" path="res://data/dinos/protoceratops.tres" id="212_on0sd"]
+[ext_resource type="Resource" path="res://data/dinos/hesperornis.tres" id="213_siwzd"]
+[ext_resource type="Resource" path="res://data/dinos/tapejara.tres" id="214_j8f47"]
 
 [resource]
 script = ExtResource("17_ibvxg")
-dinos = Array[ExtResource("1_ip2j2")]([ExtResource("2_5cu0e"), ExtResource("3_yt0tg"), ExtResource("4_2xkr6"), ExtResource("5_05nsn"), ExtResource("6_4hnpg"), ExtResource("7_e7s1f"), ExtResource("8_g218f"), ExtResource("9_glkyd"), ExtResource("10_2igop"), ExtResource("11_xur8e"), ExtResource("12_xk75t"), ExtResource("13_jhtqu"), ExtResource("14_vcncn"), ExtResource("15_tbexf"), ExtResource("16_iqugg"), ExtResource("100_zt964"), ExtResource("101_z1msr"), ExtResource("102_acj37"), ExtResource("103_5xmq5"), ExtResource("104_36519"), ExtResource("105_csu3g"), ExtResource("106_26q2l"), ExtResource("107_14er5"), ExtResource("108_xgm0j"), ExtResource("109_2afa2"), ExtResource("110_8fmph"), ExtResource("111_c8rwj"), ExtResource("112_au5i8"), ExtResource("113_o4i6s"), ExtResource("114_f0kit")])
+dinos = Array[ExtResource("1_ip2j2")]([ExtResource("2_5cu0e"), ExtResource("3_yt0tg"), ExtResource("4_2xkr6"), ExtResource("5_05nsn"), ExtResource("6_4hnpg"), ExtResource("7_e7s1f"), ExtResource("8_g218f"), ExtResource("9_glkyd"), ExtResource("10_2igop"), ExtResource("11_xur8e"), ExtResource("12_xk75t"), ExtResource("13_jhtqu"), ExtResource("14_vcncn"), ExtResource("15_tbexf"), ExtResource("16_iqugg"), ExtResource("100_zt964"), ExtResource("101_z1msr"), ExtResource("102_acj37"), ExtResource("103_5xmq5"), ExtResource("104_36519"), ExtResource("105_csu3g"), ExtResource("106_26q2l"), ExtResource("107_14er5"), ExtResource("108_xgm0j"), ExtResource("109_2afa2"), ExtResource("110_8fmph"), ExtResource("111_c8rwj"), ExtResource("112_au5i8"), ExtResource("113_o4i6s"), ExtResource("114_f0kit"), ExtResource("200_ats9r"), ExtResource("201_ihkr4"), ExtResource("202_b1gc7"), ExtResource("203_uwo09"), ExtResource("204_xz07g"), ExtResource("205_7wl5k"), ExtResource("206_6ibfb"), ExtResource("207_uewza"), ExtResource("208_gcukk"), ExtResource("209_u50pz"), ExtResource("210_og276"), ExtResource("211_k9i4q"), ExtResource("212_on0sd"), ExtResource("213_siwzd"), ExtResource("214_j8f47")])

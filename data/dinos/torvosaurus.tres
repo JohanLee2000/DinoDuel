@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_rgy85"]
+
+[resource]
+script = ExtResource("1_rgy85")
+id = &"torvosaurus"
+display_name = "Torvosaurus"
+dino_type = 0
+era = 1
+rarity = 4
+attack = 10
+defense = 2
+speed = 4
+health = 19
+group = "Megalosaur theropod"
+size_text = "Length 10–11 m"
+flavor_text = "Its name means 'savage lizard'. At up to 11 m long it was one of the biggest land predators of the Jurassic, and the largest ever found in Europe."
+epithet = "Savage Lizard"

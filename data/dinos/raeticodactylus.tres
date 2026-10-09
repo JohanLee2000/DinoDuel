@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_j8ute"]
+
+[resource]
+script = ExtResource("1_j8ute")
+id = &"raeticodactylus"
+display_name = "Raeticodactylus"
+dino_type = 1
+era = 0
+rarity = 2
+attack = 6
+defense = 1
+speed = 10
+health = 13
+group = "Crested pterosaur"
+size_text = "Wingspan 1.35 m"
+flavor_text = "One of the largest flying reptiles of the Triassic, found high in the Swiss Alps, with a tall thin crest on its snout and many-pointed teeth."
+epithet = "Alpine Crest"

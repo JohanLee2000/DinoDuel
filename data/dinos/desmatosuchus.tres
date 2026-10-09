@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_s1r2z"]
+
+[resource]
+script = ExtResource("1_s1r2z")
+id = &"desmatosuchus"
+display_name = "Desmatosuchus"
+dino_type = 0
+era = 0
+rarity = 2
+attack = 6
+defense = 4
+speed = 2
+health = 18
+group = "Armored aetosaur"
+size_text = "Length about 4.5 m"
+flavor_text = "A plant-eating cousin of crocodiles covered in bony armor, with shoulder spikes up to 45 cm long and a shovel-like snout for rooting in soil."
+epithet = "Spiked Bulwark"

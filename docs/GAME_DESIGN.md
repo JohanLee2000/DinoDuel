@@ -121,7 +121,7 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 ## Goals (decided 2026-10-09)
 A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/collection/goals.gd`, tests in `tests/test_goals.gd`.
 - **Daily quests:** 3 a day from a pool of 11 (win 2, battle 3, hatch 3, win with a Land/Sky/Sea dino, era bond, balanced party, flawless, 12 turns or fewer, beat a 3-star+ rival), never two of the same kind. 25-50 Amber each; all 3 done gives a **bonus clutch**. Same quests all day for a player; reset at local midnight like the daily clutch. Forfeits don't count; losses count only for "battle 3 times".
-- **Collection:** milestones at 5/10/15/20/25/30 dinos discovered (50 Amber, 1 clutch, 150 Amber, 2 clutches, 300 Amber, 3 clutches) and **1 clutch per completed era**, which also turns the Dex era heading gold ("★ Complete"). New players can claim the 5-dino milestone right after picking a partner.
+- **Collection:** milestones at 5/10/15/20/25/30/35/40/45 dinos discovered (50 Amber, 1 clutch, 150 Amber, 2 clutches, 300 Amber, 3 clutches, 400 Amber, 3 clutches, 5 clutches; 35-45 added with the 45-dino roster) and **1 clutch per completed era**, which also turns the Dex era heading gold ("★ Complete"). New players can claim the 5-dino milestone right after picking a partner.
 - **Achievements:** 18, in-game only (Jo chose to stay offline: no Google Play Games for now, which would need internet, a privacy-policy and Data safety change, and Play Console setup). Each gives 50-500 Amber when claimed. Battles, hatches and crafts feed their counters (`PlayerProfile.stats`).
 
 ## Journey (proposal)
@@ -138,7 +138,7 @@ Deck codes and "ghost duels" (fight a friend's party as AI), challenge codes wit
 ## PvP (future)
 Needs a server for online play (Play Games multiplayer APIs were shut down in 2020). The battle engine is pure, deterministic code with no UI dependencies so it can run on a server later.
 
-## The set: 30 dinos
+## The set: 45 dinos
 | Dino | Type | Era | Tier | Atk | Def | Spd | HP |
 |---|---|---|---|---|---|---|---|
 | Coelophysis | Land | Triassic | N | 5 | 1 | 7 | 10 |
@@ -171,6 +171,21 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Parasaurolophus | Land | Cretaceous | N | 4 | 1 | 5 | 13 |
 | Archelon | Sea | Cretaceous | R | 5 | 3 | 2 | 17 |
 | Microraptor | Sky | Cretaceous | R | 6 | 1 | 11 | 9 |
+| Cymbospondylus | Sea | Triassic | UR | 9 | 2 | 3 | 24 |
+| Smok | Land | Triassic | SSR | 9 | 1 | 5 | 16 |
+| Herrerasaurus | Land | Triassic | SR | 8 | 1 | 7 | 14 |
+| Desmatosuchus | Land | Triassic | SR | 6 | 4 | 2 | 18 |
+| Raeticodactylus | Sky | Triassic | SR | 6 | 1 | 10 | 13 |
+| Sharovipteryx | Sky | Triassic | R | 5 | 1 | 11 | 10 |
+| Placodus | Sea | Triassic | R | 6 | 2 | 4 | 15 |
+| Torvosaurus | Land | Jurassic | UR | 10 | 2 | 4 | 19 |
+| Cryolophosaurus | Land | Jurassic | SSR | 8 | 1 | 7 | 16 |
+| Ceratosaurus | Land | Jurassic | SR | 7 | 2 | 6 | 14 |
+| Dakosaurus | Sea | Jurassic | SR | 7 | 1 | 5 | 15 |
+| Yi qi | Sky | Jurassic | SR | 7 | 1 | 10 | 11 |
+| Protoceratops | Land | Cretaceous | N | 5 | 2 | 4 | 13 |
+| Hesperornis | Sea | Cretaceous | N | 5 | 0 | 6 | 10 |
+| Tapejara | Sky | Cretaceous | R | 5 | 1 | 9 | 11 |
 
 ## Milestones
 1. **M1: Battle on your phone.** Battle engine + tests + balance sim, party pick and battle screens with placeholder cards, one AI rival, Android debug build.

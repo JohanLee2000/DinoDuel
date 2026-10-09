@@ -63,6 +63,21 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `parasaurolophus` | Parasaurolophus | LAND | COMMON (N) | Done |
 | `archelon` | Archelon | SEA | RARE (R) | Done |
 | `microraptor` | Microraptor | SKY | RARE (R) | Done |
+| `cymbospondylus` | Cymbospondylus | SEA | LEGENDARY (UR) | Needed |
+| `smok` | Smok | LAND | EPIC (SSR) | Needed |
+| `herrerasaurus` | Herrerasaurus | LAND | SUPER RARE (SR) | Needed |
+| `desmatosuchus` | Desmatosuchus | LAND | SUPER RARE (SR) | Needed |
+| `raeticodactylus` | Raeticodactylus | SKY | SUPER RARE (SR) | Needed |
+| `sharovipteryx` | Sharovipteryx | SKY | RARE (R) | Needed |
+| `placodus` | Placodus | SEA | RARE (R) | Needed |
+| `torvosaurus` | Torvosaurus | LAND | LEGENDARY (UR) | Needed |
+| `cryolophosaurus` | Cryolophosaurus | LAND | EPIC (SSR) | Needed |
+| `ceratosaurus` | Ceratosaurus | LAND | SUPER RARE (SR) | Needed |
+| `dakosaurus` | Dakosaurus | SEA | SUPER RARE (SR) | Needed |
+| `yi_qi` | Yi qi | SKY | SUPER RARE (SR) | Needed |
+| `protoceratops` | Protoceratops | LAND | COMMON (N) | Needed |
+| `hesperornis` | Hesperornis | SEA | COMMON (N) | Needed |
+| `tapejara` | Tapejara | SKY | RARE (R) | Needed |
 
 Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized and fully feathered") helps ChatGPT get the anatomy right.
 
@@ -100,6 +115,21 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `parasaurolophus` | A Parasaurolophus, a Late Cretaceous duck-billed dinosaur about 9.5 m long: long backward-curving hollow tube crest on its head, duck-like beak, walking on all fours or two legs, calling. Habitat: Late Cretaceous swampy forest. |
 | `archelon` | An Archelon, a Late Cretaceous giant sea turtle about 4.6 m long: huge flippers, hooked beak, broad leathery shell rather than a hard one. Habitat: warm shallow Cretaceous sea with light rays. |
 | `microraptor` | A Microraptor, an Early Cretaceous crow-sized feathered dinosaur: long flight feathers on both arms and legs (four wings), glossy iridescent black feathers, long tail with a feather fan, gliding between trees. Habitat: Early Cretaceous forest in China. |
+| `cymbospondylus` | A Cymbospondylus youngorum, a Middle Triassic giant ichthyosaur up to 17 m long: very long slender body, a long narrow snout with conical teeth, four flippers, a long eel-like tail with only a small low tail fin, and no dorsal fin (unlike later dolphin-shaped ichthyosaurs, so it should not look like Shonisaurus). Habitat: open Triassic ocean, sunbeams through deep blue water, a school of squid-like prey scattering. |
+| `smok` | A Smok wawelski, a Late Triassic predatory archosaur 5–6 m long from Poland: a large deep skull with big serrated teeth and powerful jaws, walking on its hind legs with short arms, small bony scutes along the back, long tail. Not a true dinosaur. Habitat: humid Late Triassic river plain with horsetails and conifers. |
+| `herrerasaurus` | A Herrerasaurus, one of the earliest dinosaurs, a Late Triassic predator 3–6 m long from Argentina: slender two-legged build, long narrow skull with curved serrated teeth, grasping three-fingered hands, long tail. Habitat: the Triassic Ischigualasto valley, red badlands with ferns and conifers. |
+| `desmatosuchus` | A Desmatosuchus, a Late Triassic armored aetosaur about 4.5 m long: low wide body covered in interlocking bony plates, long curved spikes jutting sideways from the shoulders, small head with a pig-like shovel snout, four sturdy legs. Not a dinosaur. Habitat: Late Triassic Arizona river forest with tall conifers. |
+| `raeticodactylus` | A Raeticodactylus, a Late Triassic pterosaur with a 1.35 m wingspan from the Swiss Alps: long skin wings, a tall thin bony crest on top of the snout, long jaws with small multi-pointed teeth, a long stiff tail. Habitat: Late Triassic tropical lagoon coast. |
+| `sharovipteryx` | A Sharovipteryx, a tiny Triassic gliding reptile about 25 cm long from Central Asia: slender lizard-like body, very long hind legs with a skin membrane stretched between the legs and tail forming a triangular delta wing, small front legs, long thin tail. Make the leg-wings obvious so it doesn't look like Icarosaurus (whose wings are on its ribs). Not a pterosaur. Habitat: Triassic lakeside forest, close-up mid-glide. |
+| `placodus` | A Placodus, a Middle Triassic marine reptile 2–3 m long: stocky barrel-shaped body, short neck, blunt head with forward-pointing front teeth and flat crushing teeth, short paddle-like limbs, long flattened tail, a low ridge of bony bumps along the back. Habitat: shallow sunlit Triassic sea floor with shellfish beds. |
+| `torvosaurus` | A Torvosaurus, a Late Jurassic predatory dinosaur 10–11 m long: massive body walking on two legs, long low skull with huge blade-like serrated teeth, short powerful arms with big claws, thick tail. Habitat: Late Jurassic Portuguese floodplain with conifers and ferns. |
+| `cryolophosaurus` | A Cryolophosaurus, an Early Jurassic predatory dinosaur about 6.5 m long from Antarctica: two-legged, with a distinctive furrowed crest running sideways across the top of the head above the eyes like a fan, sharp teeth, long tail. Habitat: Early Jurassic Antarctica, then a cool forested land with conifers and a misty river (no ice). |
+| `ceratosaurus` | A Ceratosaurus, a Late Jurassic predatory dinosaur 5.5–6.7 m long: blade-like horn on the snout, two smaller horns above the eyes, very long blade-like teeth, a narrow row of small bony plates down the back, long flexible tail. Habitat: Late Jurassic Morrison floodplain with river and conifers. |
+| `dakosaurus` | A Dakosaurus, a Late Jurassic marine crocodile 4–5 m long: short deep skull with large serrated teeth (not a normal crocodile's long thin snout), smooth skin without armor, flipper-like limbs, a shark-like tail fin. Habitat: Late Jurassic open sea, hunting among fish. |
+| `yi_qi` | A Yi qi, a small Late Jurassic dinosaur from China with a wingspan of about 60 cm: fluffy filament-like feathers, short head with small teeth, bat-like membrane wings of bare skin supported by a long rod-like bone from each wrist and long fingers, gliding between trees. Habitat: Jurassic forest in China, dusk light. |
+| `protoceratops` | A Protoceratops, a Late Cretaceous horned dinosaur about 1.8 m long: stocky four-legged body, large head with a parrot-like beak and a wide bony neck frill, no big horns. Habitat: Late Cretaceous Gobi desert dunes at sunset. |
+| `hesperornis` | A Hesperornis, a Late Cretaceous flightless diving bird 1.5–2 m long: streamlined body, long neck, long beak with small teeth, tiny useless wings, big lobed feet set far back, swimming underwater after fish. Habitat: Late Cretaceous Western Interior Seaway, underwater with sunlight from above. |
+| `tapejara` | A Tapejara, an Early Cretaceous pterosaur from Brazil with a 1.3–1.5 m wingspan: short deep toothless beak, a tall semicircular crest over the snout with a bony prong sweeping back behind the head, colorful crest, long skin wings. Habitat: Early Cretaceous Brazilian lagoon with tropical forest. |
 
 ## Rights and rules
 

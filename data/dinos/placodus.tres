@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_6glcf"]
+
+[resource]
+script = ExtResource("1_6glcf")
+id = &"placodus"
+display_name = "Placodus"
+dino_type = 2
+era = 0
+rarity = 1
+attack = 6
+defense = 2
+speed = 4
+health = 15
+group = "Placodont marine reptile"
+size_text = "Length 2–3 m"
+flavor_text = "A marine reptile with teeth like flat paving stones, used to crack open the shellfish it plucked off the sea floor."
+epithet = "Shell Crusher"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_u3bmk"]
+
+[resource]
+script = ExtResource("1_u3bmk")
+id = &"tapejara"
+display_name = "Tapejara"
+dino_type = 1
+era = 2
+rarity = 1
+attack = 5
+defense = 1
+speed = 9
+health = 11
+group = "Crested pterosaur"
+size_text = "Wingspan about 1.3–1.5 m"
+flavor_text = "A small toothless pterosaur from Brazil with a tall rounded crest over its snout, possibly brightly colored for display."
+epithet = "Sail Crest"

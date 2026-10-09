@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_jjrc9"]
+
+[resource]
+script = ExtResource("1_jjrc9")
+id = &"cryolophosaurus"
+display_name = "Cryolophosaurus"
+dino_type = 0
+era = 1
+rarity = 3
+attack = 8
+defense = 1
+speed = 7
+health = 16
+group = "Crested theropod"
+size_text = "Length about 6.5 m"
+flavor_text = "The first meat-eating dinosaur found in Antarctica. Its fan-shaped crest running sideways across its head earned it the nickname 'Elvisaurus'."
+epithet = "Frozen Crest"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_31ap0"]
+
+[resource]
+script = ExtResource("1_31ap0")
+id = &"protoceratops"
+display_name = "Protoceratops"
+dino_type = 0
+era = 2
+rarity = 0
+attack = 5
+defense = 2
+speed = 4
+health = 13
+group = "Early horned dinosaur"
+size_text = "Length about 1.8 m"
+flavor_text = "A sheep-sized plant-eater from the Gobi Desert. One famous fossil shows a Protoceratops locked in a fight with a Velociraptor, both buried by a sandstorm."
+epithet = "Desert Shield"

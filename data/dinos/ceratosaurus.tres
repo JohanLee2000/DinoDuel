@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_15jrw"]
+
+[resource]
+script = ExtResource("1_15jrw")
+id = &"ceratosaurus"
+display_name = "Ceratosaurus"
+dino_type = 0
+era = 1
+rarity = 2
+attack = 7
+defense = 2
+speed = 6
+health = 14
+group = "Horned theropod"
+size_text = "Length 5.5–6.7 m"
+flavor_text = "Named for the blade-like horn on its nose, probably for show rather than fighting. A row of small bony plates ran down its back."
+epithet = "Horned Hunter"

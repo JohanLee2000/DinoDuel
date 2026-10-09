@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_v0xz9"]
+
+[resource]
+script = ExtResource("1_v0xz9")
+id = &"herrerasaurus"
+display_name = "Herrerasaurus"
+dino_type = 0
+era = 0
+rarity = 2
+attack = 8
+defense = 1
+speed = 7
+health = 14
+group = "Early theropod dinosaur"
+size_text = "Length 3–6 m"
+flavor_text = "One of the earliest dinosaurs, from 231-million-year-old rocks in Argentina. A flexible joint in its lower jaw helped it grip struggling prey."
+epithet = "Dawn Hunter"

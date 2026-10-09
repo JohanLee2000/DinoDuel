@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_bymil"]
+
+[resource]
+script = ExtResource("1_bymil")
+id = &"cymbospondylus"
+display_name = "Cymbospondylus"
+dino_type = 2
+era = 0
+rarity = 4
+attack = 9
+defense = 2
+speed = 3
+health = 24
+group = "Giant ichthyosaur"
+size_text = "Length up to 17 m"
+flavor_text = "The earliest known giant animal: about 17 m long and 40 tonnes, only a few million years after the worst mass extinction in Earth's history."
+epithet = "The First Giant"
