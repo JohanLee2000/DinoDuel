@@ -42,6 +42,20 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.4.1 (version code 6)
+
+```
+<en-US>
+Dino Duel 0.4.1
+- Share your best pulls: a Share button on every hatch and in the Dex
+- Battles now resume if your phone closes the game in the background
+- Move icons, a BENCH label and K.O. stamps make battles easier to read
+- New hatch effects that get bigger with rarity
+- How to play now explains stats, damage and speed
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.4.0 (version code 5)
 
 ```
@@ -129,4 +143,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | 2026-10-08 | (before tester feedback) New players had no explanation of the moves; the game was silent | 0.2.0: coached first battle, How to play pages, music, sound effects, volume settings |
 | 2026-10-08 | Jo playtest: text too small, unclear what to do after a knockout, no way to quit a battle | 0.3.0: bigger text, knocked-out panel, Leave button; also starter partners and battle backgrounds |
 | 2026-10-08 | Tester with a Redmi A3: "device isn't compatible" (32-bit Android) | 0.3.1: Play build includes armeabi-v7a |
+| 2026-10-09 | Jo playtest: hard to tell moves apart, unclear which dinos are benched or knocked out, battle lost when switching apps, no way to show off pulls, stats unexplained | 0.4.1: move icons, BENCH label, K.O. stamp, battle resume, Share button, stats pages in How to play |
 | | | |
