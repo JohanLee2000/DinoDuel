@@ -1,5 +1,7 @@
+class_name MainScreen
 extends Control
 ## The app shell: top bar with Amber and clutches, the current tab, and the bottom tab bar.
+## New players go through the name entry, story, partner pick and Professor Saurus's tour here.
 
 const TABS := [
 	{"name": "Battle", "script": "res://ui/tabs/battle_tab.gd"},
@@ -12,6 +14,8 @@ var _buttons: Array[Button] = []
 var _current: Control
 var _first_steps: FirstStepsBar
 var _tab_glow: Tween
+var _amber_icon: Control
+var _gear: Button
 
 @onready var _content: MarginContainer = %Content
 @onready var _nav_bar: HBoxContainer = %NavBar
@@ -29,15 +33,15 @@ func _ready() -> void:
 	var title_label: Label = %Title
 	title_label.replace_by(logo)
 	title_label.queue_free()
-	_add_icon_before(_amber_label, &"amber")
+	_amber_icon = _add_icon_before(_amber_label, &"amber")
 	_add_icon_before(_clutch_label, &"egg")
-	var gear := Button.new()
-	gear.icon = Icons.texture(&"gear", 34)
-	gear.flat = true
-	gear.custom_minimum_size = Vector2(56, 56)
-	gear.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	gear.pressed.connect(func() -> void: SettingsView.open())
-	_clutch_label.get_parent().add_child(gear)
+	_gear = Button.new()
+	_gear.icon = Icons.texture(&"gear", 34)
+	_gear.flat = true
+	_gear.custom_minimum_size = Vector2(56, 56)
+	_gear.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_gear.pressed.connect(func() -> void: SettingsView.open())
+	_clutch_label.get_parent().add_child(_gear)
 	Sound.music(&"main")
 	for i in TABS.size():
 		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 26)
@@ -58,6 +62,8 @@ func _ready() -> void:
 		Session.dev_open_card = ""
 	if not Session.profile.partner_chosen:
 		_start_new_player.call_deferred()
+	elif not Session.profile.tour_done:
+		ProfessorTour.start.call_deferred(self)
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()
@@ -66,10 +72,35 @@ func _ready() -> void:
 	Session.dev_open = ""
 
 
-## Brand-new players: the story panels, then the partner pick.
+## Brand-new players: their name, the story panels, then the partner pick. Picking reloads this
+## screen, and Professor Saurus's tour starts from _ready.
 func _start_new_player() -> void:
+	if Session.profile.player_name.is_empty():
+		await NameEntry.open().finished
 	await StoryIntro.open().finished
 	PartnerPick.open()
+
+
+func show_tab(index: int) -> void:
+	_show_tab(index)
+
+
+# Screen rects for Professor Saurus's tour.
+
+func tab_rect(index: int) -> Rect2:
+	return _buttons[index].get_global_rect()
+
+
+func stats_rect() -> Rect2:
+	return _amber_icon.get_global_rect().merge(_clutch_label.get_global_rect())
+
+
+func gear_rect() -> Rect2:
+	return _gear.get_global_rect()
+
+
+func first_steps_rect() -> Rect2:
+	return _first_steps.get_global_rect() if _first_steps.visible else Rect2()
 
 
 func _show_tab(index: int) -> void:
@@ -114,7 +145,7 @@ func _glow_tab(index: int) -> void:
 	_tab_glow.tween_property(button, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_SINE)
 
 
-func _add_icon_before(label: Label, icon_name: StringName) -> void:
+func _add_icon_before(label: Label, icon_name: StringName) -> Control:
 	var icon := TextureRect.new()
 	icon.texture = Icons.texture(icon_name, 34)
 	icon.custom_minimum_size = Vector2(34, 34)
@@ -124,6 +155,7 @@ func _add_icon_before(label: Label, icon_name: StringName) -> void:
 	label.get_parent().move_child(icon, label.get_index())
 	label.add_theme_font_override("font", Fonts.condensed_bold())
 	label.add_theme_font_size_override("font_size", 30)
+	return icon
 
 
 ## Android back button: go to the Battle tab first, then leave the app.

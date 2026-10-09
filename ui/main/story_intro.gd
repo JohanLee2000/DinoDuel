@@ -95,7 +95,7 @@ func _build_panel(index: int) -> Control:
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var custom := STORY_ART % (index + 1)
 	if ResourceLoader.exists(custom):
-		panel.add_child(_painting(load(custom)))
+		panel.add_child(_painting(load(custom), 1.0))
 	else:
 		_build_scene(panel, index)
 	panel.add_child(_caption(PANELS[index], index))

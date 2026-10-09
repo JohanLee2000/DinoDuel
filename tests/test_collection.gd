@@ -313,3 +313,16 @@ func test_old_saves_skip_first_steps() -> void:
 	old_save.erase("first_steps_active")
 	assert_false(PlayerProfile.from_dict(old_save, catalog).first_steps_active)
 
+
+func test_player_name_is_trimmed_and_saved() -> void:
+	var p := PlayerProfile.new_game(8)
+	assert_false(p.set_player_name("   "), "blank names are refused")
+	assert_true(p.set_player_name("  Jo the Fossil Hunter Extraordinaire  "))
+	assert_eq(p.player_name.length() <= PlayerProfile.NAME_MAX_LENGTH, true)
+	assert_eq(p.player_name, "Jo the Fossil Hu")
+	assert_eq(PlayerProfile.from_dict(p.to_dict(), catalog).player_name, p.player_name)
+	assert_false(p.tour_done, "new players get the tour")
+	var old_save := PlayerProfile.new_game(9).to_dict()
+	old_save.erase("tour_done")
+	assert_true(PlayerProfile.from_dict(old_save, catalog).tour_done, "old saves skip the tour")
+

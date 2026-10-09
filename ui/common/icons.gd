@@ -53,6 +53,23 @@ const SVG := {
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="url(#g)" stroke="#5a3404" stroke-width="3" stroke-linejoin="round"/></svg>""",
 	&"star_empty": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="#1c2c48" stroke="#4d6a96" stroke-width="3" stroke-linejoin="round"/></svg>""",
+	# Professor Saurus placeholder portrait (until assets/characters/professor_saurus.webp exists).
+	&"professor": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<circle cx="64" cy="64" r="61" fill="#1c2c48" stroke="#ffd34d" stroke-width="5"/>
+<path d="M22 124 Q28 94 64 90 Q100 94 106 124 Z" fill="#b89a5e"/>
+<path d="M56 90 L64 102 L72 90 Z" fill="#f4ecd8"/>
+<circle cx="38" cy="72" r="6" fill="#e2b088"/><circle cx="90" cy="72" r="6" fill="#e2b088"/>
+<circle cx="64" cy="70" r="26" fill="#f1c9a0"/>
+<path d="M44 84 Q55 76 64 82 Q73 76 84 84 Q75 93 64 86 Q53 93 44 84 Z" fill="#ece6da"/>
+<circle cx="54" cy="66" r="8" fill="#ffffff" fill-opacity="0.35" stroke="#2b1d10" stroke-width="3"/>
+<circle cx="74" cy="66" r="8" fill="#ffffff" fill-opacity="0.35" stroke="#2b1d10" stroke-width="3"/>
+<path d="M62 66 L66 66" stroke="#2b1d10" stroke-width="3"/>
+<circle cx="54" cy="67" r="2.5" fill="#2b1d10"/><circle cx="74" cy="67" r="2.5" fill="#2b1d10"/>
+<path d="M46 56 Q54 52 60 56 M68 56 Q74 52 82 56" stroke="#ece6da" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M32 52 Q34 20 64 18 Q94 20 96 52 Z" fill="#d8c08a"/>
+<rect x="33" y="44" width="62" height="7" fill="#7a5a2e"/>
+<ellipse cx="64" cy="53" rx="42" ry="8" fill="#c4a96e"/>
+</svg>""",
 	# Volume slider knob.
 	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.

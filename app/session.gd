@@ -113,6 +113,9 @@ func _showcase_profile() -> PlayerProfile:
 	showcase.amber = 1240
 	showcase.tutorial_done = true
 	showcase.partner_chosen = true
+	showcase.player_name = "Jo"
+	showcase.tour_done = true
+	showcase.first_steps_active = false
 	showcase.clutches = 1
 	return showcase
 

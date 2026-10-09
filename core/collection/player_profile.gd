@@ -29,6 +29,11 @@ var tutorial_done := false
 ## their 6 starters already, so they count as chosen.
 var partner_chosen := false
 var partner: StringName = &""
+## What the player asked to be called (entered before the story intro; used by Professor Saurus).
+var player_name := ""
+const NAME_MAX_LENGTH := 16
+## Professor Saurus has shown a new player around the tabs (old saves count as shown).
+var tour_done := false
 ## The new-player "First steps" checklist is showing (new games only; off once its reward is claimed).
 var first_steps_active := false
 ## First steps that can't be read from the rest of the save.
@@ -45,6 +50,15 @@ static func new_game(seed_value: int) -> PlayerProfile:
 	profile.clutches = Economy.STARTER_CLUTCHES
 	profile.first_steps_active = true
 	return profile
+
+
+## Sets the player's name: trimmed, at most NAME_MAX_LENGTH characters. Returns false if empty.
+func set_player_name(text: String) -> bool:
+	var clean := text.strip_edges().left(NAME_MAX_LENGTH).strip_edges()
+	if clean.is_empty():
+		return false
+	player_name = clean
+	return true
 
 
 ## Adds the chosen partner to the collection and the lineup. Only once, and only a starter partner.
@@ -304,6 +318,8 @@ func to_dict() -> Dictionary:
 		"partner_chosen": partner_chosen,
 		"partner": String(partner),
 		"first_steps_active": first_steps_active,
+		"player_name": player_name,
+		"tour_done": tour_done,
 		"opened_dex_card": opened_dex_card,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
@@ -349,6 +365,8 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	# Saves from before the checklist existed are past the new-player stage.
 	profile.first_steps_active = bool(data.get("first_steps_active", false))
 	profile.opened_dex_card = bool(data.get("opened_dex_card", false))
+	profile.player_name = String(data.get("player_name", "")).left(NAME_MAX_LENGTH)
+	profile.tour_done = bool(data.get("tour_done", true))
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()
 	return profile

@@ -50,7 +50,7 @@ func _refresh() -> void:
 
 	_body.add_child(UiKit.panel(_odds_box()))
 
-	if Session.autoplay and profile.clutches > 0:
+	if Session.autoplay and profile.clutches > 0 and profile.tour_done:
 		await get_tree().create_timer(0.8).timeout
 		_hatch()
 

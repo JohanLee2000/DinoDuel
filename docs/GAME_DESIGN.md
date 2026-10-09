@@ -97,8 +97,10 @@ One painted scene per type in `assets/battle/` (Land: volcanic wasteland, Sea: s
 Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
 ## New-player intro (decided 2026-10-08)
-- **Story panels** first: four skippable full-screen panels, one line each ("66 million years ago, the dinosaurs vanished. Their fossils didn't." / fossil eggs sealed in amber / rival collectors / "Every hunter needs a partner. Choose yours."), then the partner pick. Panels use `assets/story/panel_N.webp` if present (prompts in docs/ART_BRIEF.md), otherwise existing art.
-- **First steps checklist** (new games only), a banner under the top bar; the next step's tab glows with a gold outline: choose a partner, hatch your eggs, meet your dinos (open one in the Dex), build your party (swap in a hatched dino), win your first battle. Finishing all gives **1 bonus clutch**. Steps are read from the save (`PlayerProfile.first_step_done`), so they can't drift.
+- **Name** first (decided later the same day): "What should we call you?" (max 16 characters), saved as `player_name` for Professor Saurus and the story.
+- **Story panels** next: four skippable full-screen panels (Jo's paintings in `assets/story/`), one line each ("66 million years ago, the dinosaurs vanished. Their fossils didn't." / fossil eggs sealed in amber / rival collectors / "Every hunter needs a partner. Choose yours."), then the partner pick. Panels use `assets/story/panel_N.webp` if present (prompts in docs/ART_BRIEF.md), otherwise existing art.
+- **Professor Saurus's tour** after the partner pick: he welcomes the player by name and partner, then dims the screen around the Amber/egg counters, each tab (switching to it), the gear and finally the First steps banner, explaining each in a speech box. Skippable; `tour_done` in the save.
+- **First steps checklist** (new games only), a banner under the top bar that appears at the end of the tour; the next step's tab glows with a gold outline: choose a partner, hatch your eggs, meet your dinos (open one in the Dex), build your party (swap in a hatched dino), win your first battle. Finishing all gives **1 bonus clutch**. Steps are read from the save (`PlayerProfile.first_step_done`), so they can't drift.
 - Order: partner → hatch the 2 starting clutches → party → coached first battle. After the partner pick the game opens on the Eggs tab; Rookie Rae's "Start here" only shows once battling is the next step.
 
 ## Tutorial (decided 2026-10-08)

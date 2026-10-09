@@ -38,7 +38,7 @@ func refresh() -> void:
 	for child in _body.get_children():
 		child.queue_free()
 	var profile := Session.profile
-	visible = profile.first_steps_active
+	visible = profile.first_steps_active and profile.tour_done
 	if not visible:
 		return
 	var steps := PlayerProfile.FIRST_STEPS
@@ -73,7 +73,7 @@ func refresh() -> void:
 ## The tab with the next step, so the nav bar can make it glow; -1 when there's nothing to do.
 func next_tab() -> int:
 	var next := Session.profile.next_first_step()
-	if not Session.profile.first_steps_active or next == &"":
+	if not visible or next == &"":
 		return -1
 	return STEPS[next][2]
 

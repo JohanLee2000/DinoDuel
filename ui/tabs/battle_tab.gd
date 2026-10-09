@@ -21,7 +21,7 @@ func _ready() -> void:
 				and (not Session.profile.first_steps_active or Session.profile.next_first_step() == &"battle")))
 	add_child(UiKit.vscroll(list))
 
-	if Session.autoplay and problem == "":
+	if Session.autoplay and problem == "" and Session.profile.tour_done:
 		await get_tree().create_timer(0.8).timeout
 		Session.go_to_pre_battle(Session.rival)
 
