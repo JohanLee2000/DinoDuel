@@ -42,7 +42,7 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
-## Release 0.5.0 (version code 7)
+## Release 0.5.0 (version code 8)
 
 ```
 <en-US>
