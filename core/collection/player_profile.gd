@@ -45,6 +45,9 @@ var quest_day := -1
 var quests: Array = []
 var quest_bonus_claimed := false
 var claimed_goals: Dictionary = {}
+## A battle in progress, so it can continue if Android closes the game (see BattleReplay); empty
+## when not in a battle. Keys: rival, seed, player, rival_party (dino ids), coaching, events.
+var battle: Dictionary = {}
 var _rng := RandomNumberGenerator.new()
 
 
@@ -339,6 +342,7 @@ func to_dict() -> Dictionary:
 		"quests": quests.duplicate(true),
 		"quest_bonus_claimed": quest_bonus_claimed,
 		"claimed_goals": claimed_goals.duplicate(),
+		"battle": battle.duplicate(true),
 		"opened_dex_card": opened_dex_card,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
@@ -395,6 +399,16 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 			profile.quests.append({"id": String(quest["id"]), "progress": int(quest.get("progress", 0)),
 					"claimed": bool(quest.get("claimed", false))})
 	profile.quest_bonus_claimed = bool(data.get("quest_bonus_claimed", false))
+	var saved_battle: Variant = data.get("battle", {})
+	if saved_battle is Dictionary and not (saved_battle as Dictionary).is_empty():
+		var b: Dictionary = saved_battle
+		var events: Array = []
+		for event in b.get("events", []):
+			events.append((event as Array).map(func(value: Variant) -> int: return int(value)))
+		profile.battle = {"rival": String(b.get("rival", "")), "seed": int(b.get("seed", 0)),
+				"player": Array(b.get("player", [])).map(func(id: Variant) -> String: return String(id)),
+				"rival_party": Array(b.get("rival_party", [])).map(func(id: Variant) -> String: return String(id)),
+				"coaching": bool(b.get("coaching", false)), "events": events}
 	var saved_claims: Dictionary = data.get("claimed_goals", {})
 	for key in saved_claims:
 		profile.claimed_goals[String(key)] = bool(saved_claims[key])

@@ -82,6 +82,11 @@ func _ready() -> void:
 	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
 	_state = BattleEngine.create(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
+	# Continuing a battle the game was closed during: replay its moves to get back to that point.
+	var resumed := not Session.resume_events.is_empty()
+	if resumed:
+		BattleReplay.replay(_state, _ai, Session.resume_events)
+		Session.resume_events = []
 	_backdrop = BattleBackdrop.new()
 	add_child(_backdrop)
 	move_child(_backdrop, $Background.get_index() + 1)
@@ -125,6 +130,10 @@ func _ready() -> void:
 	for side in 2:
 		_snapshot_health(side)
 		_rebuild_side(side)
+	if resumed:
+		_say("[b]Battle resumed.[/b] Turn %d against %s." % [_state.turn, Session.rival.display_name])
+		_after_turn()
+		return
 	_say("[b]%s[/b] sends out [b]%s[/b]. Go, [b]%s[/b]!" % [Session.rival.display_name,
 			_name(RIVAL), _name(PLAYER)])
 	var bonuses: Array[String] = []
@@ -219,6 +228,7 @@ func _submit(action: BattleAction) -> void:
 		_snapshot_health(side)
 	var events := BattleEngine.resolve_turn(_state, pair)
 	_ai.observe(action)
+	Session.record_battle_event(BattleReplay.turn_event(action, rival_action))
 	if _autopilot:
 		_autopilot.observe(rival_action)
 	await _play(events)
@@ -228,6 +238,7 @@ func _submit(action: BattleAction) -> void:
 func _after_turn() -> void:
 	if not _state.is_over() and _state.side(RIVAL).needs_replacement():
 		var index := _ai.choose_replacement(_state, RIVAL)
+		Session.record_battle_event([BattleReplay.RIVAL_REPLACE, index])
 		await _play(BattleEngine.replace_active(_state, RIVAL, index))
 	if _state.is_over():
 		_show_result()
@@ -252,6 +263,7 @@ func _replace_player(index: int) -> void:
 	_phase = Phase.ANIMATING
 	_hide_picker()
 	_set_bench_highlight(false)
+	Session.record_battle_event([BattleReplay.PLAYER_REPLACE, index])
 	await _play(BattleEngine.replace_active(_state, PLAYER, index))
 	_begin_choice()
 

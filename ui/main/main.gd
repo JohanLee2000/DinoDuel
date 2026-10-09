@@ -25,6 +25,8 @@ var _gear: Button
 
 
 func _ready() -> void:
+	if Session.resume_saved_battle():
+		return
 	var logo := TextureRect.new()
 	logo.texture = load("res://assets/branding/logo.png")
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE

@@ -23,6 +23,8 @@ var rival_party: Array[DinoDef] = []
 var battle_seed := 0
 ## True during the player's first battle, which comes with a coach (see BattleScreen).
 var coaching := false
+## Moves to replay when continuing a saved battle (see resume_saved_battle); empty for a new one.
+var resume_events: Array = []
 ## A Tab value; kept as int so other scripts can set it from a plain index.
 var current_tab: int = Tab.BATTLE
 ## Debug: the AI plays both sides. Pass `-- --autoplay` on the command line.
@@ -151,7 +153,56 @@ func start_battle(party: Array[DinoDef]) -> void:
 	battle_seed = randi()
 	rival_party = rival.make_ai(battle_seed).choose_party(rival.brings, rival.point_cap)
 	coaching = wants_coach()
+	resume_events = []
+	# Saved from the start, so the battle can continue if Android closes the game mid-fight.
+	profile.battle = {"rival": String(rival.id), "seed": battle_seed, "player": _ids(player_party),
+			"rival_party": _ids(rival_party), "coaching": coaching, "events": []}
+	save()
 	get_tree().change_scene_to_file(BATTLE_SCENE)
+
+
+## Called by the battle screen after every move (BattleReplay event), so it survives a restart.
+func record_battle_event(event: Array) -> void:
+	if profile.battle.is_empty():
+		return
+	profile.battle["events"].append(event)
+	save()
+
+
+## If the game was closed mid-battle, goes back into it. Returns whether it did.
+func resume_saved_battle() -> bool:
+	var saved := profile.battle
+	if saved.is_empty() or autoplay:
+		return false
+	var found: Array = rivals.filter(func(each: RivalDef) -> bool: return String(each.id) == saved.get("rival", ""))
+	var mine := _defs(saved.get("player", []))
+	var theirs := _defs(saved.get("rival_party", []))
+	if found.is_empty() or mine.size() != PartyRules.PARTY_SIZE or theirs.size() != PartyRules.PARTY_SIZE:
+		# Something it refers to no longer exists: drop it rather than crash.
+		profile.battle = {}
+		save()
+		return false
+	rival = found[0]
+	player_party = mine
+	rival_party = theirs
+	battle_seed = int(saved.get("seed", 0))
+	coaching = bool(saved.get("coaching", false)) and not profile.tutorial_done
+	resume_events = (saved.get("events", []) as Array).duplicate(true)
+	get_tree().change_scene_to_file.call_deferred(BATTLE_SCENE)
+	return true
+
+
+func _ids(party: Array[DinoDef]) -> Array:
+	return party.map(func(dino: DinoDef) -> String: return String(dino.id))
+
+
+func _defs(ids: Array) -> Array[DinoDef]:
+	var defs: Array[DinoDef] = []
+	for id in ids:
+		var dino := catalog.find(StringName(id))
+		if dino:
+			defs.append(dino)
+	return defs
 
 
 ## Whether the next battle gets the tutorial coach: only the player's first one.
@@ -162,6 +213,7 @@ func wants_coach() -> bool:
 ## Leaving a battle partway (see BattleScreen): recorded as a loss with no reward. A coached first
 ## battle stays unfinished, so the coach comes back next time.
 func forfeit_battle() -> void:
+	profile.battle = {}
 	profile.record_forfeit(rival.id)
 	coaching = false
 	save()
@@ -184,6 +236,7 @@ func refresh_quests() -> void:
 ## `turns` and `dinos_left` feed daily quests and achievements (see Goals.on_battle).
 func finish_battle(won: bool, turns := 0, dinos_left := 0) -> Dictionary:
 	refresh_quests()
+	profile.battle = {}
 	var reward := profile.record_battle(won, rival.id)
 	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "difficulty": rival.difficulty,
 			"party": player_party, "turns": turns, "dinos_left": dinos_left})
