@@ -90,6 +90,13 @@ const SVG := {
 	&"share": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g stroke="#ffffff" stroke-width="5" stroke-linecap="round">
 <line x1="20" y1="32" x2="44" y2="16"/><line x1="20" y1="32" x2="44" y2="48"/></g>
 <g fill="#ffffff"><circle cx="46" cy="14" r="9"/><circle cx="18" cy="32" r="9"/><circle cx="46" cy="50" r="9"/></g></svg>""",
+	# How to play: an open book.
+	&"book": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M32 17 C25 12 15 11 5 13 L5 50 C15 48 25 49 32 54 C39 49 49 48 59 50 L59 13 C49 11 39 12 32 17 Z"/>
+<line x1="32" y1="17" x2="32" y2="54"/></g></svg>""",
+	# Restart game: an arrow going back around the circle.
+	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+<path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",
 	# Volume slider knob.
 	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.

@@ -42,6 +42,39 @@ static func button(text: String, color: Color, height := 84, font_size := 30) ->
 	return b
 
 
+## A button() with an icon in front of its text, the two centered together. Icons are drawn in
+## white (see Icons) and tinted to the button's text color.
+static func icon_button(text: String, icon_name: StringName, color: Color, height := 84,
+		font_size := 30) -> Button:
+	var b := button("", color, height, font_size)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var row := hbox(14)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var icon_px := int(font_size * 1.25)
+	var glyph := TextureRect.new()
+	glyph.texture = Icons.texture(icon_name, icon_px)
+	glyph.custom_minimum_size = Vector2(icon_px, icon_px)
+	glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	glyph.modulate = text_color_on(color)
+	glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(glyph)
+	var caption := label(text, font_size, text_color_on(color), HORIZONTAL_ALIGNMENT_LEFT, false)
+	caption.add_theme_font_override("font", Fonts.display())
+	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(caption)
+	center.add_child(row)
+	b.add_child(center)
+	# Sink with the button when it's pressed, like a plain button's text does.
+	b.button_down.connect(func() -> void: center.offset_top = 3)
+	b.button_up.connect(func() -> void: center.offset_top = 0)
+	return b
+
+
 ## A glossy, glowing button: lighter top border, darker bottom edge, a soft glow in its own
 ## color, and it sinks when pressed. Dark text on bright colors, light text on dark ones.
 ## A modern pill button: frosted glass, thin light border, and an icon + text centered together
@@ -87,8 +120,13 @@ static func set_pill_text(b: Button, text: String) -> void:
 	(b.get_meta("caption") as Label).text = text
 
 
+## Dark text on bright buttons, light text on dark ones.
+static func text_color_on(color: Color) -> Color:
+	return Palette.INK if color.get_luminance() > 0.45 else Palette.TEXT
+
+
 static func style_button(b: Button, color: Color) -> void:
-	var text_color := Palette.INK if color.get_luminance() > 0.45 else Palette.TEXT
+	var text_color := text_color_on(color)
 	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
 		var style := StyleBoxFlat.new()
 		style.set_corner_radius_all(10)
