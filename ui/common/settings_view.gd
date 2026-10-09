@@ -1,8 +1,8 @@
 class_name SettingsView
 extends Control
 ## Settings popup from the gear in the top bar: sound effects and music volume, How to play,
-## the Professaur's tour again, Export / Import save (for moving to a new phone), Restart game
-## (with a confirmation), and credits.
+## the Professaur's tour again, Restart game (with a confirmation), and credits. Export / Import
+## save is built but commented out until Jo decides about it.
 
 
 static func open() -> SettingsView:
@@ -38,15 +38,16 @@ func _ready() -> void:
 	var tour := UiKit.icon_button("Professaur's tour", &"map", UiKit.BUTTON_GRAY, 76, 26)
 	tour.pressed.connect(_replay_tour)
 	column.add_child(tour)
-	var transfer := UiKit.hbox(12)
-	var export := UiKit.icon_button("Export save", &"export", UiKit.BUTTON_GRAY, 76, 24)
-	export.pressed.connect(_export_save)
-	var import := UiKit.icon_button("Import save", &"import", UiKit.BUTTON_GRAY, 76, 24)
-	import.pressed.connect(_pick_import)
-	for button in [export, import]:
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		transfer.add_child(button)
-	column.add_child(transfer)
+	# Export / Import save, switched off for now (see the note above _export_save).
+#	var transfer := UiKit.hbox(12)
+#	var export := UiKit.icon_button("Export save", &"export", UiKit.BUTTON_GRAY, 76, 24)
+#	export.pressed.connect(_export_save)
+#	var import := UiKit.icon_button("Import save", &"import", UiKit.BUTTON_GRAY, 76, 24)
+#	import.pressed.connect(_pick_import)
+#	for button in [export, import]:
+#		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+#		transfer.add_child(button)
+#	column.add_child(transfer)
 	var restart := UiKit.icon_button("Restart game", &"restart", UiKit.BUTTON_RED, 76, 26)
 	restart.pressed.connect(_confirm_restart)
 	column.add_child(restart)
@@ -66,51 +67,55 @@ func _replay_tour() -> void:
 		ProfessorTour.start(main, true)
 
 
-## Export save: writes the save to a file and opens the share sheet, so the player can send it to
-## themselves (Drive, email, another phone...).
-func _export_save() -> void:
-	var path := SaveStore.write_export(Session.profile)
-	if path == "" or not Share.file(path, "application/json",
-			"My Dino Duel save. On the new phone: Settings > Import save.", "Save your Dino Duel progress"):
-		_message("Couldn't export", "Something went wrong writing the save file. Please try again.")
+## Export / Import save: built and tested 2026-10-09, switched off until Jo decides whether it
+## ships in production. To bring it back, uncomment this block and the Export / Import row in
+## _ready. The save-file side (SaveStore.write_export / read_export / parse_export, Share.file,
+## the export and import icons) is still live and covered by tests.
+### Export save: writes the save to a file and opens the share sheet, so the player can send it to
+### themselves (Drive, email, another phone...).
+#func _export_save() -> void:
+#	var path := SaveStore.write_export(Session.profile)
+#	if path == "" or not Share.file(path, "application/json",
+#			"My Dino Duel save. On the new phone: Settings > Import save.", "Save your Dino Duel progress"):
+#		_message("Couldn't export", "Something went wrong writing the save file. Please try again.")
 
 
-## Import save: the phone's file picker, then a confirmation showing what's in the file.
-func _pick_import() -> void:
-	if not DisplayServer.has_feature(DisplayServer.FEATURE_NATIVE_DIALOG_FILE):
-		_message("Can't import here", "This device has no file picker.")
-		return
-	DisplayServer.file_dialog_show("Choose a Dino Duel save", "", "", false,
-			DisplayServer.FILE_DIALOG_MODE_OPEN_FILE, PackedStringArray(), _on_import_picked)
+### Import save: the phone's file picker, then a confirmation showing what's in the file.
+#func _pick_import() -> void:
+#	if not DisplayServer.has_feature(DisplayServer.FEATURE_NATIVE_DIALOG_FILE):
+#		_message("Can't import here", "This device has no file picker.")
+#		return
+#	DisplayServer.file_dialog_show("Choose a Dino Duel save", "", "", false,
+#			DisplayServer.FILE_DIALOG_MODE_OPEN_FILE, PackedStringArray(), _on_import_picked)
 
 
-func _on_import_picked(status: bool, paths: PackedStringArray, _filter: int) -> void:
-	if status and not paths.is_empty():
-		_confirm_import.call_deferred(paths[0])
+#func _on_import_picked(status: bool, paths: PackedStringArray, _filter: int) -> void:
+#	if status and not paths.is_empty():
+#		_confirm_import.call_deferred(paths[0])
 
 
-func _confirm_import(path: String) -> void:
-	var file := FileAccess.open(path, FileAccess.READ)
-	var text := file.get_as_text() if file and file.get_length() <= SaveStore.IMPORT_MAX_BYTES else ""
-	var imported := SaveStore.parse_export(text, Session.catalog) if text != "" else null
-	if imported == null:
-		_message("Not a Dino Duel save", "That file isn't a save exported from Dino Duel, or it's damaged.")
-		return
-	var current := Session.profile
-	var exported := SaveStore.export_date(text).replace("T", " ").left(16)
-	var column := _dialog_column("Load this save?", Palette.HIGHLIGHT)
-	column.add_child(UiKit.label("%s%s: %d dinos, %d Amber, %d wins." % [
-			"Saved %s by " % exported if exported != "" else "", imported.player_name if imported.player_name != "" else "a player",
-			imported.owned.size(), imported.amber, imported.wins], 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
-	column.add_child(UiKit.label("It replaces the progress on this phone (%d dinos, %d Amber). This can't be undone." \
-			% [current.owned.size(), current.amber], 26, Palette.DAMAGE.lightened(0.2), HORIZONTAL_ALIGNMENT_CENTER))
-	var dialog := _open_dialog(column)
-	var keep := UiKit.button("Keep this phone's save", UiKit.BUTTON_GREEN, 84, 30)
-	keep.pressed.connect(dialog.queue_free)
-	column.add_child(keep)
-	var load_it := UiKit.button("Load this save", UiKit.BUTTON_RED, 76, 26)
-	load_it.pressed.connect(func() -> void: Session.import_profile(imported))
-	column.add_child(load_it)
+#func _confirm_import(path: String) -> void:
+#	var file := FileAccess.open(path, FileAccess.READ)
+#	var text := file.get_as_text() if file and file.get_length() <= SaveStore.IMPORT_MAX_BYTES else ""
+#	var imported := SaveStore.parse_export(text, Session.catalog) if text != "" else null
+#	if imported == null:
+#		_message("Not a Dino Duel save", "That file isn't a save exported from Dino Duel, or it's damaged.")
+#		return
+#	var current := Session.profile
+#	var exported := SaveStore.export_date(text).replace("T", " ").left(16)
+#	var column := _dialog_column("Load this save?", Palette.HIGHLIGHT)
+#	column.add_child(UiKit.label("%s%s: %d dinos, %d Amber, %d wins." % [
+#			"Saved %s by " % exported if exported != "" else "", imported.player_name if imported.player_name != "" else "a player",
+#			imported.owned.size(), imported.amber, imported.wins], 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+#	column.add_child(UiKit.label("It replaces the progress on this phone (%d dinos, %d Amber). This can't be undone." \
+#			% [current.owned.size(), current.amber], 26, Palette.DAMAGE.lightened(0.2), HORIZONTAL_ALIGNMENT_CENTER))
+#	var dialog := _open_dialog(column)
+#	var keep := UiKit.button("Keep this phone's save", UiKit.BUTTON_GREEN, 84, 30)
+#	keep.pressed.connect(dialog.queue_free)
+#	column.add_child(keep)
+#	var load_it := UiKit.button("Load this save", UiKit.BUTTON_RED, 76, 26)
+#	load_it.pressed.connect(func() -> void: Session.import_profile(imported))
+#	column.add_child(load_it)
 
 
 ## A small popup with a title, a line of text and OK.

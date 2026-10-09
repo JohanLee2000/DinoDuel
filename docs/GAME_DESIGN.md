@@ -133,8 +133,8 @@ A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/col
 ## Saves and moving phones (decided 2026-10-09)
 - Progress is saved on the device (`user://save.json` plus a backup copy). No account, no server, no internet permission.
 - **Android Auto Backup** is on (`user_data_backup/allow=true` in both export presets): if the player's Google backup is on, Android copies the save to their own Google account (about daily, on Wi-Fi while charging) and restores it on a new phone or reinstall. The app's files are ~2 MB, far under Android's 25 MB limit.
-- **Settings > Export save** writes `DinoDuel_<name>_<date>.json` and opens the share sheet; **Import save** opens the phone's file picker (Godot 4.6+ reads its content:// links directly), shows what's in the file (name, dinos, Amber, wins, date) and asks before replacing this phone's progress. The file carries a check value, so damaged or hand-edited files are refused (`SaveStore.parse_export`).
-- The privacy policy describes both (updated 2026-10-09).
+- **Export / Import save: built, then switched off (Jo, 2026-10-09)** until Jo decides whether it ships in production; the Settings buttons and handlers are commented out in `ui/common/settings_view.gd` (the save-file code in `SaveStore` stays live and tested), and its privacy-policy paragraph is in an HTML comment. When on: **Settings > Export save** writes `DinoDuel_<name>_<date>.json` and opens the share sheet; **Import save** opens the phone's file picker (Godot 4.6+ reads its content:// links directly), shows what's in the file (name, dinos, Amber, wins, date) and asks before replacing this phone's progress. The file carries a check value, so damaged or hand-edited files are refused (`SaveStore.parse_export`).
+- The privacy policy describes Auto Backup (updated 2026-10-09).
 
 ## Journey (proposal)
 Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
