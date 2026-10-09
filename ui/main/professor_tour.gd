@@ -66,7 +66,7 @@ func _script() -> Array[Dictionary]:
 	return [
 		{"text": "Ah, [b]%s[/b]! Welcome to camp! I'm the Professaur. Yes, that's really my name. No, I won't be taking questions." % profile.player_name,
 				"tab": Session.Tab.BATTLE},
-		{"text": "Up here are your [b]Amber[/b] and your [b]egg clutches[/b]. You earn Amber from battles and duplicate dinos, and spend it on eggs and crafting.",
+		{"text": "Let's get started. Up here are your [b]Amber[/b] and your [b]egg clutches[/b]. You earn Amber from battles and duplicate dinos, and spend it on eggs and crafting.",
 				"target": _main.stats_rect},
 		{"text": "[b]Battle[/b]: challenge rival collectors. Each turn you both secretly pick Bite, Charge, Brace or Swap. Win to earn a clutch of %d eggs!" % Economy.EGGS_PER_CLUTCH,
 				"tab": Session.Tab.BATTLE, "target": _main.tab_rect.bind(Session.Tab.BATTLE)},

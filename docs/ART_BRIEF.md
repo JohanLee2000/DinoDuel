@@ -125,3 +125,7 @@ The Professaur (a human paleontologist; the name is a pun on professor + saur) g
 
 Prompt idea: *A friendly elderly paleontologist, head and shoulders, warm smile, round wire glasses, bushy white mustache, weathered khaki field shirt and a dusty pith helmet, a small fossil brush in his shirt pocket, soft golden lantern light, painterly cinematic style, plain dark warm background, centred, no text.*
 
+## Eggs and hatching (done, Jo 2026-10-08)
+
+In `assets/eggs/`: the egg in three stages (intact, first crack, about to burst), 8 shell pieces, the hatch backdrop (`hatch_background.webp`, dig site at night; the egg sits on the slab at 74% of its height) and the Eggs tab banner (`clutch_banner.webp`). `tools/prepare_eggs.py whole.png crack1.png crack2.png shards.png` crops the frames to one box and splits each crack frame into the shell and its light (`egg_crack_N_light.webp`), which the game tints with the rarity color, so the light in new crack art should be white or warm white. The animation itself (wobble, shakes, light flicker, shell pieces, sparks) is code in `ui/eggs/egg_view.gd` and `hatch_view.gd`.
+

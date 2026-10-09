@@ -19,9 +19,10 @@ func _refresh() -> void:
 		child.queue_free()
 	var profile := Session.profile
 
-	var count := UiKit.label("%d clutch%s ready to hatch" % [profile.clutches,
-			"" if profile.clutches == 1 else "es"], 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER)
-	_body.add_child(count)
+	var banner := ClutchBanner.new()
+	banner.clutches = profile.clutches
+	banner.hatch_pressed.connect(_hatch)
+	_body.add_child(banner)
 	var hatch := UiKit.button("Hatch a clutch", UiKit.BUTTON_GREEN, 110, 34)
 	hatch.disabled = profile.clutches <= 0
 	hatch.pressed.connect(_hatch)

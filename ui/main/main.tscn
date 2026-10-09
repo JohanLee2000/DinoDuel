@@ -1,10 +1,10 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b66rxffblx3lg"]
 
-[ext_resource type="Script" path="res://ui/main/main.gd" id="1_script"]
-[ext_resource type="Script" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
-[ext_resource type="Script" path="res://ui/common/backdrop.gd" id="3_backdrop"]
+[ext_resource type="Script" uid="uid://p811g4ewfd2u" path="res://ui/main/main.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c27usbflu62ab" path="res://ui/common/safe_area_margin.gd" id="2_safe"]
+[ext_resource type="Script" uid="uid://dbyrd72xc7jc1" path="res://ui/common/backdrop.gd" id="3_backdrop"]
 
-[node name="Main" type="Control"]
+[node name="Main" type="Control" unique_id=1552737854]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1543861506]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +23,7 @@ grow_vertical = 2
 color = Color(0.0862745, 0.0901961, 0.101961, 1)
 script = ExtResource("3_backdrop")
 
-[node name="SafeArea" type="MarginContainer" parent="."]
+[node name="SafeArea" type="MarginContainer" parent="." unique_id=1875588102]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,40 +32,40 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_safe")
 
-[node name="Column" type="VBoxContainer" parent="SafeArea"]
+[node name="Column" type="VBoxContainer" parent="SafeArea" unique_id=1740489279]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="TopBar" type="HBoxContainer" parent="SafeArea/Column"]
+[node name="TopBar" type="HBoxContainer" parent="SafeArea/Column" unique_id=718419911]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="SafeArea/Column/TopBar"]
+[node name="Title" type="Label" parent="SafeArea/Column/TopBar" unique_id=1144658381]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
 text = "Dino Duel"
 
-[node name="AmberLabel" type="Label" parent="SafeArea/Column/TopBar"]
+[node name="AmberLabel" type="Label" parent="SafeArea/Column/TopBar" unique_id=517502843]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.760784, 0.239216, 1)
 theme_override_font_sizes/font_size = 24
 text = "0 Amber"
 
-[node name="ClutchLabel" type="Label" parent="SafeArea/Column/TopBar"]
+[node name="ClutchLabel" type="Label" parent="SafeArea/Column/TopBar" unique_id=294798054]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "0 clutches"
 
-[node name="Content" type="MarginContainer" parent="SafeArea/Column"]
+[node name="Content" type="MarginContainer" parent="SafeArea/Column" unique_id=1521426247]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="NavBar" type="HBoxContainer" parent="SafeArea/Column"]
+[node name="NavBar" type="HBoxContainer" parent="SafeArea/Column" unique_id=986943036]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 8

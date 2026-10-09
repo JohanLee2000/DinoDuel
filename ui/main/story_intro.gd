@@ -8,7 +8,7 @@ signal finished
 
 const STORY_ART := "res://assets/story/panel_%d.webp"
 const PANELS: Array[String] = [
-	"66 million years ago, the dinosaurs vanished.\nTheir fossils didn't.",
+	"66 million years ago, the dinosaurs vanished.\nHowever, their fossils didn't.",
 	"You've found a way to wake them: fossil eggs sealed in amber, ready to hatch.",
 	"Other collectors are hunting too. Battle them, win their eggs, and fill your Dino Dex.",
 	"Every hunter needs a partner.\nChoose yours.",

@@ -11,6 +11,10 @@ extends Control
 signal finished
 
 const CARD_WIDTH := 440.0
+const BACKDROP := "res://assets/eggs/hatch_background.webp"
+## Where the stone slab's top is in the backdrop painting (fraction of its height); the egg sits there.
+const SLAB_Y := 0.74
+const SHARD_COUNT := 8
 
 var _results: Array[HatchResult] = []
 var _title_text := "Your clutch is hatching!"
@@ -21,6 +25,7 @@ var _title: Label
 var _hint: Label
 var _skip: Button
 var _stage_nodes: Array[Node] = []
+var _backdrop: TextureRect
 
 
 static func create(results: Array[HatchResult], title := "") -> HatchView:
@@ -37,6 +42,21 @@ func _ready() -> void:
 	layer.color = Palette.BACKGROUND
 	layer.gui_input.connect(_on_background_input)
 	add_child(layer)
+	if ResourceLoader.exists(BACKDROP):
+		_backdrop = TextureRect.new()
+		_backdrop.texture = load(BACKDROP)
+		_backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_backdrop.modulate = Color(0.85, 0.85, 0.85)
+		add_child(_backdrop)
+		# Slow drift in, and warm dust floating in the lantern light.
+		_backdrop.resized.connect(func() -> void: _backdrop.pivot_offset = _backdrop.size / 2)
+		var drift := _backdrop.create_tween().set_loops()
+		drift.tween_property(_backdrop, "scale", Vector2(1.06, 1.06), 12.0).set_trans(Tween.TRANS_SINE)
+		drift.tween_property(_backdrop, "scale", Vector2.ONE, 12.0).set_trans(Tween.TRANS_SINE)
+		add_child(_dust())
 	_content = Control.new()
 	_content.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -53,6 +73,11 @@ func _ready() -> void:
 	_hint.offset_bottom = -150
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_hint)
+	# Outlined so they read over the painted backdrop.
+	for label in [_title, _hint]:
+		label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+		label.add_theme_constant_override("outline_size", 8)
+	_hint.add_theme_color_override("font_color", Palette.TEXT)
 	_skip = UiKit.button("Skip to results", UiKit.BUTTON_GRAY, 76, 24)
 	_skip.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_skip.offset_left = -170
@@ -82,10 +107,13 @@ func _show_egg() -> void:
 	var result := _results[_index]
 	_title.text = _title_text if _results.size() == 1 else "Egg %d of %d" % [_index + 1, _results.size()]
 	_hint.text = "Tap the egg to crack it!"
+	_dim_backdrop(0.85)
 	var egg := EggView.new()
 	egg.rarity = result.dino.rarity
-	egg.size = egg.custom_minimum_size
-	egg.position = (_screen() - egg.size) / 2 + Vector2(0, -30)
+	var screen := _screen()
+	var egg_height := clampf(screen.y * 0.3, 360.0, 500.0)
+	egg.size = Vector2(egg_height * 0.785, egg_height)
+	egg.position = Vector2((screen.x - egg.size.x) / 2, _slab_top() - egg.size.y * 0.97)
 	_content.add_child(egg)
 	_stage_nodes.append(egg)
 	egg.scale = Vector2(0.2, 0.2)
@@ -116,6 +144,8 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	rays.create_tween().tween_property(rays, "scale", Vector2.ONE * (0.8 + rarity * 0.1), 0.4).set_trans(Tween.TRANS_BACK)
 
 	_spawn_shells(egg_center, 10 + rarity * 3)
+	_spawn_sparks(egg_center, color, 24 + rarity * 12)
+	_dim_backdrop(0.5)
 	if rarity >= DinoDef.Rarity.EPIC:
 		_flash_and_shake(rarity)
 
@@ -260,24 +290,110 @@ func _finish() -> void:
 	queue_free()
 
 
+## The egg's broken shell flies apart: Jo's painted shell pieces (or drawn chips without them),
+## arcing out and falling with a spin.
 func _spawn_shells(origin: Vector2, count: int) -> void:
 	var rng := RandomNumberGenerator.new()
+	var painted := ResourceLoader.exists("res://assets/eggs/shard_1.webp")
 	for i in count:
-		var shard := Polygon2D.new()
-		var r := rng.randf_range(18.0, 38.0)
-		shard.polygon = PackedVector2Array([Vector2(-r, -r * 0.4), Vector2(r * 0.7, -r * 0.6),
-				Vector2(r * 0.5, r * 0.5), Vector2(-r * 0.6, r * 0.3)])
-		shard.color = EggView.SHELL if i % 3 else EggView.SHELL_SHADE
-		shard.position = origin + Vector2(rng.randf_range(-60, 60), rng.randf_range(-80, 80))
+		var shard: Node2D
+		if painted:
+			var sprite := Sprite2D.new()
+			sprite.texture = load("res://assets/eggs/shard_%d.webp" % (i % SHARD_COUNT + 1))
+			var size := rng.randf_range(0.35, 0.65) * (1.2 if i < SHARD_COUNT else 0.8)
+			sprite.scale = Vector2(size * (1 if rng.randf() < 0.5 else -1), size)
+			shard = sprite
+		else:
+			var chip := Polygon2D.new()
+			var r := rng.randf_range(18.0, 38.0)
+			chip.polygon = PackedVector2Array([Vector2(-r, -r * 0.4), Vector2(r * 0.7, -r * 0.6),
+					Vector2(r * 0.5, r * 0.5), Vector2(-r * 0.6, r * 0.3)])
+			chip.color = EggView.SHELL if i % 3 else EggView.SHELL_SHADE
+			shard = chip
+		shard.position = origin + Vector2(rng.randf_range(-70, 70), rng.randf_range(-90, 60))
+		shard.rotation = rng.randf_range(-PI, PI)
 		_content.add_child(shard)
 		_stage_nodes.append(shard)
-		var angle := rng.randf_range(0, TAU)
-		var distance := rng.randf_range(260, 520)
-		var target := shard.position + Vector2(cos(angle), sin(angle)) * distance + Vector2(0, 220)
-		var tween := shard.create_tween().set_parallel()
-		tween.tween_property(shard, "position", target, 0.9).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-		tween.tween_property(shard, "rotation", rng.randf_range(-6, 6), 0.9)
-		tween.tween_property(shard, "modulate:a", 0.0, 0.5).set_delay(0.45)
+		# Up and out first, then falling: two legs give a rough arc.
+		var angle := rng.randf_range(-PI * 0.95, -PI * 0.05)
+		var speed := rng.randf_range(260, 560)
+		var peak := shard.position + Vector2(cos(angle) * speed, sin(angle) * speed * 0.8)
+		var land := peak + Vector2(cos(angle) * speed * 0.4, rng.randf_range(380, 620))
+		var tween := shard.create_tween()
+		tween.tween_property(shard, "position", peak, 0.32).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		tween.tween_property(shard, "position", land, 0.55).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+		var spin := shard.create_tween().set_parallel()
+		spin.tween_property(shard, "rotation", shard.rotation + rng.randf_range(-7, 7), 0.87)
+		spin.tween_property(shard, "modulate:a", 0.0, 0.35).set_delay(0.6)
+
+
+## Sparks in the rarity color bursting out of the egg.
+func _spawn_sparks(origin: Vector2, color: Color, amount: int) -> void:
+	var sparks := CPUParticles2D.new()
+	sparks.position = origin
+	sparks.one_shot = true
+	sparks.explosiveness = 0.95
+	sparks.amount = amount
+	sparks.lifetime = 0.9
+	sparks.direction = Vector2.UP
+	sparks.spread = 180.0
+	sparks.initial_velocity_min = 260.0
+	sparks.initial_velocity_max = 720.0
+	sparks.gravity = Vector2(0, 900)
+	sparks.damping_min = 60.0
+	sparks.damping_max = 120.0
+	sparks.scale_amount_min = 4.0
+	sparks.scale_amount_max = 9.0
+	var fade := Gradient.new()
+	fade.set_color(0, Color(color.lightened(0.5), 1.0))
+	fade.set_color(1, Color(color, 0.0))
+	sparks.color_ramp = fade
+	var glow := CanvasItemMaterial.new()
+	glow.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	sparks.material = glow
+	_content.add_child(sparks)
+	_stage_nodes.append(sparks)
+	sparks.emitting = true
+
+
+## Warm dust motes drifting up through the lantern light.
+func _dust() -> CPUParticles2D:
+	var screen := _screen()
+	var dust := CPUParticles2D.new()
+	dust.position = Vector2(screen.x / 2, screen.y * 0.8)
+	dust.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	dust.emission_rect_extents = Vector2(screen.x * 0.55, screen.y * 0.25)
+	dust.amount = 36
+	dust.lifetime = 7.0
+	dust.preprocess = 7.0
+	dust.direction = Vector2.UP
+	dust.spread = 25.0
+	dust.initial_velocity_min = 12.0
+	dust.initial_velocity_max = 38.0
+	dust.gravity = Vector2(6, -4)
+	dust.scale_amount_min = 1.5
+	dust.scale_amount_max = 3.5
+	var fade := Gradient.new()
+	fade.set_color(0, Color(1.0, 0.8, 0.45, 0.0))
+	fade.add_point(0.3, Color(1.0, 0.8, 0.45, 0.55))
+	fade.set_color(1, Color(1.0, 0.8, 0.45, 0.0))
+	dust.color_ramp = fade
+	return dust
+
+
+## Screen y of the slab top in the cover-fitted backdrop (the middle of the screen without one).
+func _slab_top() -> float:
+	var screen := _screen()
+	if _backdrop == null:
+		return screen.y * 0.62
+	var image := _backdrop.texture.get_size()
+	var scale := maxf(screen.x / image.x, screen.y / image.y)
+	return screen.y / 2 + (SLAB_Y - 0.5) * image.y * scale
+
+
+func _dim_backdrop(light: float) -> void:
+	if _backdrop:
+		_backdrop.create_tween().tween_property(_backdrop, "modulate", Color(light, light, light), 0.4)
 
 
 func _flash_and_shake(rarity: int) -> void:
