@@ -94,6 +94,10 @@ const SVG := {
 	&"book": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
 <path d="M32 17 C25 12 15 11 5 13 L5 50 C15 48 25 49 32 54 C39 49 49 48 59 50 L59 13 C49 11 39 12 32 17 Z"/>
 <line x1="32" y1="17" x2="32" y2="54"/></g></svg>""",
+	# The Professaur's tour: a folded map.
+	&"map": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M5 14 L22 8 L42 14 L59 8 L59 50 L42 56 L22 50 L5 56 Z"/>
+<line x1="22" y1="8" x2="22" y2="50"/><line x1="42" y1="14" x2="42" y2="56"/></g></svg>""",
 	# Restart game: an arrow going back around the circle.
 	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
 <path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",

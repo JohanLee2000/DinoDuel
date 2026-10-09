@@ -1,7 +1,7 @@
 class_name SettingsView
 extends Control
 ## Settings popup from the gear in the top bar: sound effects and music volume, How to play,
-## Restart game (with a confirmation), and credits.
+## the Professaur's tour again, Restart game (with a confirmation), and credits.
 
 
 static func open() -> SettingsView:
@@ -34,6 +34,9 @@ func _ready() -> void:
 	var help := UiKit.icon_button("How to play", &"book", UiKit.BUTTON_GRAY, 76, 26)
 	help.pressed.connect(func() -> void: HelpView.open())
 	column.add_child(help)
+	var tour := UiKit.icon_button("Professaur's tour", &"map", UiKit.BUTTON_GRAY, 76, 26)
+	tour.pressed.connect(_replay_tour)
+	column.add_child(tour)
 	var restart := UiKit.icon_button("Restart game", &"restart", UiKit.BUTTON_RED, 76, 26)
 	restart.pressed.connect(_confirm_restart)
 	column.add_child(restart)
@@ -43,6 +46,14 @@ func _ready() -> void:
 	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 22, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER))
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
+
+
+## Closes Settings and has the Professaur show the player around again.
+func _replay_tour() -> void:
+	var main := get_tree().current_scene as MainScreen
+	close()
+	if main:
+		ProfessorTour.start(main, true)
 
 
 ## "Are you sure?" before wiping the save.

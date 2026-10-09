@@ -42,6 +42,20 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.5.0 (version code 7)
+
+```
+<en-US>
+Dino Duel 0.5.0
+- 15 new dinos (45 in all), each with its own painting
+- More rare dinos in the Triassic and Jurassic, and some dinos changed tier
+- New collection rewards at 35, 40 and 45 dinos
+- Settings: replay the Professaur's tour, or restart the game from scratch
+- Lighter on battery: lower frame rate when idle, and the screen can sleep outside battles
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.4.1 (version code 6)
 
 ```
@@ -144,4 +158,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | 2026-10-08 | Jo playtest: text too small, unclear what to do after a knockout, no way to quit a battle | 0.3.0: bigger text, knocked-out panel, Leave button; also starter partners and battle backgrounds |
 | 2026-10-08 | Tester with a Redmi A3: "device isn't compatible" (32-bit Android) | 0.3.1: Play build includes armeabi-v7a |
 | 2026-10-09 | Jo playtest: hard to tell moves apart, unclear which dinos are benched or knocked out, battle lost when switching apps, no way to show off pulls, stats unexplained | 0.4.1: move icons, BENCH label, K.O. stamp, battle resume, Share button, stats pages in How to play |
+| 2026-10-09 | Jo playtest: worried about battery drain and heat, wanted a bigger roster, a way to start over, and a way for new players to see the tour again | 0.5.0: frame cap and idle throttle, 15 new dinos, Restart game and Professaur's tour in Settings |
 | | | |

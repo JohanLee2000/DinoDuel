@@ -3,6 +3,7 @@ extends Control
 ## The Professaur shows a new player around after they pick a partner: what the top bar and each
 ## tab are for, then the First steps banner. Each step switches to its tab, dims everything except
 ## the part being explained, and shows his speech box. Tap to continue; Skip ends it.
+## Players can replay it from Settings; then it ends back on the tab they were on.
 
 signal finished
 
@@ -10,6 +11,8 @@ const PORTRAIT_ART := "res://assets/characters/professaur.webp"
 const PORTRAIT_SIZE := 132.0
 
 var _main: MainScreen
+var _replay := false
+var _return_tab: int = Session.Tab.EGGS
 var _steps: Array[Dictionary] = []
 var _index := -1
 var _shade: ColorRect
@@ -20,9 +23,12 @@ var _text: RichTextLabel
 var _footer: Label
 
 
-static func start(main: MainScreen) -> ProfessorTour:
+static func start(main: MainScreen, replay := false) -> ProfessorTour:
 	var tour := ProfessorTour.new()
 	tour._main = main
+	tour._replay = replay
+	if replay:
+		tour._return_tab = Session.current_tab
 	main.add_child(tour)
 	return tour
 
@@ -63,6 +69,14 @@ func _ready() -> void:
 ## point at (from MainScreen).
 func _script() -> Array[Dictionary]:
 	var profile := Session.profile
+	var clutches_line := "you have [b]%d[/b] waiting right now!" % profile.clutches if profile.clutches > 0 \
+			else "winning battles earns you more."
+	var last_step := {"text": "I've written your [b]first steps[/b] up here. Finish them all and I'll send you a bonus egg clutch. Start by hatching your eggs. Good luck, %s! Try not to become extinct!" % profile.player_name,
+			"tab": Session.Tab.EGGS, "target": _main.first_steps_rect, "show_steps": true}
+	if _replay and not profile.first_steps_active:
+		# They've finished their first steps already, so there's nothing up there to point at.
+		last_step = {"text": "And that's the camp tour! Good luck out there, %s. Try not to become extinct!" % profile.player_name,
+				"tab": _return_tab}
 	return [
 		{"text": "Ah, [b]%s[/b]! Welcome to camp! I'm the Professaur. Yes, that's really my name. No, I won't be taking questions." % profile.player_name,
 				"tab": Session.Tab.BATTLE},
@@ -73,16 +87,15 @@ func _script() -> Array[Dictionary]:
 		{"text": "[b]Party[/b]: the %d dinos you bring. Before each battle you see your rival's %d and pick %d, up to %d Party Points." \
 				% [PartyRules.BRING_SIZE, PartyRules.BRING_SIZE, PartyRules.PARTY_SIZE, PartyRules.POINT_CAP],
 				"tab": Session.Tab.PARTY, "target": _main.tab_rect.bind(Session.Tab.PARTY)},
-		{"text": "[b]Eggs[/b]: crack open your clutches here. There's a free clutch every day, and you have [b]%d[/b] waiting right now!" % profile.clutches,
+		{"text": "[b]Eggs[/b]: crack open your clutches here. There's a free clutch every day, and " + clutches_line,
 				"tab": Session.Tab.EGGS, "target": _main.tab_rect.bind(Session.Tab.EGGS)},
 		{"text": "[b]Dex[/b]: every dino you've discovered. Hold any card to see it up close, and craft the ones you're missing with Amber.",
 				"tab": Session.Tab.DEX, "target": _main.tab_rect.bind(Session.Tab.DEX)},
 		{"text": "[b]Goals[/b]: three new quests every day, rewards for growing your collection, and achievements to chase. Check in daily for free Amber and eggs!",
 				"tab": Session.Tab.GOALS, "target": _main.tab_rect.bind(Session.Tab.GOALS)},
-		{"text": "Sound settings and [b]How to play[/b] are behind the gear, whenever you need a refresher.",
+		{"text": "Sound settings, [b]How to play[/b] and this tour are behind the gear, whenever you need a refresher.",
 				"target": _main.gear_rect},
-		{"text": "I've written your [b]first steps[/b] up here. Finish them all and I'll send you a bonus egg clutch. Start by hatching your eggs. Good luck, %s! Try not to become extinct!" % profile.player_name,
-				"tab": Session.Tab.EGGS, "target": _main.first_steps_rect, "show_steps": true},
+		last_step,
 	]
 
 
@@ -217,7 +230,7 @@ func _finish() -> void:
 	if not Session.profile.tour_done:
 		Session.profile.tour_done = true
 		Session.save()
-	_main.show_tab(Session.Tab.EGGS)
+	_main.show_tab(_return_tab)
 	finished.emit()
 	queue_free()
 
