@@ -276,9 +276,12 @@ func _add_art(rect: Rect2) -> void:
 	clip.clip_contents = true
 	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(clip)
-	var painting := DinoArt.full(def, shiny)
+	var painting := DinoArt.for_card(def, shiny, width)
 	if painting:
 		var art := TextureRect.new()
+		# Thumbnails have mipmaps, which keep them smooth on small bench cards.
+		if painting.resource_path.begins_with(DinoArt.THUMB_FOLDER):
+			art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		# Expand mode first: otherwise the size can't go below the texture's own size.
 		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED

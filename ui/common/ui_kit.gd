@@ -44,10 +44,11 @@ static func button(text: String, color: Color, height := 84, font_size := 30) ->
 	return b
 
 
-## A button() with an icon in front of its text, the two centered together. Icons are drawn in
-## white (see Icons) and tinted to the button's text color.
+## A button() with an icon in front of its text, the two centered together. White icons (see
+## Icons) are tinted to the button's text color; pass `icon_tint` to color one yourself instead
+## (Color.WHITE keeps a full-color icon as drawn).
 static func icon_button(text: String, icon_name: StringName, color: Color, height := 84,
-		font_size := 30) -> Button:
+		font_size := 30, icon_tint := Color(0, 0, 0, 0)) -> Button:
 	var b := button("", color, height, font_size)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -61,7 +62,7 @@ static func icon_button(text: String, icon_name: StringName, color: Color, heigh
 	glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	glyph.modulate = text_color_on(color)
+	glyph.modulate = text_color_on(color) if icon_tint.a == 0.0 else icon_tint
 	glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(glyph)
 	var caption := label(text, font_size, text_color_on(color), HORIZONTAL_ALIGNMENT_LEFT, false)
@@ -71,6 +72,8 @@ static func icon_button(text: String, icon_name: StringName, color: Color, heigh
 	row.add_child(caption)
 	center.add_child(row)
 	b.add_child(center)
+	b.set_meta("caption", caption)
+	b.set_meta("glyph", glyph)
 	# Sink with the button when it's pressed, like a plain button's text does.
 	b.button_down.connect(func() -> void: center.offset_top = 3)
 	b.button_up.connect(func() -> void: center.offset_top = 0)

@@ -556,27 +556,40 @@ func _show_result() -> void:
 		if not dino.is_knocked_out():
 			left += 1
 	var title := "Draw"
+	var title_color := Palette.TEXT
 	if _state.winner == PLAYER:
 		title = "Victory!"
+		title_color = Palette.HIGHLIGHT
 	elif _state.winner == RIVAL:
 		title = "Defeat"
-	%ResultTitle.text = title
+		title_color = Palette.DAMAGE
 	Sound.play(&"victory" if _state.winner == PLAYER else &"defeat")
 	_stop_coach_highlight()
 	if _coach_panel:
 		_coach_panel.hide()
 	var reward := Session.finish_battle(_state.winner == PLAYER, _state.turn - 1, left)
-	var gains: Array[String] = []
-	if reward["clutches"] > 0:
-		gains.append("%d egg clutch" % reward["clutches"])
-	gains.append("%d Amber" % reward["amber"])
-	%ResultDetail.text = "%d turns · %d of %d dinos still standing
-Rewards: %s" % [_state.turn - 1,
-			left, _state.side(PLAYER).party.size(), " + ".join(gains)]
+	var result_title: Label = %ResultTitle
+	result_title.text = title.to_upper()
+	result_title.add_theme_font_override("font", Fonts.title())
+	result_title.add_theme_font_size_override("font_size", 76)
+	result_title.add_theme_color_override("font_color", title_color)
+	result_title.add_theme_color_override("font_outline_color", Palette.OUTLINE)
+	result_title.add_theme_constant_override("outline_size", 12)
+	var summary := _result_summary(left, reward)
+	result_title.add_sibling(summary)
+	%ResultDetail.visible = _coaching
+	%ResultDetail.text = "Tutorial done! Tap ? in any battle to see the rules again."
 	%HatchButton.visible = reward["clutches"] > 0
-	if _coaching:
-		%ResultDetail.text += "\n\nTutorial done! Tap ? in any battle to see the rules again."
 	_overlay.show()
+	# The title drops in, then the panel.
+	result_title.pivot_offset = Vector2(result_title.size.x / 2, result_title.size.y / 2)
+	result_title.scale = Vector2(1.6, 1.6)
+	result_title.modulate.a = 0.0
+	summary.modulate.a = 0.0
+	var intro := create_tween()
+	intro.tween_property(result_title, "scale", Vector2.ONE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	intro.parallel().tween_property(result_title, "modulate:a", 1.0, 0.15)
+	intro.tween_property(summary, "modulate:a", 1.0, 0.2)
 	if _autopilot:
 		await get_tree().create_timer(2.5).timeout
 		if Session.autoplay_battles_left > 0:
@@ -584,6 +597,65 @@ Rewards: %s" % [_state.turn - 1,
 			Session.go_to_main(Session.Tab.EGGS)
 		else:
 			get_tree().quit()
+
+
+## The results panel: who it was against, turns and dinos standing as big tiles, and the rewards.
+func _result_summary(left: int, reward: Dictionary) -> Control:
+	var column := UiKit.vbox(16)
+	column.add_child(UiKit.label("against %s" % Session.rival.display_name, 26, Palette.TEXT_DIM,
+			HORIZONTAL_ALIGNMENT_CENTER, false))
+	var tiles := UiKit.hbox(14)
+	var party_size := _state.side(PLAYER).party.size()
+	tiles.add_child(_result_tile("Turns", str(_state.turn - 1), Palette.TEXT))
+	tiles.add_child(_result_tile("Dinos standing", "%d / %d" % [left, party_size],
+			Palette.HEAL if left > 0 else Palette.DAMAGE))
+	column.add_child(tiles)
+
+	var rewards := UiKit.vbox(10)
+	rewards.add_child(UiKit.title("Rewards", 26, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	var row := UiKit.hbox(28, BoxContainer.ALIGNMENT_CENTER)
+	if reward["clutches"] > 0:
+		row.add_child(_reward_item(&"egg", "+%d clutch%s" % [reward["clutches"], "" if reward["clutches"] == 1 else "es"]))
+	row.add_child(_reward_item(&"amber", "+%d Amber" % reward["amber"]))
+	rewards.add_child(row)
+	column.add_child(_result_well(rewards))
+	return UiKit.panel(column, Palette.PANEL, 22)
+
+
+func _result_tile(caption: String, value: String, color: Color) -> Control:
+	var box := UiKit.vbox(0)
+	box.add_child(UiKit.title(value, 58, color, HORIZONTAL_ALIGNMENT_CENTER, false))
+	box.add_child(UiKit.label(caption, 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false))
+	var tile := _result_well(box)
+	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return tile
+
+
+func _reward_item(icon_name: StringName, text: String) -> Control:
+	var item := UiKit.hbox(10)
+	var icon := TextureRect.new()
+	icon.texture = Icons.texture(icon_name, 46)
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	item.add_child(icon)
+	var label := UiKit.label(text, 34, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	label.add_theme_font_override("font", Fonts.bold())
+	item.add_child(label)
+	return item
+
+
+## A slightly lighter inset box inside the results panel.
+func _result_well(content: Control) -> PanelContainer:
+	var well := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(1, 1, 1, 0.05)
+	style.border_color = Color(1, 1, 1, 0.1)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(14)
+	style.set_content_margin_all(14)
+	well.add_theme_stylebox_override("panel", style)
+	well.add_child(content)
+	return well
 
 
 # --- Leaving -------------------------------------------------------------------------------

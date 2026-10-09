@@ -36,6 +36,8 @@ var dev_open_dex: StringName
 ## Dev: show any card full-screen on launch, owned or not. `--open-card=<id>` or `<id>:shiny`.
 var dev_open_card := ""
 var _checkin_prompted := false
+## Dev: `--tab-timing` opens every tab twice and writes how long each took to user://tab_timing.txt.
+var dev_tab_timing := false
 ## Dev: a showcase save for Play Store screenshots (everything collected, no DEV buttons) that
 ## never touches real progress. Pass `--store-shots`.
 var store_shots := false
@@ -59,6 +61,10 @@ func _ready() -> void:
 		# (pushed with adb), e.g. "--store-shots --tab=3".
 		args.append_array(FileAccess.get_file_as_string(DEV_ARGS_FILE).strip_edges().split(" ", false))
 	Power.setup(get_tree(), not "--uncapped" in args)
+	DinoArt.use_thumbs = not "--no-thumbs" in args
+	dev_tab_timing = "--tab-timing" in args
+	if DisplayServer.get_name() != "headless" and DinoArt.use_thumbs:
+		DinoArt.warm_up(catalog)
 	autoplay = "--autoplay" in args
 	if autoplay:
 		# Autoplay runs get their own throwaway save so they never touch real progress.

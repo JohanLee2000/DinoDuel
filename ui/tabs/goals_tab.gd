@@ -6,6 +6,8 @@ extends VBoxContainer
 var _body: VBoxContainer
 var _scroll: ScrollContainer
 var _countdown: Label
+## Bumped on every rebuild, so a rebuild still adding rows stops if a newer one has started.
+var _build := 0
 
 
 func _ready() -> void:
@@ -22,7 +24,11 @@ func _ready() -> void:
 	add_child(timer)
 
 
+## Builds the top of the tab (check-in, quests, collection) right away and adds the sets and
+## achievements below over the next frames, so switching to Goals feels instant on phones.
 func _refresh() -> void:
+	_build += 1
+	var build := _build
 	var keep_scroll := _scroll.scroll_vertical
 	for child in _body.get_children():
 		child.queue_free()
@@ -65,6 +71,9 @@ func _refresh() -> void:
 				progress[0], progress[1], "+%d egg clutch" % Goals.ERA_CLUTCHES, Goals.era_claimed(profile, era),
 				func() -> bool: return Goals.claim_era(profile, catalog, era)))
 
+	await get_tree().process_frame
+	if build != _build:
+		return
 	# Sets: ready to claim first, then the rest in order, earned badges last.
 	var set_ids := DinoSets.ids()
 	var earned := set_ids.filter(func(id: StringName) -> bool: return DinoSets.claimed(profile, id)).size()
@@ -72,18 +81,24 @@ func _refresh() -> void:
 			HORIZONTAL_ALIGNMENT_LEFT, false))
 	_body.add_child(UiKit.label("Collect every dino in a set for Amber and a badge. Families split all %d dinos; themes mix them up." \
 			% catalog.dinos.size(), 22, Palette.TEXT_DIM))
-	var set_rank := {}
-	for i in set_ids.size():
-		var id: StringName = set_ids[i]
-		set_rank[id] = (2 if DinoSets.claimed(profile, id) else (0 if DinoSets.ready(profile, id) else 1)) * 100 + i
-	set_ids.sort_custom(func(a: StringName, b: StringName) -> bool: return set_rank[a] < set_rank[b])
-	for id in set_ids:
-		var counts := DinoSets.progress(profile, id)
-		var kind := "Family" if DinoSets.FAMILIES.has(id) else "Theme"
-		_body.add_child(_row(DinoSets.title_of(id), "%s · %s" % [kind, DinoSets.blurb(id)], counts[0], counts[1],
-				"+%d Amber" % DinoSets.reward(id), DinoSets.claimed(profile, id),
-				func() -> bool: return DinoSets.claim(profile, id), _set_members(id), true))
+	# Families, then themed sets, each with ready-to-claim first and earned badges last.
+	for group in [["Families", DinoSets.FAMILIES.keys()], ["Themed sets", DinoSets.THEMES.keys()]]:
+		_body.add_child(_divider(group[0]))
+		var ids: Array = group[1]
+		var set_rank := {}
+		for i in ids.size():
+			var id: StringName = ids[i]
+			set_rank[id] = (2 if DinoSets.claimed(profile, id) else (0 if DinoSets.ready(profile, id) else 1)) * 100 + i
+		ids.sort_custom(func(a: StringName, b: StringName) -> bool: return set_rank[a] < set_rank[b])
+		for id in ids:
+			var counts := DinoSets.progress(profile, id)
+			_body.add_child(_row(DinoSets.title_of(id), DinoSets.blurb(id), counts[0], counts[1],
+					"+%d Amber" % DinoSets.reward(id), DinoSets.claimed(profile, id),
+					func() -> bool: return DinoSets.claim(profile, id), _set_members(id), true))
 
+	await get_tree().process_frame
+	if build != _build:
+		return
 	# Achievements: ready to claim first, then in progress, then the ones already claimed.
 	var unlocked := 0
 	for id in Goals.ACHIEVEMENTS:
@@ -157,6 +172,22 @@ func _row(title: String, description: String, progress: int, target: int, reward
 		glow.set_border_width_all(2)
 		panel.add_theme_stylebox_override("panel", glow)
 	return panel
+
+
+## A thin line with a label in the middle, between groups of rows.
+func _divider(text: String) -> Control:
+	var row := UiKit.hbox(12)
+	for i in 2:
+		var line := ColorRect.new()
+		line.color = Palette.ACCENT.darkened(0.3)
+		line.custom_minimum_size = Vector2(0, 3)
+		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(line)
+		if i == 0:
+			var label := UiKit.title(text, 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+			row.add_child(label)
+	return row
 
 
 ## The dinos in a set: owned ones bright, missing ones dim.

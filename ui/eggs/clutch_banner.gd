@@ -11,6 +11,9 @@ const HEIGHT := 300.0
 ## Where the nest sits in the painting (fraction of width/height), for the glow and embers.
 const NEST := Vector2(0.5, 0.62)
 
+## Kept once loaded: it's a big painting and the Eggs tab rebuilds often.
+static var _art: Texture2D
+
 var clutches := 0
 var rare_clutches := 0
 var _image: TextureRect
@@ -34,7 +37,9 @@ func _ready() -> void:
 	add_child(frame)
 
 	_image = TextureRect.new()
-	_image.texture = load(ART)
+	if _art == null:
+		_art = load(ART)
+	_image.texture = _art
 	_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

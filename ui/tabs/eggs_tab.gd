@@ -34,21 +34,28 @@ func _refresh() -> void:
 		_body.add_child(rare)
 
 	var checkin := UiKit.button("Daily check-in: free clutch + %s" % CheckInView.bonus_text(profile.checkin_day),
-			UiKit.BUTTON_AMBER)
+			UiKit.BUTTON_GREEN)
 	if not profile.can_claim_daily(SaveStore.today()):
 		checkin.text = "Checked in today. Come back tomorrow!"
 		checkin.disabled = true
 	checkin.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
 	_body.add_child(checkin)
 
+	# Buying: orange for a clutch, purple for a Rare one, dimmed until there's enough Amber.
 	var shop := UiKit.hbox(12)
 	for offer in [[false, Economy.CLUTCH_PRICE], [true, Economy.RARE_CLUTCH_PRICE]]:
 		var rare: bool = offer[0]
 		var price: int = offer[1]
-		var buy := UiKit.button("%s\n%d Amber" % ["Buy a Rare clutch" if rare else "Buy a clutch", price],
-				UiKit.BUTTON_GRAY, 96, 26)
+		var short := price - profile.amber
+		var price_text := "%d Amber" % price if short <= 0 else "%d Amber (need %d)" % [price, short]
+		var buy := UiKit.icon_button("%s\n%s" % ["Rare clutch" if rare else "Clutch", price_text], &"egg",
+				UiKit.BUTTON_RARE if rare else UiKit.BUTTON_AMBER, 104, 25,
+				CheckInView.RARE_TINT.lightened(0.35) if rare else Color.WHITE)
 		buy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		buy.disabled = profile.amber < price
+		buy.disabled = short > 0
+		if buy.disabled:
+			(buy.get_meta("caption") as Label).add_theme_color_override("font_color", Palette.TEXT_DIM)
+			(buy.get_meta("glyph") as Control).modulate.a = 0.45
 		buy.pressed.connect(func() -> void:
 			if profile.buy_rare_clutch() if rare else profile.buy_clutch():
 				Sound.play(&"amber")

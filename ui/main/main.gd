@@ -69,6 +69,8 @@ func _ready() -> void:
 		ProfessorTour.start.call_deferred(self)
 	elif Session.dev_open == "" and Session.dev_open_card == "" and Session.take_checkin_prompt():
 		_open_checkin.call_deferred()
+	if Session.dev_tab_timing:
+		_dev_time_tabs.call_deferred()
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()
@@ -79,6 +81,19 @@ func _ready() -> void:
 		_ when Session.dev_open.begins_with("help:"):
 			HelpView.open.call_deferred(int(Session.dev_open.get_slice(":", 1)) - 1)
 	Session.dev_open = ""
+
+
+func _dev_time_tabs() -> void:
+	var lines: Array[String] = []
+	for round in 2:
+		for i in TABS.size():
+			await get_tree().process_frame
+			var start := Time.get_ticks_usec()
+			_show_tab(i)
+			await RenderingServer.frame_post_draw
+			lines.append("round %d  %-6s %6.1f ms" % [round + 1, TABS[i]["name"], (Time.get_ticks_usec() - start) / 1000.0])
+	var file := FileAccess.open("user://tab_timing.txt", FileAccess.WRITE)
+	file.store_string("\n".join(lines) + "\n")
 
 
 func _open_checkin() -> void:
