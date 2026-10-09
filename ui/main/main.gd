@@ -188,9 +188,14 @@ func _add_icon_before(label: Label, icon_name: StringName) -> Control:
 	return icon
 
 
-## Android back button: go to the Battle tab first, then leave the app.
+## Android back button: go to the Battle tab first, then leave the app. Coming back to the game
+## on a new day (Android often keeps it in the background overnight) opens the check-in.
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+	if what == NOTIFICATION_APPLICATION_RESUMED:
+		# Only on the plain tabs, not over a hatch, the tour or another popup.
+		if get_child_count() <= 2 and Session.take_checkin_prompt():
+			_open_checkin()
+	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if get_child_count() > 2:
 			# An overlay (hatch view or card popup) is open; let it be.
 			return

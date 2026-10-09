@@ -35,7 +35,8 @@ var autoplay_battles_left := 0
 var dev_open_dex: StringName
 ## Dev: show any card full-screen on launch, owned or not. `--open-card=<id>` or `<id>:shiny`.
 var dev_open_card := ""
-var _checkin_prompted := false
+## The day the check-in last popped up by itself (it does so once a day).
+var _checkin_prompt_day := -1
 ## Dev: `--tab-timing` opens every tab twice and writes how long each took to user://tab_timing.txt.
 var dev_tab_timing := false
 ## Dev: a showcase save for Play Store screenshots (everything collected, no DEV buttons) that
@@ -229,14 +230,16 @@ func _defs(ids: Array) -> Array[DinoDef]:
 	return defs
 
 
-## Whether the main screen should pop up the daily check-in: once per launch on a day it hasn't
-## been claimed, never during the new-player intro or in dev runs. Asking uses up the prompt.
+## Whether the main screen should pop up the daily check-in: the first time the game is opened
+## (or brought back from the background) on a day it hasn't been claimed, never during the
+## new-player intro or in dev runs. Asking uses up the prompt for the day.
 func take_checkin_prompt() -> bool:
-	if _checkin_prompted or autoplay or store_shots or dev_tutorial:
+	var today := SaveStore.today()
+	if _checkin_prompt_day == today or autoplay or store_shots or dev_tutorial:
 		return false
-	if not (profile.partner_chosen and profile.tour_done and profile.can_claim_daily(SaveStore.today())):
+	if not (profile.partner_chosen and profile.tour_done and profile.can_claim_daily(today)):
 		return false
-	_checkin_prompted = true
+	_checkin_prompt_day = today
 	return true
 
 
