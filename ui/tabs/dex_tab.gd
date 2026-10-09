@@ -48,8 +48,9 @@ func _refresh() -> void:
 	for era in DinoDef.ERA_NAMES.size():
 		var dinos := Session.catalog.dinos.filter(func(d: DinoDef) -> bool: return d.era == era)
 		var owned := dinos.filter(func(d: DinoDef) -> bool: return profile.owns(d.id)).size()
-		var era_title := UiKit.title("%s  %d/%d" % [DinoDef.ERA_NAMES[era], owned, dinos.size()], 28,
-				Palette.HIGHLIGHT if owned == dinos.size() else Palette.TEXT)
+		var complete := owned == dinos.size()
+		var era_title := UiKit.title("%s  %d/%d%s" % [DinoDef.ERA_NAMES[era], owned, dinos.size(),
+				"   ★ Complete" if complete else ""], 28, Palette.HIGHLIGHT if complete else Palette.TEXT)
 		_era_titles.append(era_title)
 		_body.add_child(era_title)
 		var row := UiKit.grid(3, 12)

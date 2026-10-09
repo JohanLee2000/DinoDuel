@@ -114,6 +114,12 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 - Music: two loops Jo generates with an AI tool (`docs/MUSIC_BRIEF.md`): `main` for menus, `battle` for fights. Missing files just play silence.
 - Settings (gear in the top bar): sound effects and music on/off, saved per device.
 
+## Goals (decided 2026-10-09)
+A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/collection/goals.gd`, tests in `tests/test_goals.gd`.
+- **Daily quests:** 3 a day from a pool of 11 (win 2, battle 3, hatch 3, win with a Land/Sky/Sea dino, era bond, balanced party, flawless, 12 turns or fewer, beat a 3-star+ rival), never two of the same kind. 25-50 Amber each; all 3 done gives a **bonus clutch**. Same quests all day for a player; reset at local midnight like the daily clutch. Forfeits don't count; losses count only for "battle 3 times".
+- **Collection:** milestones at 5/10/15/20/25/30 dinos discovered (50 Amber, 1 clutch, 150 Amber, 2 clutches, 300 Amber, 3 clutches) and **1 clutch per completed era**, which also turns the Dex era heading gold ("★ Complete"). New players can claim the 5-dino milestone right after picking a partner.
+- **Achievements:** 18, in-game only (Jo chose to stay offline: no Google Play Games for now, which would need internet, a privacy-policy and Data safety change, and Play Console setup). Each gives 50-500 Amber when claimed. Battles, hatches and crafts feed their counters (`PlayerProfile.stats`).
+
 ## Journey (proposal)
 Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
 

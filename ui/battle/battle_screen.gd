@@ -447,7 +447,7 @@ func _show_result() -> void:
 	_stop_coach_highlight()
 	if _coach_panel:
 		_coach_panel.hide()
-	var reward := Session.finish_battle(_state.winner == PLAYER)
+	var reward := Session.finish_battle(_state.winner == PLAYER, _state.turn - 1, left)
 	var gains: Array[String] = []
 	if reward["clutches"] > 0:
 		gains.append("%d egg clutch" % reward["clutches"])

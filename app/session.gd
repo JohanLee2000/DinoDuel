@@ -11,7 +11,7 @@ const BATTLE_SCENE := "res://ui/battle/battle_screen.tscn"
 ## Debug builds also read dev flags from this file (see _ready).
 const DEV_ARGS_FILE := "user://dev_args.txt"
 
-enum Tab { BATTLE, PARTY, EGGS, DEX }
+enum Tab { BATTLE, PARTY, EGGS, DEX, GOALS }
 
 var catalog: DinoCatalog
 var profile: PlayerProfile
@@ -94,6 +94,7 @@ func _ready() -> void:
 	if profile == null:
 		profile = _showcase_profile() if store_shots else PlayerProfile.new_game(randi())
 		save()
+	refresh_quests()
 
 
 ## Dev: the save the store screenshots show. Built directly rather than with
@@ -172,8 +173,20 @@ func rematch() -> void:
 
 
 ## Applies rewards and saves. Returns {"amber": int, "clutches": int}.
-func finish_battle(won: bool) -> Dictionary:
+## Rolls today's daily quests if the day has changed since they were last rolled.
+func refresh_quests() -> void:
+	var day := profile.quest_day
+	Goals.refresh_quests(profile, SaveStore.today())
+	if profile.quest_day != day:
+		save()
+
+
+## `turns` and `dinos_left` feed daily quests and achievements (see Goals.on_battle).
+func finish_battle(won: bool, turns := 0, dinos_left := 0) -> Dictionary:
+	refresh_quests()
 	var reward := profile.record_battle(won, rival.id)
+	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "difficulty": rival.difficulty,
+			"party": player_party, "turns": turns, "dinos_left": dinos_left})
 	if coaching:
 		profile.tutorial_done = true
 		coaching = false

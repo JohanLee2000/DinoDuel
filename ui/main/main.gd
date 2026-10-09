@@ -8,6 +8,7 @@ const TABS := [
 	{"name": "Party", "script": "res://ui/tabs/party_tab.gd"},
 	{"name": "Eggs", "script": "res://ui/tabs/eggs_tab.gd"},
 	{"name": "Dex", "script": "res://ui/tabs/dex_tab.gd"},
+	{"name": "Goals", "script": "res://ui/tabs/goals_tab.gd"},
 ]
 
 var _buttons: Array[Button] = []
@@ -44,7 +45,7 @@ func _ready() -> void:
 	_clutch_label.get_parent().add_child(_gear)
 	Sound.music(&"main")
 	for i in TABS.size():
-		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 26)
+		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 24)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.pressed.connect(_show_tab.bind(i))
 		_nav_bar.add_child(button)
@@ -104,6 +105,7 @@ func first_steps_rect() -> Rect2:
 
 
 func _show_tab(index: int) -> void:
+	Session.refresh_quests()
 	Session.current_tab = index
 	if _current:
 		_current.queue_free()
@@ -120,6 +122,7 @@ func _update_bar() -> void:
 	_clutch_label.text = str(profile.clutches)
 	var eggs_waiting := profile.clutches > 0 or profile.can_claim_daily(SaveStore.today())
 	_buttons[Session.Tab.EGGS].text = "Eggs (!)" if eggs_waiting else "Eggs"
+	_buttons[Session.Tab.GOALS].text = "Goals (!)" if Goals.anything_to_claim(profile, Session.catalog) else "Goals"
 	_first_steps.refresh()
 	_glow_tab(_first_steps.next_tab())
 

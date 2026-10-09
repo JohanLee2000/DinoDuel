@@ -77,6 +77,8 @@ func _script() -> Array[Dictionary]:
 				"tab": Session.Tab.EGGS, "target": _main.tab_rect.bind(Session.Tab.EGGS)},
 		{"text": "[b]Dex[/b]: every dino you've discovered. Hold any card to see it up close, and craft the ones you're missing with Amber.",
 				"tab": Session.Tab.DEX, "target": _main.tab_rect.bind(Session.Tab.DEX)},
+		{"text": "[b]Goals[/b]: three new quests every day, rewards for growing your collection, and achievements to chase. Check in daily for free Amber and eggs!",
+				"tab": Session.Tab.GOALS, "target": _main.tab_rect.bind(Session.Tab.GOALS)},
 		{"text": "Sound settings and [b]How to play[/b] are behind the gear, whenever you need a refresher.",
 				"target": _main.gear_rect},
 		{"text": "I've written your [b]first steps[/b] up here. Finish them all and I'll send you a bonus egg clutch. Start by hatching your eggs. Good luck, %s! Try not to become extinct!" % profile.player_name,

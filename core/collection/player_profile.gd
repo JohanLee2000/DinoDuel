@@ -38,6 +38,13 @@ var tour_done := false
 var first_steps_active := false
 ## First steps that can't be read from the rest of the save.
 var opened_dex_card := false
+## Goals (core/collection/goals.gd): counters for achievements, today's quests, and what's claimed.
+var stats: Dictionary = {}
+var quest_day := -1
+## Each: {"id": String, "progress": int, "claimed": bool}.
+var quests: Array = []
+var quest_bonus_claimed := false
+var claimed_goals: Dictionary = {}
 var _rng := RandomNumberGenerator.new()
 
 
@@ -50,6 +57,11 @@ static func new_game(seed_value: int) -> PlayerProfile:
 	profile.clutches = Economy.STARTER_CLUTCHES
 	profile.first_steps_active = true
 	return profile
+
+
+## A per-player, per-day seed (for picking that day's quests), separate from the hatch RNG.
+func seed_for(day: int) -> int:
+	return hash([day, _rng.seed])
 
 
 ## Sets the player's name: trimmed, at most NAME_MAX_LENGTH characters. Returns false if empty.
@@ -124,6 +136,7 @@ func craft(dino: DinoDef) -> HatchResult:
 	if not can_craft(dino):
 		return null
 	amber -= Economy.CRAFT_COST[dino.rarity]
+	Goals.on_craft(self)
 	return add_dino(dino, false)
 
 
@@ -148,6 +161,7 @@ func hatch_clutch(catalog: DinoCatalog) -> Array[HatchResult]:
 		var dino := _pick_dino(catalog, rarity)
 		results.append(add_dino(dino, _rng.randf() < Economy.SHINY_ODDS))
 		eggs_hatched += 1
+	Goals.on_hatch(self, results)
 	return results
 
 
@@ -320,6 +334,11 @@ func to_dict() -> Dictionary:
 		"first_steps_active": first_steps_active,
 		"player_name": player_name,
 		"tour_done": tour_done,
+		"stats": stats.duplicate(),
+		"quest_day": quest_day,
+		"quests": quests.duplicate(true),
+		"quest_bonus_claimed": quest_bonus_claimed,
+		"claimed_goals": claimed_goals.duplicate(),
 		"opened_dex_card": opened_dex_card,
 		# Strings, because JSON numbers are doubles and would round 64-bit RNG values.
 		"rng_seed": str(_rng.seed),
@@ -367,6 +386,18 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.opened_dex_card = bool(data.get("opened_dex_card", false))
 	profile.player_name = String(data.get("player_name", "")).left(NAME_MAX_LENGTH)
 	profile.tour_done = bool(data.get("tour_done", true))
+	var saved_stats: Dictionary = data.get("stats", {})
+	for key in saved_stats:
+		profile.stats[String(key)] = int(saved_stats[key])
+	profile.quest_day = int(data.get("quest_day", -1))
+	for quest in data.get("quests", []):
+		if quest is Dictionary and Goals.QUEST_POOL.has(StringName(quest.get("id", ""))):
+			profile.quests.append({"id": String(quest["id"]), "progress": int(quest.get("progress", 0)),
+					"claimed": bool(quest.get("claimed", false))})
+	profile.quest_bonus_claimed = bool(data.get("quest_bonus_claimed", false))
+	var saved_claims: Dictionary = data.get("claimed_goals", {})
+	for key in saved_claims:
+		profile.claimed_goals[String(key)] = bool(saved_claims[key])
 	profile._rng.seed = String(data.get("rng_seed", "0")).to_int()
 	profile._rng.state = String(data.get("rng_state", "0")).to_int()
 	return profile
