@@ -127,6 +127,8 @@ Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus
 Free to play. IAP sells era expansions (new chapter plus its cards in eggs) and cosmetics. No paid randomized packs, nothing that buys power.
 
 ## Sharing (from the brief)
+**Share a pull (built 2026-10-09):** a Share button on every hatch reveal and on owned dinos in the Dex. It renders a 1080x1350 image (the card over its type's battle backdrop with rarity-colored rays, the logo, a headline like "UR LEGENDARY PULL!", and "Hatched by <name>") and opens Android's share sheet with "I just hatched a Legendary Brachiosaurus in Dino Duel! 🦖" plus the website link. No plugin: `app/share.gd` uses Godot's AndroidRuntime + JavaClassWrapper with androidx ShareCompat and Godot's FileProvider; `ui/common/share_card.gd` draws the image. Nothing leaves the phone unless the player picks an app to share to.
+
 Deck codes and "ghost duels" (fight a friend's party as AI), challenge codes with fixed seeds, Shiny pull and end-of-battle share images. Later: daily challenge, Play Games leaderboards, Expedition (roguelike) mode on the same battle engine.
 
 ## PvP (future)

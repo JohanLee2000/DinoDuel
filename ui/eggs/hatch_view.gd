@@ -200,10 +200,32 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	for label in [rarity_label, caption]:
 		label.create_tween().tween_property(label, "modulate:a", 1.0, 0.2)
 	_play_reveal_sounds(result)
+	_add_share_button(result)
 	_waiting_for_tap = true
 	if Session.autoplay:
 		await get_tree().create_timer(1.2).timeout
 		_advance()
+
+
+## "Share" in the top-right corner of each reveal (the title is hidden then, so it's free).
+func _add_share_button(result: HatchResult) -> void:
+	var share := UiKit.button("Share", UiKit.BUTTON_AMBER, 64, 26)
+	share.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	share.offset_left = -190
+	share.offset_right = -24
+	share.offset_top = 56
+	share.offset_bottom = 120
+	share.pressed.connect(func() -> void:
+		share.disabled = true
+		share.text = "..."
+		await ShareCard.share_dino(result.dino, result.shiny or result.upgraded_to_shiny, true)
+		if is_instance_valid(share):
+			share.disabled = false
+			share.text = "Share")
+	_content.add_child(share)
+	_stage_nodes.append(share)
+	share.modulate.a = 0.0
+	share.create_tween().tween_property(share, "modulate:a", 1.0, 0.2)
 
 
 func _play_reveal_sounds(result: HatchResult) -> void:

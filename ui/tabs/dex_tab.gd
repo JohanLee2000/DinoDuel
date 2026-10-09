@@ -93,7 +93,14 @@ func _open(dino: DinoDef) -> void:
 		craft.pressed.connect(_craft.bind(dino, viewer))
 		viewer.closed.connect(_refresh)
 	else:
-		CardViewer.open(dino, profile.is_shiny(dino.id))
+		var share := UiKit.button("Share", UiKit.BUTTON_AMBER, 76, 28)
+		share.pressed.connect(func() -> void:
+			share.disabled = true
+			await ShareCard.share_dino(dino, profile.is_shiny(dino.id), false)
+			if is_instance_valid(share):
+				share.disabled = false)
+		var owned_extras: Array[Control] = [share]
+		CardViewer.open(dino, profile.is_shiny(dino.id), true, owned_extras)
 		if not profile.opened_dex_card:
 			profile.opened_dex_card = true
 			Session.save()

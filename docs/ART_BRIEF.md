@@ -119,7 +119,7 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `panel_3.webp` | Other collectors are hunting too. Battle them, win their eggs, and fill your Dino Dex. | Two rival dinosaurs facing off across a rocky arena under a stormy sky, a Tyrannosaurus and a Mosasaurus rising from crashing surf, dramatic rim light, dust and spray; dark foreground in the lower third. |
 | `panel_4.webp` | Every hunter needs a partner. Choose yours. | Three small young dinosaurs side by side on a sunlit ridge at dawn, a Dilophosaurus, an Archaeopteryx perched on a rock and a Tanystropheus at the water's edge, looking toward the viewer; soft clouds below the ridge in the lower third. |
 
-## The Professaur portrait (needed)
+## The Professaur portrait (not needed: Jo is keeping the drawn placeholder, 2026-10-09)
 
 The Professaur (a human paleontologist; the name is a pun on professor + saur) guides new players through the tabs (`ui/main/professor_tour.gd`). Until a portrait exists he's a simple drawn placeholder (pith helmet, round glasses, white mustache). Generate a **square (1024 x 1024)** head-and-shoulders portrait, face centred, plain softly lit background (it's shown in a round frame), same painterly style as the cards, and save it as `assets/characters/professaur.webp`; the tour uses it automatically.
 
