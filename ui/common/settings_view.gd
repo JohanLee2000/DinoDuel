@@ -1,7 +1,7 @@
 class_name SettingsView
 extends Control
 ## Settings popup from the gear in the top bar: sound effects and music volume, How to play,
-## and credits.
+## Restart game (with a confirmation), and credits.
 
 
 static func open() -> SettingsView:
@@ -34,12 +34,38 @@ func _ready() -> void:
 	var help := UiKit.button("How to play", UiKit.BUTTON_GRAY, 76, 26)
 	help.pressed.connect(func() -> void: HelpView.open())
 	column.add_child(help)
+	var restart := UiKit.button("Restart game", UiKit.BUTTON_RED, 76, 26)
+	restart.pressed.connect(_confirm_restart)
+	column.add_child(restart)
 	var done := UiKit.button("Done", UiKit.BUTTON_GREEN, 76, 26)
 	done.pressed.connect(close)
 	column.add_child(done)
 	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 22, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER))
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
+
+
+## "Are you sure?" before wiping the save.
+func _confirm_restart() -> void:
+	var dialog := UiKit.modal_layer(0.85)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var column := UiKit.vbox(18)
+	column.custom_minimum_size.x = 580
+	column.add_child(UiKit.title("Restart the game?", 40, Palette.DAMAGE, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("This deletes all of your save data: every dino you've collected, your Amber and eggs, " \
+			+ "Goals progress and rival records.", 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("You'll start again from the very beginning, with a new name and a new partner. " \
+			+ "This can't be undone.", 26, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+	var keep := UiKit.button("Keep my progress", UiKit.BUTTON_GREEN, 84, 30)
+	keep.pressed.connect(dialog.queue_free)
+	column.add_child(keep)
+	var wipe := UiKit.button("Delete everything and restart", UiKit.BUTTON_RED, 76, 26)
+	wipe.pressed.connect(Session.restart_game)
+	column.add_child(wipe)
+	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
+	dialog.add_child(center)
+	add_child(dialog)
 
 
 func _volume_row(text: String, volume: float, apply: Callable, preview: bool) -> Control:
@@ -84,4 +110,8 @@ func _volume_row(text: String, volume: float, apply: Callable, preview: bool) ->
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		close()
+		var dialog := get_child(get_child_count() - 1)
+		if dialog is ColorRect and dialog != get_child(0):
+			dialog.queue_free()
+		else:
+			close()

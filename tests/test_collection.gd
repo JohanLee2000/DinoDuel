@@ -326,3 +326,16 @@ func test_player_name_is_trimmed_and_saved() -> void:
 	old_save.erase("tour_done")
 	assert_true(PlayerProfile.from_dict(old_save, catalog).tour_done, "old saves skip the tour")
 
+
+func test_restart_starts_a_brand_new_game() -> void:
+	# What Session.restart_game saves in place of the old profile.
+	var fresh := PlayerProfile.new_game(77)
+	assert_eq(fresh.player_name, "", "asks for a name again")
+	assert_false(fresh.partner_chosen, "asks for a partner again")
+	assert_false(fresh.tour_done)
+	assert_true(fresh.first_steps_active)
+	assert_eq(fresh.owned.size(), Economy.STARTER_BASICS.size())
+	assert_eq(fresh.amber, 0)
+	assert_eq(fresh.wins + fresh.losses, 0)
+	assert_eq(fresh.battle.size(), 0)
+

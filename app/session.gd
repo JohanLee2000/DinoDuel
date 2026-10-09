@@ -131,6 +131,22 @@ func save() -> void:
 	profile_changed.emit()
 
 
+## Settings > Restart game (after the player confirms): deletes the save and starts a brand-new
+## game from the name entry. Sound settings are kept; they're device preferences, not progress.
+func restart_game() -> void:
+	SaveStore.delete_all()
+	profile = PlayerProfile.new_game(randi())
+	player_party = []
+	rival_party = []
+	rival = rivals[0]
+	coaching = false
+	resume_events = []
+	current_tab = Tab.BATTLE
+	save()
+	refresh_quests()
+	go_to_main(Tab.BATTLE)
+
+
 ## Opens the main tabs. Pass -1 to keep the last tab.
 func go_to_main(tab: int = -1) -> void:
 	if tab >= 0:
