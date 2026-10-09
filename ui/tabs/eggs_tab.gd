@@ -24,17 +24,18 @@ func _refresh() -> void:
 	banner.rare_clutches = profile.rare_clutches
 	banner.hatch_pressed.connect(func() -> void: _hatch(profile.clutches <= 0))
 	_body.add_child(banner)
-	var hatch := UiKit.button("Hatch a clutch", UiKit.BUTTON_GREEN, 110, 34)
+	var hatch := UiKit.let_scroll(UiKit.button("Hatch a clutch", UiKit.BUTTON_GREEN, 110, 34))
 	hatch.disabled = profile.clutches <= 0
 	hatch.pressed.connect(_hatch.bind(false))
 	_body.add_child(hatch)
 	if profile.rare_clutches > 0:
-		var rare := UiKit.button("Hatch a Rare clutch (%d)" % profile.rare_clutches, UiKit.BUTTON_RARE, 96, 32)
+		var rare := UiKit.let_scroll(UiKit.button("Hatch a Rare clutch (%d)" % profile.rare_clutches, UiKit.BUTTON_RARE, 96, 32))
 		rare.pressed.connect(_hatch.bind(true))
 		_body.add_child(rare)
 
 	var checkin := UiKit.button("Daily check-in: free clutch + %s" % CheckInView.bonus_text(profile.checkin_day),
 			UiKit.BUTTON_GREEN)
+	UiKit.let_scroll(checkin)
 	if not profile.can_claim_daily(SaveStore.today()):
 		checkin.text = "Checked in today. Come back tomorrow!"
 		checkin.disabled = true
@@ -52,6 +53,7 @@ func _refresh() -> void:
 				UiKit.BUTTON_RARE if rare else UiKit.BUTTON_AMBER, 104, 27,
 				CheckInView.RARE_TINT.lightened(0.35) if rare else Color.WHITE)
 		buy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		UiKit.let_scroll(buy)
 		buy.disabled = short > 0
 		if buy.disabled:
 			(buy.get_meta("caption") as Label).add_theme_color_override("font_color", Palette.TEXT_DIM)

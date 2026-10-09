@@ -215,6 +215,13 @@ static func vscroll(content: Control) -> ScrollContainer:
 	return scroll
 
 
+## For buttons inside a vscroll list: buttons normally swallow a drag, so a swipe that started on
+## one didn't scroll the list. Passing the touch on lets the list scroll too; a tap still presses.
+static func let_scroll(button: Button) -> Button:
+	button.mouse_filter = Control.MOUSE_FILTER_PASS
+	return button
+
+
 ## A full-screen dimmed layer that blocks input to whatever is underneath.
 static func modal_layer(alpha := 0.8) -> ColorRect:
 	var layer := ColorRect.new()

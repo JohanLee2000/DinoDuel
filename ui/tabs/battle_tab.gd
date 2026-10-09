@@ -57,7 +57,10 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 
 	var brings := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	for dino in rival.brings:
-		brings.add_child(DinoCard.create(dino, DinoCard.Mode.MINI, null, false, BRING_CARD_WIDTH))
+		var card := DinoCard.create(dino, DinoCard.Mode.MINI, null, false, BRING_CARD_WIDTH)
+		# Tapping (as well as holding) a rival's dino shows its card full size.
+		card.pressed.connect(CardViewer.open.bind(dino))
+		brings.add_child(card)
 	box.add_child(brings)
 
 	var footer := UiKit.hbox(12)
@@ -72,7 +75,7 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 	record_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	record_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	footer.add_child(record_label)
-	var challenge := UiKit.button("Challenge", UiKit.BUTTON_GREEN, 72, 28)
+	var challenge := UiKit.let_scroll(UiKit.button("Challenge", UiKit.BUTTON_GREEN, 72, 28))
 	challenge.custom_minimum_size.x = 220
 	challenge.disabled = not can_fight
 	challenge.pressed.connect(Session.go_to_pre_battle.bind(rival))

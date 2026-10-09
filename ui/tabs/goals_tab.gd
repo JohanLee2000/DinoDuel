@@ -16,7 +16,7 @@ func _ready() -> void:
 	_body = UiKit.vbox(16)
 	_scroll = UiKit.vscroll(_body)
 	add_child(_scroll)
-	_refresh()
+	_refresh(true)
 	var timer := Timer.new()
 	timer.wait_time = 30.0
 	timer.autostart = true
@@ -24,13 +24,17 @@ func _ready() -> void:
 	add_child(timer)
 
 
-## Builds the top of the tab (check-in, quests, collection) right away and adds the sets and
-## achievements below over the next frames, so switching to Goals feels instant on phones.
-func _refresh() -> void:
+## Rebuilds the tab. When the tab opens (`staged`), the top (check-in, quests, collection) is built
+## right away and the sets and achievements over the next frames, so switching to Goals feels
+## instant on phones. After a claim it's all rebuilt at once and the scroll position kept: a staged
+## rebuild showed only the short top part for a frame, which jumped the list to the top.
+func _refresh(staged := false) -> void:
 	_build += 1
 	var build := _build
 	var keep_scroll := _scroll.scroll_vertical
 	for child in _body.get_children():
+		# Removed right away (not just queued), so old and new rows never stack for a frame.
+		_body.remove_child(child)
 		child.queue_free()
 	var profile := Session.profile
 	var catalog := Session.catalog
@@ -71,9 +75,10 @@ func _refresh() -> void:
 				progress[0], progress[1], "+%d egg clutch" % Goals.ERA_CLUTCHES, Goals.era_claimed(profile, era),
 				func() -> bool: return Goals.claim_era(profile, catalog, era)))
 
-	await get_tree().process_frame
-	if build != _build:
-		return
+	if staged:
+		await get_tree().process_frame
+		if build != _build:
+			return
 	# Sets: ready to claim first, then the rest in order, earned badges last.
 	var set_ids := DinoSets.ids()
 	var earned := set_ids.filter(func(id: StringName) -> bool: return DinoSets.claimed(profile, id)).size()
@@ -96,9 +101,10 @@ func _refresh() -> void:
 					"+%d Amber" % DinoSets.reward(id), DinoSets.claimed(profile, id),
 					func() -> bool: return DinoSets.claim(profile, id), _set_members(id), true))
 
-	await get_tree().process_frame
-	if build != _build:
-		return
+	if staged:
+		await get_tree().process_frame
+		if build != _build:
+			return
 	# Achievements: ready to claim first, then in progress, then the ones already claimed.
 	var unlocked := 0
 	for id in Goals.ACHIEVEMENTS:
@@ -118,6 +124,7 @@ func _refresh() -> void:
 		_body.add_child(_row(info[0], info[1], Goals.achievement_progress(profile, catalog, id),
 				Goals.achievement_target(catalog, id), "+%d Amber" % info[3], Goals.achievement_claimed(profile, id),
 				func() -> bool: return Goals.claim_achievement(profile, catalog, id)))
+	_scroll.scroll_vertical = keep_scroll
 	_restore_scroll.call_deferred(keep_scroll)
 
 
@@ -155,6 +162,7 @@ func _row(title: String, description: String, progress: int, target: int, reward
 				HORIZONTAL_ALIGNMENT_CENTER, false))
 	elif done:
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 28)
+		UiKit.let_scroll(button)
 		button.pressed.connect(func() -> void:
 			if claim.call():
 				Sound.play(&"amber")
@@ -237,6 +245,7 @@ func _checkin_strip() -> Control:
 	side.alignment = BoxContainer.ALIGNMENT_CENTER
 	if profile.can_claim_daily(SaveStore.today()):
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 28)
+		UiKit.let_scroll(button)
 		button.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
 		side.add_child(button)
 		_pulse(button)
@@ -257,6 +266,7 @@ func _milestone_chip(index: int) -> Control:
 		box.add_child(UiKit.label("✔", 30, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
 	elif Goals.milestone_ready(profile, index):
 		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 52, 26)
+		UiKit.let_scroll(button)
 		button.pressed.connect(func() -> void:
 			if Goals.claim_milestone(profile, index):
 				Sound.play(&"amber")
