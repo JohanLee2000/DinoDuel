@@ -75,6 +75,8 @@ var _last_player_kind := -1
 
 
 func _ready() -> void:
+	Power.keep_screen_awake(true)
+	tree_exiting.connect(Power.keep_screen_awake.bind(false))
 	_coaching = Session.coaching
 	Sound.music(&"battle")
 	var extra_height := get_viewport_rect().size.y - BASE_LAYOUT_HEIGHT

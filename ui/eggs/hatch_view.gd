@@ -44,6 +44,8 @@ static func create(results: Array[HatchResult], title := "") -> HatchView:
 
 
 func _ready() -> void:
+	Power.keep_screen_awake(true)
+	tree_exiting.connect(Power.keep_screen_awake.bind(false))
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var layer := UiKit.modal_layer()
 	layer.color = Palette.BACKGROUND

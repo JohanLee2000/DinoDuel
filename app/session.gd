@@ -57,6 +57,7 @@ func _ready() -> void:
 		# Phones have no command line, so USB debug installs read dev flags from this file
 		# (pushed with adb), e.g. "--store-shots --tab=3".
 		args.append_array(FileAccess.get_file_as_string(DEV_ARGS_FILE).strip_edges().split(" ", false))
+	Power.setup(get_tree(), not "--uncapped" in args)
 	autoplay = "--autoplay" in args
 	if autoplay:
 		# Autoplay runs get their own throwaway save so they never touch real progress.

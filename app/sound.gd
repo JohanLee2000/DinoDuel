@@ -72,6 +72,13 @@ static func play(sound: StringName, pitch := 1.0) -> void:
 
 
 ## Crossfades to a looping music track, or to silence if that track's file doesn't exist yet.
+## Pauses (or resumes) everything playing, e.g. while the app is in the background.
+static func pause_all(paused: bool) -> void:
+	if _node:
+		for player in _node._music_players + _node._voices:
+			player.stream_paused = paused
+
+
 static func music(track: StringName) -> void:
 	if _node:
 		_node._set_music(track)
