@@ -465,18 +465,13 @@ func _draw_name_banner() -> void:
 
 func _draw_stats() -> void:
 	var w := width
-	var h := card_height()
 	var small := _small()
 	var values := _stat_values()
 	var base := [def.attack, def.defense, def.speed, def.health]
-	var gap := w * 0.02
-	var left := w * 0.06
-	var box_w := (w * 0.88 - gap * 3) / 4.0
-	var box_h := w * (0.2 if small else 0.24)
-	var top := h - box_h - w * 0.06
 	var tier := tier_color()
 	for i in 4:
-		var box := Rect2(left + (box_w + gap) * i, top, box_w, box_h)
+		var box := stat_box_rect(i)
+		var box_h := box.size.y
 		_draw_panel(box, tier, w * 0.025)
 		var boosted: bool = values[i] > base[i]
 		var value_color := Color("8dffa0") if boosted else Color.WHITE
@@ -491,6 +486,16 @@ func _draw_stats() -> void:
 				int(box_h * 0.19), Palette.STAT_COLORS[i], false)
 		_text_centered(Fonts.display(), str(values[i]), Vector2(box.get_center().x, box.position.y + box_h * 0.76),
 				int(box_h * 0.34), value_color, true)
+
+
+## Where stat box `index` (0 ATK, 1 DEF, 2 SPD, 3 HP) sits on this card, in card coordinates.
+## The How to play pages use this to ring and point at stats.
+func stat_box_rect(index: int) -> Rect2:
+	var w := width
+	var gap := w * 0.02
+	var box_w := (w * 0.88 - gap * 3) / 4.0
+	var box_h := w * (0.2 if _small() else 0.24)
+	return Rect2(w * 0.06 + (box_w + gap) * index, card_height() - box_h - w * 0.06, box_w, box_h)
 
 
 func _draw_badge() -> void:

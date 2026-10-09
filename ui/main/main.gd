@@ -72,6 +72,8 @@ func _ready() -> void:
 			SettingsView.open.call_deferred()
 		"help":
 			HelpView.open.call_deferred()
+		_ when Session.dev_open.begins_with("help:"):
+			HelpView.open.call_deferred(int(Session.dev_open.get_slice(":", 1)) - 1)
 	Session.dev_open = ""
 
 

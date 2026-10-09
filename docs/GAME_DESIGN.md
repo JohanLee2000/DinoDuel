@@ -109,7 +109,7 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 ## Tutorial (decided 2026-10-08)
 - A new player's **first battle is coached** (`Session.wants_coach()`; done once it ends or the player taps "Skip tips"). The Battle tab marks the first rival "Start here", and the pick screen explains Party Points and Balanced.
 - The battle opens with the "Battle moves" help card. For the first 3 turns the rival's moves are scripted (Bite, Brace, Charge) and the coach suggests the counter (Brace, Charge, Bite) with a pulsing button, so the player meets the whole triangle. After that the rival plays normally and the coach gives one-time tips (type edge, bad matchup, low HP, knocked out).
-- A **? button** in every battle (and How to play in Settings) reopens 4 pages: moves, types, party, eggs and Amber.
+- A **? button** in every battle (and How to play in Settings) reopens 6 pages: moves, dino stats (a card with each stat ringed and pointed at), damage and speed (a worked T. rex vs Pteranodon example computed from the real rules, so it can't go stale), types, party, eggs and Amber.
 - **Battles survive the app being closed** (decided 2026-10-09): every move is saved (`PlayerProfile.battle`), and if Android closes the game in the background, reopening it drops the player back into the same battle (`core/battle/battle_replay.gd` replays the moves; the engine is deterministic and the AI is seeded, so it lands on exactly the same state). Switching apps without the game being closed simply continues where it was.
 - **Leaving a battle** (Leave button or Android back, with a confirmation) is a forfeit: a loss in the record, no Amber (decided 2026-10-08; a normal loss pays 10 Amber, so paying forfeits would let players farm it).
 
