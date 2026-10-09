@@ -129,3 +129,15 @@ Prompt idea: *A friendly elderly paleontologist, head and shoulders, warm smile,
 
 In `assets/eggs/`: the egg in three stages (intact, first crack, about to burst), 8 shell pieces, the hatch backdrop (`hatch_background.webp`, dig site at night; the egg sits on the slab at 74% of its height) and the Eggs tab banner (`clutch_banner.webp`). `tools/prepare_eggs.py whole.png crack1.png crack2.png shards.png` crops the frames to one box and splits each crack frame into the shell and its light (`egg_crack_N_light.webp`), which the game tints with the rarity color, so the light in new crack art should be white or warm white. The animation itself (wobble, shakes, light flicker, shell pieces, sparks) is code in `ui/eggs/egg_view.gd` and `hatch_view.gd`.
 
+
+## Hatch reveal light effects (requested 2026-10-09)
+
+Layers behind a freshly hatched card, replacing the drawn rays (`HatchView.LightBurst`). Generate each on **pure black (#000000)** in **white / pale grey only**: the game adds them on top with additive blending (black disappears) and tints them with the rarity color, so one set of images works for every tier. Square, centered, radially symmetric, fading to black well before the edges (no hard edge at the border, since they rotate and scale). No text, no card, no dinosaur, no logos. Prompts in chat (2026-10-09); files go in `assets/eggs/fx/`:
+
+| File | Layer | How it moves |
+|---|---|---|
+| `rays.webp` | Light shafts bursting from the center | Slow rotation, two copies turning opposite ways |
+| `halo.webp` | Soft glowing core / bloom | Pulses gently |
+| `ring.webp` | Thin shockwave ring | Expands and fades once at the reveal |
+| `sparkles.webp` | Sheet of 8 separate sparkles / lens flares | Cut apart and used as particles |
+| `sigil.webp` | Ornate fossil-themed magic circle | Slow rotation; Epic and Legendary only |
