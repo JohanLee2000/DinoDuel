@@ -149,7 +149,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Eudimorphodon | Sky | Triassic | N | 4 | 0 | 9 | 10 |
 | Rhamphorhynchus | Sky | Jurassic | N | 5 | 0 | 8 | 9 |
 | Archaeopteryx | Sky | Jurassic | R | 6 | 1 | 10 | 11 |
-| Pteranodon | Sky | Cretaceous | SR | 7 | 1 | 8 | 14 |
+| Pteranodon | Sky | Cretaceous | R | 5 | 1 | 7 | 14 |
 | Quetzalcoatlus | Sky | Cretaceous | SSR | 8 | 2 | 6 | 17 |
 | Nothosaurus | Sea | Triassic | R | 6 | 1 | 6 | 13 |
 | Ichthyosaurus | Sea | Jurassic | R | 6 | 1 | 8 | 12 |
@@ -185,7 +185,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Yi qi | Sky | Jurassic | R | 6 | 1 | 10 | 10 |
 | Protoceratops | Land | Cretaceous | N | 5 | 2 | 4 | 13 |
 | Hesperornis | Sea | Cretaceous | N | 5 | 0 | 6 | 10 |
-| Tapejara | Sky | Cretaceous | R | 5 | 1 | 9 | 11 |
+| Tapejara | Sky | Cretaceous | SR | 6 | 1 | 9 | 13 |
 
 ## Milestones
 1. **M1: Battle on your phone.** Battle engine + tests + balance sim, party pick and battle screens with placeholder cards, one AI rival, Android debug build.

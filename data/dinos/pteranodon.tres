@@ -1,19 +1,19 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://cm0xin8h0jhf5"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_8qart"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_8qart"]
 
 [resource]
 script = ExtResource("1_8qart")
 id = &"pteranodon"
 display_name = "Pteranodon"
+epithet = "Sky Hunter"
 dino_type = 1
 era = 2
-rarity = 2
-attack = 7
+rarity = 1
+attack = 5
 defense = 1
-speed = 8
+speed = 7
 health = 14
 group = "Pterosaur"
 size_text = "Wingspan 6 m"
 flavor_text = "Its name means toothless wing. It probably caught fish at sea, much like a modern seabird."
-epithet = "Sky Hunter"
