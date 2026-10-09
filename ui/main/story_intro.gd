@@ -34,7 +34,7 @@ func _ready() -> void:
 	black.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	black.gui_input.connect(_on_input)
 	add_child(black)
-	_skip_button = UiKit.button("Skip", UiKit.BUTTON_GRAY, 56, 24)
+	_skip_button = UiKit.button("Skip", UiKit.BUTTON_GRAY, 56, 27)
 	_skip_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_skip_button.offset_left = -160
 	_skip_button.offset_right = -24
@@ -192,7 +192,7 @@ func _caption(text: String, index: int) -> Control:
 	var dots := ""
 	for i in PANELS.size():
 		dots += "●  " if i == index else "○  "
-	var footer := UiKit.label("%s\nTap to continue" % dots.strip_edges(), 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
+	var footer := UiKit.label("%s\nTap to continue" % dots.strip_edges(), 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	footer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(footer)
 	holder.add_child(column)

@@ -9,11 +9,11 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	add_child(UiKit.title("Rivals"))
 	add_child(UiKit.label("Win: %d egg clutch + %d Amber.   Lose: %d Amber.   Harder rivals bring rarer dinos." % [
-			Economy.WIN_CLUTCHES, Economy.WIN_AMBER, Economy.LOSS_AMBER], 23, Palette.TEXT_DIM))
+			Economy.WIN_CLUTCHES, Economy.WIN_AMBER, Economy.LOSS_AMBER], 28, Palette.TEXT_DIM))
 
 	var problem := _party_problem()
 	if problem != "":
-		add_child(UiKit.label(problem, 24, Palette.HIGHLIGHT))
+		add_child(UiKit.label(problem, 29, Palette.HIGHLIGHT))
 
 	var list := UiKit.vbox(14)
 	for rival in Session.rivals:
@@ -53,7 +53,7 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 		header.add_child(star)
 	box.add_child(header)
 
-	box.add_child(UiKit.label(rival.intro, 23, Palette.TEXT_DIM))
+	box.add_child(UiKit.label(rival.intro, 28, Palette.TEXT_DIM))
 
 	var brings := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	for dino in rival.brings:
@@ -67,7 +67,7 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 		record_text = "Won %d · Lost %d" % [record[0], record[1]]
 	if start_here:
 		record_text = "Start here! A coach shows you the moves."
-	var record_label := UiKit.label(record_text, 24, Palette.HIGHLIGHT if record[0] > 0 or start_here \
+	var record_label := UiKit.label(record_text, 29, Palette.HIGHLIGHT if record[0] > 0 or start_here \
 			else Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_LEFT, start_here)
 	record_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	record_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

@@ -35,7 +35,7 @@ func _ready() -> void:
 	column.custom_minimum_size.x = 680
 	column.add_child(UiKit.title("Choose your partner", 48, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(UiKit.label("Your first dino. You also get %d more to start your party, plus %d egg clutches to hatch." \
-			% [Economy.STARTER_BASICS.size(), Economy.STARTER_CLUTCHES], 25, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+			% [Economy.STARTER_BASICS.size(), Economy.STARTER_CLUTCHES], 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var row := UiKit.hbox(16, BoxContainer.ALIGNMENT_CENTER)
 	for id in Economy.STARTER_PARTNERS:
@@ -46,7 +46,7 @@ func _ready() -> void:
 		_cards.append(card)
 	column.add_child(row)
 
-	_info = UiKit.label("Tap a dino to meet it. Hold a card to see it up close.", 26, Palette.TEXT,
+	_info = UiKit.label("Tap a dino to meet it. Hold a card to see it up close.", 30, Palette.TEXT,
 			HORIZONTAL_ALIGNMENT_CENTER)
 	_info.custom_minimum_size.y = 120
 	column.add_child(_info)

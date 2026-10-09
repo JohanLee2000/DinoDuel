@@ -32,29 +32,29 @@ func _ready() -> void:
 	column.add_child(UiKit.title("Settings", 40, Palette.HIGHLIGHT))
 	column.add_child(_volume_row("Sound effects", Sound.sfx_volume(), Sound.set_sfx_volume, true))
 	column.add_child(_volume_row("Music", Sound.music_volume(), Sound.set_music_volume, false))
-	var help := UiKit.icon_button("How to play", &"book", UiKit.BUTTON_GRAY, 76, 26)
+	var help := UiKit.icon_button("How to play", &"book", UiKit.BUTTON_GRAY, 76, 28)
 	help.pressed.connect(func() -> void: HelpView.open())
 	column.add_child(help)
-	var tour := UiKit.icon_button("Professaur's tour", &"map", UiKit.BUTTON_GRAY, 76, 26)
+	var tour := UiKit.icon_button("Professaur's tour", &"map", UiKit.BUTTON_GRAY, 76, 28)
 	tour.pressed.connect(_replay_tour)
 	column.add_child(tour)
 	# Export / Import save, switched off for now (see the note above _export_save).
 #	var transfer := UiKit.hbox(12)
-#	var export := UiKit.icon_button("Export save", &"export", UiKit.BUTTON_GRAY, 76, 24)
+#	var export := UiKit.icon_button("Export save", &"export", UiKit.BUTTON_GRAY, 76, 27)
 #	export.pressed.connect(_export_save)
-#	var import := UiKit.icon_button("Import save", &"import", UiKit.BUTTON_GRAY, 76, 24)
+#	var import := UiKit.icon_button("Import save", &"import", UiKit.BUTTON_GRAY, 76, 27)
 #	import.pressed.connect(_pick_import)
 #	for button in [export, import]:
 #		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 #		transfer.add_child(button)
 #	column.add_child(transfer)
-	var restart := UiKit.icon_button("Restart game", &"restart", UiKit.BUTTON_RED, 76, 26)
+	var restart := UiKit.icon_button("Restart game", &"restart", UiKit.BUTTON_RED, 76, 28)
 	restart.pressed.connect(_confirm_restart)
 	column.add_child(restart)
-	var done := UiKit.button("Done", UiKit.BUTTON_GREEN, 76, 26)
+	var done := UiKit.button("Done", UiKit.BUTTON_GREEN, 76, 28)
 	done.pressed.connect(close)
 	column.add_child(done)
-	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 22, Palette.TEXT_DIM,
+	column.add_child(UiKit.label("Sound effects by Kenney (CC0)", 28, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER))
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
 
@@ -106,14 +106,14 @@ func _replay_tour() -> void:
 #	var column := _dialog_column("Load this save?", Palette.HIGHLIGHT)
 #	column.add_child(UiKit.label("%s%s: %d dinos, %d Amber, %d wins." % [
 #			"Saved %s by " % exported if exported != "" else "", imported.player_name if imported.player_name != "" else "a player",
-#			imported.owned.size(), imported.amber, imported.wins], 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+#			imported.owned.size(), imported.amber, imported.wins], 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 #	column.add_child(UiKit.label("It replaces the progress on this phone (%d dinos, %d Amber). This can't be undone." \
-#			% [current.owned.size(), current.amber], 26, Palette.DAMAGE.lightened(0.2), HORIZONTAL_ALIGNMENT_CENTER))
+#			% [current.owned.size(), current.amber], 30, Palette.DAMAGE.lightened(0.2), HORIZONTAL_ALIGNMENT_CENTER))
 #	var dialog := _open_dialog(column)
 #	var keep := UiKit.button("Keep this phone's save", UiKit.BUTTON_GREEN, 84, 30)
 #	keep.pressed.connect(dialog.queue_free)
 #	column.add_child(keep)
-#	var load_it := UiKit.button("Load this save", UiKit.BUTTON_RED, 76, 26)
+#	var load_it := UiKit.button("Load this save", UiKit.BUTTON_RED, 76, 28)
 #	load_it.pressed.connect(func() -> void: Session.import_profile(imported))
 #	column.add_child(load_it)
 
@@ -121,7 +121,7 @@ func _replay_tour() -> void:
 ## A small popup with a title, a line of text and OK.
 func _message(heading: String, text: String) -> void:
 	var column := _dialog_column(heading, Palette.HIGHLIGHT)
-	column.add_child(UiKit.label(text, 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label(text, 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	var dialog := _open_dialog(column)
 	var ok := UiKit.button("OK", UiKit.BUTTON_GREEN, 76, 28)
 	ok.pressed.connect(dialog.queue_free)
@@ -150,14 +150,14 @@ func _open_dialog(column: Control) -> ColorRect:
 func _confirm_restart() -> void:
 	var column := _dialog_column("Restart the game?", Palette.DAMAGE)
 	column.add_child(UiKit.label("This deletes all of your save data: every dino you've collected, your Amber and eggs, " \
-			+ "Goals progress and rival records.", 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
+			+ "Goals progress and rival records.", 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(UiKit.label("You'll start again from the very beginning, with a new name and a new partner. " \
-			+ "This can't be undone.", 26, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+			+ "This can't be undone.", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
 	var dialog := _open_dialog(column)
 	var keep := UiKit.button("Keep my progress", UiKit.BUTTON_GREEN, 84, 30)
 	keep.pressed.connect(dialog.queue_free)
 	column.add_child(keep)
-	var wipe := UiKit.button("Delete everything and restart", UiKit.BUTTON_RED, 76, 26)
+	var wipe := UiKit.button("Delete everything and restart", UiKit.BUTTON_RED, 76, 28)
 	wipe.pressed.connect(Session.restart_game)
 	column.add_child(wipe)
 
@@ -165,10 +165,10 @@ func _confirm_restart() -> void:
 func _volume_row(text: String, volume: float, apply: Callable, preview: bool) -> Control:
 	var box := UiKit.vbox(4)
 	var top := UiKit.hbox(12)
-	var label := UiKit.label(text, 28, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	var label := UiKit.label(text, 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(label)
-	var amount := UiKit.label("", 26, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	var amount := UiKit.label("", 30, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
 	top.add_child(amount)
 	box.add_child(top)
 

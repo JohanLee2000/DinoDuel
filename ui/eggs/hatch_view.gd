@@ -76,7 +76,7 @@ func _ready() -> void:
 	_title.offset_top = 70
 	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_title)
-	_hint = UiKit.label("", 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
+	_hint = UiKit.label("", 30, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	_hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_hint.offset_top = -HINT_BOTTOM - 54
 	_hint.offset_bottom = -HINT_BOTTOM
@@ -87,7 +87,7 @@ func _ready() -> void:
 		label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 		label.add_theme_constant_override("outline_size", 8)
 	_hint.add_theme_color_override("font_color", Palette.TEXT)
-	_skip = UiKit.button("Skip to results", UiKit.BUTTON_GRAY, 76, 24)
+	_skip = UiKit.button("Skip to results", UiKit.BUTTON_GRAY, 76, 27)
 	_skip.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	_skip.offset_left = -170
 	_skip.offset_right = 170
@@ -299,7 +299,7 @@ func _show_summary() -> void:
 		var slot := UiKit.vbox(8)
 		var card := DinoCard.create(result.dino, DinoCard.Mode.FULL, null, result.shiny)
 		slot.add_child(card)
-		var caption := UiKit.label(_caption(result), 22, Palette.HIGHLIGHT if result.is_new or result.shiny \
+		var caption := UiKit.label(_caption(result), 28, Palette.HIGHLIGHT if result.is_new or result.shiny \
 				else Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 		caption.custom_minimum_size = Vector2(card.size.x, 0)
 		slot.add_child(caption)

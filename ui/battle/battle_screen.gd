@@ -130,7 +130,7 @@ func _ready() -> void:
 	help.custom_minimum_size.x = 64
 	help.pressed.connect(func() -> void: HelpView.open())
 	_turn_label.get_parent().add_child(help)
-	_leave_button = UiKit.button("Leave", UiKit.BUTTON_RED, 52, 24)
+	_leave_button = UiKit.button("Leave", UiKit.BUTTON_RED, 52, 27)
 	_leave_button.custom_minimum_size.x = 110
 	_leave_button.pressed.connect(_confirm_leave)
 	_turn_label.get_parent().add_child(_leave_button)
@@ -506,7 +506,7 @@ func _rebuild_side(side: int) -> void:
 	for child in _benches[side].get_children():
 		child.queue_free()
 	_bench_cards[side] = {}
-	var bench_label := UiKit.label("BENCH", 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
+	var bench_label := UiKit.label("BENCH", 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
 	bench_label.add_theme_font_override("font", Fonts.condensed_bold())
 	_benches[side].add_child(bench_label)
 	for i in battle_side.party.size():
@@ -602,7 +602,7 @@ func _show_result() -> void:
 ## The results panel: who it was against, turns and dinos standing as big tiles, and the rewards.
 func _result_summary(left: int, reward: Dictionary) -> Control:
 	var column := UiKit.vbox(16)
-	column.add_child(UiKit.label("against %s" % Session.rival.display_name, 26, Palette.TEXT_DIM,
+	column.add_child(UiKit.label("against %s" % Session.rival.display_name, 30, Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER, false))
 	var tiles := UiKit.hbox(14)
 	var party_size := _state.side(PLAYER).party.size()
@@ -612,7 +612,7 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 	column.add_child(tiles)
 
 	var rewards := UiKit.vbox(10)
-	rewards.add_child(UiKit.title("Rewards", 26, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	rewards.add_child(UiKit.title("Rewards", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
 	var row := UiKit.hbox(28, BoxContainer.ALIGNMENT_CENTER)
 	if reward["clutches"] > 0:
 		row.add_child(_reward_item(&"egg", "+%d clutch%s" % [reward["clutches"], "" if reward["clutches"] == 1 else "es"]))
@@ -625,7 +625,7 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 func _result_tile(caption: String, value: String, color: Color) -> Control:
 	var box := UiKit.vbox(0)
 	box.add_child(UiKit.title(value, 58, color, HORIZONTAL_ALIGNMENT_CENTER, false))
-	box.add_child(UiKit.label(caption, 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false))
+	box.add_child(UiKit.label(caption, 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false))
 	var tile := _result_well(box)
 	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return tile
@@ -669,14 +669,14 @@ func _confirm_leave() -> void:
 	var column := UiKit.vbox(18)
 	column.custom_minimum_size.x = 560
 	column.add_child(UiKit.title("Leave this battle?", 38, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
-	column.add_child(UiKit.label("It counts as a loss against %s, with no Amber." % Session.rival.display_name, 26,
+	column.add_child(UiKit.label("It counts as a loss against %s, with no Amber." % Session.rival.display_name, 30,
 			Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	var stay := UiKit.button("Keep fighting", UiKit.BUTTON_GREEN, 84, 30)
 	stay.pressed.connect(func() -> void:
 		_leave_dialog.queue_free()
 		_leave_dialog = null)
 	column.add_child(stay)
-	var leave := UiKit.button("Leave battle", UiKit.BUTTON_RED, 76, 26)
+	var leave := UiKit.button("Leave battle", UiKit.BUTTON_RED, 76, 28)
 	leave.pressed.connect(Session.forfeit_battle)
 	column.add_child(leave)
 	center.add_child(UiKit.panel(column, Palette.PANEL, 28))
@@ -716,7 +716,7 @@ func _show_picker(knocked_out: bool) -> void:
 	column.add_child(UiKit.title("%s is knocked out!" % fallen if knocked_out else "Swap in which dino?", 34,
 			Palette.DAMAGE if knocked_out else Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(UiKit.label("Tap who comes in next. Benched dinos keep the HP they have." if knocked_out
-			else "Swap goes first this turn, and the dino you swap out heals on the bench.", 25, Palette.TEXT,
+			else "Swap goes first this turn, and the dino you swap out heals on the bench.", 29, Palette.TEXT,
 			HORIZONTAL_ALIGNMENT_CENTER))
 	var row := UiKit.hbox(20, BoxContainer.ALIGNMENT_CENTER)
 	var side := _state.side(PLAYER)
@@ -784,7 +784,7 @@ func _build_coach() -> void:
 	_coach_text.add_theme_font_override("bold_font", Fonts.bold())
 	_coach_text.add_theme_color_override("default_color", Palette.TEXT)
 	row.add_child(_coach_text)
-	var skip := UiKit.button("Skip tips", UiKit.BUTTON_GRAY, 56, 24)
+	var skip := UiKit.button("Skip tips", UiKit.BUTTON_GRAY, 56, 27)
 	skip.custom_minimum_size.x = 130
 	skip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	skip.pressed.connect(_skip_coach)

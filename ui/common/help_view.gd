@@ -98,12 +98,12 @@ func _ready() -> void:
 		go.pressed.connect(close)
 		nav.add_child(go)
 	else:
-		_prev = UiKit.button("Back", UiKit.BUTTON_GRAY, 76, 26)
+		_prev = UiKit.button("Back", UiKit.BUTTON_GRAY, 76, 28)
 		_prev.pressed.connect(_turn.bind(-1))
-		_page_label = UiKit.label("", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
+		_page_label = UiKit.label("", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
 		_page_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_page_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		_next = UiKit.button("Next", UiKit.BUTTON_GREEN, 76, 26)
+		_next = UiKit.button("Next", UiKit.BUTTON_GREEN, 76, 28)
 		_next.pressed.connect(_turn.bind(1))
 		for b in [_prev, _next]:
 			b.custom_minimum_size.x = 170
@@ -210,8 +210,8 @@ func _rich(text: String) -> RichTextLabel:
 	label.fit_content = true
 	label.scroll_active = false
 	label.text = text
-	label.add_theme_font_size_override("normal_font_size", 25)
-	label.add_theme_font_size_override("bold_font_size", 25)
+	label.add_theme_font_size_override("normal_font_size", 28)
+	label.add_theme_font_size_override("bold_font_size", 28)
 	label.add_theme_font_override("bold_font", Fonts.bold())
 	label.add_theme_color_override("default_color", Palette.TEXT_DIM)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -310,7 +310,7 @@ func _row(icon: String, text: String) -> Control:
 		glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		inside.add_child(glyph)
-		var move_name := UiKit.title(BattleAction.KIND_NAMES[index], 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+		var move_name := UiKit.title(BattleAction.KIND_NAMES[index], 29, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
 		move_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		inside.add_child(move_name)
 		chip.add_child(inside)
@@ -334,7 +334,7 @@ func _row(icon: String, text: String) -> Control:
 		glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		inside.add_child(glyph)
-		var code := UiKit.title(Palette.STAT_CODES[stat], 24, Palette.STAT_COLORS[stat], HORIZONTAL_ALIGNMENT_CENTER, false)
+		var code := UiKit.title(Palette.STAT_CODES[stat], 29, Palette.STAT_COLORS[stat], HORIZONTAL_ALIGNMENT_CENTER, false)
 		code.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		inside.add_child(code)
 		chip.add_child(inside)
@@ -353,8 +353,8 @@ func _row(icon: String, text: String) -> Control:
 	label.scroll_active = false
 	label.text = text
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("normal_font_size", 27)
-	label.add_theme_font_size_override("bold_font_size", 27)
+	label.add_theme_font_size_override("normal_font_size", 28)
+	label.add_theme_font_size_override("bold_font_size", 28)
 	label.add_theme_font_override("bold_font", Fonts.bold())
 	label.add_theme_color_override("default_color", Palette.TEXT)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE

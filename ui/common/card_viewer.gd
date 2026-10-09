@@ -85,19 +85,19 @@ func _ready() -> void:
 		var heading := "%s  %s  ·  %s" % [_dino.rarity_code(), _dino.rarity_name(), Palette.TYPE_LABELS[_dino.dino_type]]
 		if _shiny:
 			heading += "  ·  SHINY"
-		column.add_child(_centered_label(heading, 28, tier, true))
+		column.add_child(_centered_label(heading, 30, tier, true))
 		column.add_child(_centered_label("%s · %s era · %s" % [_dino.group, _dino.era_name(), _dino.size_text],
-				24, Palette.TEXT_DIM))
+				28, Palette.TEXT_DIM))
 		var pts := PartyRules.points_of(_dino)
 		column.add_child(_centered_label("Beats %s  ·  Weak to %s  ·  %d Party Point%s" % [
 				DinoDef.TYPE_NAMES[(_dino.dino_type + 1) % 3], DinoDef.TYPE_NAMES[(_dino.dino_type + 2) % 3],
-				pts, "" if pts == 1 else "s"], 24, Palette.ACCENT))
+				pts, "" if pts == 1 else "s"], 28, Palette.ACCENT))
 		column.add_child(_sets_line())
 		if _dino.flavor_text != "":
-			column.add_child(_centered_label(_dino.flavor_text, 25, Palette.TEXT))
+			column.add_child(_centered_label(_dino.flavor_text, 28, Palette.TEXT))
 	for extra in _extras:
 		column.add_child(extra)
-	column.add_child(_centered_label("Tap anywhere to close", 22, Palette.TEXT_DIM))
+	column.add_child(_centered_label("Tap anywhere to close", 26, Palette.TEXT_DIM))
 
 
 ## The sets this dino counts toward (see DinoSets), with a gold star on the badges earned.
@@ -114,7 +114,7 @@ func _sets_line() -> RichTextLabel:
 	line.scroll_active = false
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	line.custom_minimum_size = Vector2(CARD_WIDTH, 0)
-	line.add_theme_font_size_override("normal_font_size", 24)
+	line.add_theme_font_size_override("normal_font_size", 28)
 	line.add_theme_color_override("default_color", Palette.TEXT_DIM)
 	line.text = "[center]Sets: %s[/center]" % "  ·  ".join(parts)
 	return line

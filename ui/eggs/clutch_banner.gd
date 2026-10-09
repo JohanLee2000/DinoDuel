@@ -104,7 +104,7 @@ func _ready() -> void:
 	var hint := "Win a battle or check in daily for a free clutch."
 	if has_clutches:
 		hint = "Tap to hatch" if rare_clutches == 0 else "Tap to hatch  ·  %d Rare" % rare_clutches
-	words.add_child(UiKit.label(hint, 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	words.add_child(UiKit.label(hint, 29, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	frame.add_child(words)
 
 	if has_clutches:

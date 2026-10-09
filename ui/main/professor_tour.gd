@@ -104,24 +104,24 @@ func _build_box() -> PanelContainer:
 	row.add_child(_portrait())
 	var column := UiKit.vbox(6)
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_child(UiKit.title("The Professaur", 28, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	column.add_child(UiKit.title("The Professaur", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = true
 	_text.scroll_active = false
-	_text.add_theme_font_size_override("normal_font_size", 27)
-	_text.add_theme_font_size_override("bold_font_size", 27)
+	_text.add_theme_font_size_override("normal_font_size", 29)
+	_text.add_theme_font_size_override("bold_font_size", 29)
 	_text.add_theme_font_override("bold_font", Fonts.bold())
 	_text.add_theme_color_override("default_color", Palette.TEXT)
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(_text)
 	# Skip lives in the speech box so it never covers what the tour points at.
 	var footer_row := UiKit.hbox(10)
-	var skip := UiKit.button("Skip tour", UiKit.BUTTON_GRAY, 48, 20)
+	var skip := UiKit.button("Skip tour", UiKit.BUTTON_GRAY, 48, 25)
 	skip.custom_minimum_size.x = 140
 	skip.pressed.connect(_finish)
 	footer_row.add_child(skip)
-	_footer = UiKit.label("", 21, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	_footer = UiKit.label("", 27, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
 	_footer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_footer.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	footer_row.add_child(_footer)

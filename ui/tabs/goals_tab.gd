@@ -42,7 +42,7 @@ func _refresh() -> void:
 	var heading := UiKit.title("Daily quests", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(heading)
-	_countdown = UiKit.label("", 22, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	_countdown = UiKit.label("", 28, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false)
 	_countdown.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	header.add_child(_countdown)
 	_body.add_child(header)
@@ -60,7 +60,7 @@ func _refresh() -> void:
 	# Collection.
 	_body.add_child(UiKit.title("Collection", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	var found := Goals.discovered(profile)
-	_body.add_child(UiKit.label("%d of %d dinos discovered" % [found, catalog.dinos.size()], 24, Palette.TEXT))
+	_body.add_child(UiKit.label("%d of %d dinos discovered" % [found, catalog.dinos.size()], 29, Palette.TEXT))
 	var milestones := UiKit.grid(3, 10)
 	for i in Goals.MILESTONES.size():
 		milestones.add_child(_milestone_chip(i))
@@ -80,7 +80,7 @@ func _refresh() -> void:
 	_body.add_child(UiKit.title("Sets  %d/%d" % [earned, set_ids.size()], 30, Palette.HIGHLIGHT,
 			HORIZONTAL_ALIGNMENT_LEFT, false))
 	_body.add_child(UiKit.label("Collect every dino in a set for Amber and a badge. Families split all %d dinos; themes mix them up." \
-			% catalog.dinos.size(), 22, Palette.TEXT_DIM))
+			% catalog.dinos.size(), 28, Palette.TEXT_DIM))
 	# Families, then themed sets, each with ready-to-claim first and earned badges last.
 	for group in [["Families", DinoSets.FAMILIES.keys()], ["Themed sets", DinoSets.THEMES.keys()]]:
 		_body.add_child(_divider(group[0]))
@@ -135,11 +135,11 @@ func _row(title: String, description: String, progress: int, target: int, reward
 	var text := UiKit.vbox(4)
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if badge and claimed:
-		text.add_child(UiKit.label("★ " + title, 26, Palette.HIGHLIGHT))
+		text.add_child(UiKit.label("★ " + title, 30, Palette.HIGHLIGHT))
 	else:
-		text.add_child(UiKit.label(title, 26, Palette.TEXT_DIM if claimed else Palette.TEXT))
+		text.add_child(UiKit.label(title, 30, Palette.TEXT_DIM if claimed else Palette.TEXT))
 	if description != "":
-		text.add_child(UiKit.label(description, 21, Palette.TEXT_DIM))
+		text.add_child(UiKit.label(description, 27, Palette.TEXT_DIM))
 	if extra:
 		text.add_child(extra)
 	if target > 1:
@@ -148,13 +148,13 @@ func _row(title: String, description: String, progress: int, target: int, reward
 
 	var side := UiKit.vbox(6)
 	side.custom_minimum_size.x = 190
-	side.add_child(UiKit.label(reward, 22, Palette.HIGHLIGHT if not claimed else Palette.TEXT_DIM,
+	side.add_child(UiKit.label(reward, 28, Palette.HIGHLIGHT if not claimed else Palette.TEXT_DIM,
 			HORIZONTAL_ALIGNMENT_CENTER, false))
 	if claimed:
-		side.add_child(UiKit.label("★ Badge" if badge else "✔ Claimed", 24, Palette.HIGHLIGHT if badge else Palette.HEAL,
+		side.add_child(UiKit.label("★ Badge" if badge else "✔ Claimed", 29, Palette.HIGHLIGHT if badge else Palette.HEAL,
 				HORIZONTAL_ALIGNMENT_CENTER, false))
 	elif done:
-		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 26)
+		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 28)
 		button.pressed.connect(func() -> void:
 			if claim.call():
 				Sound.play(&"amber")
@@ -163,7 +163,7 @@ func _row(title: String, description: String, progress: int, target: int, reward
 		side.add_child(button)
 		_pulse(button)
 	else:
-		side.add_child(UiKit.label("%d / %d" % [progress, target], 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false))
+		side.add_child(UiKit.label("%d / %d" % [progress, target], 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false))
 	row.add_child(side)
 	var panel := UiKit.panel(row, Palette.PANEL, 14)
 	if done and not claimed:
@@ -185,7 +185,7 @@ func _divider(text: String) -> Control:
 		line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		row.add_child(line)
 		if i == 0:
-			var label := UiKit.title(text, 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+			var label := UiKit.title(text, 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
 			row.add_child(label)
 	return row
 
@@ -202,7 +202,7 @@ func _set_members(id: StringName) -> RichTextLabel:
 	list.fit_content = true
 	list.scroll_active = false
 	list.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	list.add_theme_font_size_override("normal_font_size", 21)
+	list.add_theme_font_size_override("normal_font_size", 27)
 	list.text = " · ".join(names)
 	return list
 
@@ -227,7 +227,7 @@ func _checkin_strip() -> Control:
 		style.border_color = Palette.HIGHLIGHT if state == 1 else Palette.PANEL_BORDER
 		style.set_border_width_all(3 if state == 1 else 1)
 		dot.add_theme_stylebox_override("panel", style)
-		dot.add_child(UiKit.label("✔" if state == 0 else str(day + 1), 20, Palette.INK if state == 0 else Palette.TEXT,
+		dot.add_child(UiKit.label("✔" if state == 0 else str(day + 1), 26, Palette.INK if state == 0 else Palette.TEXT,
 				HORIZONTAL_ALIGNMENT_CENTER, false))
 		dots.add_child(dot)
 	text.add_child(dots)
@@ -236,12 +236,12 @@ func _checkin_strip() -> Control:
 	side.custom_minimum_size.x = 190
 	side.alignment = BoxContainer.ALIGNMENT_CENTER
 	if profile.can_claim_daily(SaveStore.today()):
-		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 26)
+		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 60, 28)
 		button.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
 		side.add_child(button)
 		_pulse(button)
 	else:
-		side.add_child(UiKit.label("✔ Done today", 24, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
+		side.add_child(UiKit.label("✔ Done today", 29, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
 	row.add_child(side)
 	return UiKit.panel(row, Palette.PANEL, 14)
 
@@ -250,13 +250,13 @@ func _milestone_chip(index: int) -> Control:
 	var profile := Session.profile
 	var milestone: Array = Goals.MILESTONES[index]
 	var box := UiKit.vbox(4)
-	box.add_child(UiKit.title("%d dinos" % milestone[0], 26, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	box.add_child(UiKit.title("%d dinos" % milestone[0], 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
 	var reward := "+%d Amber" % milestone[1] if milestone[1] > 0 else "+%d clutch%s" % [milestone[2], "" if milestone[2] == 1 else "es"]
-	box.add_child(UiKit.label(reward, 21, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	box.add_child(UiKit.label(reward, 27, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
 	if Goals.milestone_claimed(profile, index):
-		box.add_child(UiKit.label("✔", 26, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
+		box.add_child(UiKit.label("✔", 30, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false))
 	elif Goals.milestone_ready(profile, index):
-		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 52, 22)
+		var button := UiKit.button("Claim", UiKit.BUTTON_GREEN, 52, 26)
 		button.pressed.connect(func() -> void:
 			if Goals.claim_milestone(profile, index):
 				Sound.play(&"amber")
@@ -265,7 +265,7 @@ func _milestone_chip(index: int) -> Control:
 		box.add_child(button)
 		_pulse(button)
 	else:
-		box.add_child(UiKit.label("%d / %d" % [Goals.discovered(profile), milestone[0]], 22, Palette.TEXT_DIM,
+		box.add_child(UiKit.label("%d / %d" % [Goals.discovered(profile), milestone[0]], 28, Palette.TEXT_DIM,
 				HORIZONTAL_ALIGNMENT_CENTER, false))
 	var chip := UiKit.panel(box, Palette.PANEL, 10)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL

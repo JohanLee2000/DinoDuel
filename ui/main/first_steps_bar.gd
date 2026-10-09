@@ -46,28 +46,28 @@ func refresh() -> void:
 	var next := profile.next_first_step()
 
 	var header := UiKit.hbox(10)
-	var title := UiKit.title("First steps  %d/%d" % [done, steps.size()], 28, Palette.HIGHLIGHT,
+	var title := UiKit.title("First steps  %d/%d" % [done, steps.size()], 30, Palette.HIGHLIGHT,
 			HORIZONTAL_ALIGNMENT_LEFT, false)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
-	header.add_child(UiKit.label("▲" if _expanded else "▼", 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false))
+	header.add_child(UiKit.label("▲" if _expanded else "▼", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_RIGHT, false))
 	_body.add_child(header)
 
 	if next == &"":
-		var claim := UiKit.button("All done! Claim your bonus egg clutch", UiKit.BUTTON_GREEN, 76, 26)
+		var claim := UiKit.button("All done! Claim your bonus egg clutch", UiKit.BUTTON_GREEN, 76, 28)
 		claim.pressed.connect(_claim)
 		_body.add_child(claim)
 		return
 	if _expanded:
 		for step in steps:
 			var is_done := profile.first_step_done(step)
-			var line := UiKit.label("%s  %s" % ["✔" if is_done else "○", STEPS[step][0]], 25,
+			var line := UiKit.label("%s  %s" % ["✔" if is_done else "○", STEPS[step][0]], 29,
 					Palette.TEXT_DIM if is_done else (Palette.HIGHLIGHT if step == next else Palette.TEXT),
 					HORIZONTAL_ALIGNMENT_LEFT, false)
 			_body.add_child(line)
-		_body.add_child(UiKit.label("Finish them all for a bonus egg clutch.", 23, Palette.TEXT_DIM))
+		_body.add_child(UiKit.label("Finish them all for a bonus egg clutch.", 28, Palette.TEXT_DIM))
 	else:
-		_body.add_child(UiKit.label("%s: %s" % [STEPS[next][0], STEPS[next][1]], 25, Palette.TEXT))
+		_body.add_child(UiKit.label("%s: %s" % [STEPS[next][0], STEPS[next][1]], 29, Palette.TEXT))
 
 
 ## The tab with the next step, so the nav bar can make it glow; -1 when there's nothing to do.

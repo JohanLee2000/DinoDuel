@@ -43,7 +43,7 @@ func _ready() -> void:
 	column.custom_minimum_size.x = 600
 	column.add_child(UiKit.title("Daily check-in", 40, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(UiKit.label("Every day: a free egg clutch. Keep checking in for a bonus that grows all week.",
-			24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+			29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 	var rows := UiKit.vbox(10)
 	var first := UiKit.hbox(10)
 	var second := UiKit.hbox(10)
@@ -56,7 +56,7 @@ func _ready() -> void:
 	rows.add_child(first)
 	rows.add_child(second)
 	column.add_child(rows)
-	_note = UiKit.label("", 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER)
+	_note = UiKit.label("", 29, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER)
 	column.add_child(_note)
 	_claim = UiKit.button("", UiKit.BUTTON_GREEN, 84, 30)
 	_claim.pressed.connect(_on_claim)
@@ -128,7 +128,7 @@ func _tile(day: int) -> PanelContainer:
 	var bonus: Dictionary = Economy.CHECKIN_BONUSES[day]
 	var box := UiKit.vbox(4)
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_child(UiKit.title("Day %d" % (day + 1), 22, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	box.add_child(UiKit.title("Day %d" % (day + 1), 28, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
 	var icon := TextureRect.new()
 	icon.texture = Icons.texture(&"amber" if bonus.has("amber") else &"egg", 44)
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
@@ -137,8 +137,8 @@ func _tile(day: int) -> PanelContainer:
 		icon.modulate = RARE_TINT.lightened(0.3)
 	box.add_child(icon)
 	var amount := "+%d" % bonus["amber"] if bonus.has("amber") else ("Rare clutch" if bonus.has("rare_clutches") else "+1 clutch")
-	box.add_child(UiKit.label(amount, 22, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
-	var mark := UiKit.label("", 22, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false)
+	box.add_child(UiKit.label(amount, 28, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	var mark := UiKit.label("", 28, Palette.HEAL, HORIZONTAL_ALIGNMENT_CENTER, false)
 	mark.name = "Mark"
 	box.add_child(mark)
 	var tile := PanelContainer.new()

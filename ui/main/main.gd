@@ -47,7 +47,7 @@ func _ready() -> void:
 	_clutch_label.get_parent().add_child(_gear)
 	Sound.music(&"main")
 	for i in TABS.size():
-		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 24)
+		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 27)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.pressed.connect(_show_tab.bind(i))
 		_nav_bar.add_child(button)
@@ -177,14 +177,14 @@ func _glow_tab(index: int) -> void:
 
 func _add_icon_before(label: Label, icon_name: StringName) -> Control:
 	var icon := TextureRect.new()
-	icon.texture = Icons.texture(icon_name, 34)
-	icon.custom_minimum_size = Vector2(34, 34)
+	icon.texture = Icons.texture(icon_name, 38)
+	icon.custom_minimum_size = Vector2(38, 38)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	label.get_parent().add_child(icon)
 	label.get_parent().move_child(icon, label.get_index())
 	label.add_theme_font_override("font", Fonts.condensed_bold())
-	label.add_theme_font_size_override("font_size", 30)
+	label.add_theme_font_size_override("font_size", 33)
 	return icon
 
 

@@ -11,12 +11,12 @@ var _era_titles: Array[Label] = []
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	add_child(UiKit.title("Dino Dex"))
-	_summary = UiKit.label("", 24, Palette.TEXT_DIM)
+	_summary = UiKit.label("", 29, Palette.TEXT_DIM)
 	add_child(_summary)
 	if OS.is_debug_build() and not Session.store_shots:
 		# Development only: debug builds (editor, USB installs) show this; release builds don't.
 		# TODO(release): delete this button and PlayerProfile.unlock_all (docs/RELEASE_CHECKLIST.md).
-		var unlock := UiKit.button("DEV: unlock all dinos", UiKit.BUTTON_GRAY, 56, 22)
+		var unlock := UiKit.button("DEV: unlock all dinos", UiKit.BUTTON_GRAY, 56, 26)
 		unlock.pressed.connect(func() -> void:
 			Session.profile.unlock_all(Session.catalog)
 			Session.save()
@@ -50,7 +50,7 @@ func _refresh() -> void:
 		var owned := dinos.filter(func(d: DinoDef) -> bool: return profile.owns(d.id)).size()
 		var complete := owned == dinos.size()
 		var era_title := UiKit.title("%s  %d/%d%s" % [DinoDef.ERA_NAMES[era], owned, dinos.size(),
-				"   ★ Complete" if complete else ""], 28, Palette.HIGHLIGHT if complete else Palette.TEXT)
+				"   ★ Complete" if complete else ""], 30, Palette.HIGHLIGHT if complete else Palette.TEXT)
 		_era_titles.append(era_title)
 		_body.add_child(era_title)
 		var row := UiKit.grid(3, 12)
@@ -84,7 +84,7 @@ func _open(dino: DinoDef) -> void:
 	var extras: Array[Control] = []
 	if not owned:
 		var hint := "You've battled this one but don't own it yet." if known 				else "Not discovered yet. Hatch eggs to find it, or craft it now."
-		extras.append(UiKit.label(hint, 24, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+		extras.append(UiKit.label(hint, 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 		var craft := UiKit.button("Craft for %d Amber (you have %d)" % [Economy.CRAFT_COST[dino.rarity],
 				profile.amber], UiKit.BUTTON_AMBER)
 		craft.disabled = not profile.can_craft(dino)
