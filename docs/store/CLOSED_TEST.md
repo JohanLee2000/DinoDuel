@@ -42,6 +42,20 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.4.0 (version code 5)
+
+```
+<en-US>
+Dino Duel 0.4.0
+- New intro: name yourself, then the story of the fossil eggs
+- Meet the Professaur, who shows new players around
+- New Goals tab: 3 daily quests, collection rewards and 18 achievements
+- Painted eggs that glow in their rarity colour, and a new hatching scene
+- First steps checklist with a bonus egg clutch
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.3.1 (version code 4)
 
 Same game as 0.3.0, plus 32-bit ARM (armeabi-v7a) in the Play build so phones running 32-bit Android (e.g. Redmi A3, Android Go) can install it.
