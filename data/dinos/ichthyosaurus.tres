@@ -6,11 +6,13 @@
 script = ExtResource("1_b3tis")
 id = &"ichthyosaurus"
 display_name = "Ichthyosaurus"
+defense = 1
+rarity = 1
 dino_type = 2
 era = 1
-attack = 5
-speed = 7
-health = 11
+attack = 6
+speed = 8
+health = 12
 group = "Marine reptile (ichthyosaur)"
 size_text = "Length 2 m"
 flavor_text = "Shaped like a dolphin, it gave birth to live young at sea. Early skeletons were found by Mary Anning's family."

@@ -142,7 +142,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Dino | Type | Era | Tier | Atk | Def | Spd | HP |
 |---|---|---|---|---|---|---|---|
 | Coelophysis | Land | Triassic | N | 5 | 1 | 7 | 10 |
-| Stegosaurus | Land | Jurassic | R | 3 | 4 | 2 | 15 |
+| Stegosaurus | Land | Jurassic | SR | 5 | 4 | 2 | 18 |
 | Velociraptor | Land | Cretaceous | SR | 6 | 1 | 9 | 11 |
 | Triceratops | Land | Cretaceous | SR | 6 | 3 | 3 | 17 |
 | T. rex | Land | Cretaceous | UR | 9 | 2 | 4 | 20 |
@@ -152,7 +152,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Pteranodon | Sky | Cretaceous | SR | 7 | 1 | 8 | 14 |
 | Quetzalcoatlus | Sky | Cretaceous | SSR | 8 | 2 | 6 | 17 |
 | Nothosaurus | Sea | Triassic | R | 6 | 1 | 6 | 13 |
-| Ichthyosaurus | Sea | Jurassic | N | 5 | 0 | 7 | 11 |
+| Ichthyosaurus | Sea | Jurassic | R | 6 | 1 | 8 | 12 |
 | Plesiosaurus | Sea | Jurassic | R | 6 | 1 | 5 | 13 |
 | Liopleurodon | Sea | Jurassic | SSR | 9 | 2 | 3 | 16 |
 | Mosasaurus | Sea | Cretaceous | UR | 10 | 1 | 5 | 20 |
@@ -161,7 +161,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Icarosaurus | Sky | Triassic | N | 5 | 0 | 10 | 9 |
 | Tanystropheus | Sea | Triassic | R | 7 | 1 | 4 | 13 |
 | Shonisaurus | Sea | Triassic | SSR | 7 | 3 | 4 | 18 |
-| Allosaurus | Land | Jurassic | SR | 8 | 2 | 6 | 14 |
+| Allosaurus | Land | Jurassic | SSR | 9 | 2 | 6 | 16 |
 | Brachiosaurus | Land | Jurassic | UR | 8 | 2 | 2 | 25 |
 | Dilophosaurus | Land | Jurassic | R | 7 | 1 | 7 | 12 |
 | Dimorphodon | Sky | Jurassic | N | 5 | 0 | 7 | 9 |
@@ -179,10 +179,10 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Sharovipteryx | Sky | Triassic | N | 4 | 0 | 11 | 9 |
 | Placodus | Sea | Triassic | R | 6 | 2 | 4 | 15 |
 | Torvosaurus | Land | Jurassic | UR | 10 | 2 | 4 | 19 |
-| Cryolophosaurus | Land | Jurassic | SSR | 8 | 1 | 7 | 16 |
+| Cryolophosaurus | Land | Jurassic | SR | 7 | 1 | 7 | 14 |
 | Ceratosaurus | Land | Jurassic | SR | 7 | 2 | 6 | 14 |
-| Dakosaurus | Sea | Jurassic | SR | 7 | 1 | 5 | 15 |
-| Yi qi | Sky | Jurassic | SR | 7 | 1 | 10 | 11 |
+| Dakosaurus | Sea | Jurassic | R | 7 | 1 | 4 | 13 |
+| Yi qi | Sky | Jurassic | R | 6 | 1 | 10 | 10 |
 | Protoceratops | Land | Cretaceous | N | 5 | 2 | 4 | 13 |
 | Hesperornis | Sea | Cretaceous | N | 5 | 0 | 6 | 10 |
 | Tapejara | Sky | Cretaceous | R | 5 | 1 | 9 | 11 |

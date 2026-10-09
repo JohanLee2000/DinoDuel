@@ -43,17 +43,17 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `plesiosaurus` | Plesiosaurus | SEA | RARE (R) | Done |
 | `liopleurodon` | Liopleurodon | SEA | EPIC (SSR) | Done |
 | `coelophysis` | Coelophysis | LAND | COMMON (N) | Done |
-| `stegosaurus` | Stegosaurus | LAND | RARE (R) | Done |
+| `stegosaurus` | Stegosaurus | LAND | SUPER RARE (SR) | Done |
 | `eudimorphodon` | Eudimorphodon | SKY | COMMON (N) | Done |
 | `rhamphorhynchus` | Rhamphorhynchus | SKY | COMMON (N) | Done |
 | `nothosaurus` | Nothosaurus | SEA | RARE (R) | Done |
-| `ichthyosaurus` | Ichthyosaurus | SEA | COMMON (N) | Done |
+| `ichthyosaurus` | Ichthyosaurus | SEA | RARE (R) | Done |
 | `postosuchus` | Postosuchus | LAND | RARE (R) | Done |
 | `plateosaurus` | Plateosaurus | LAND | RARE (R) | Done |
 | `icarosaurus` | Icarosaurus | SKY | COMMON (N) | Done |
 | `tanystropheus` | Tanystropheus | SEA | RARE (R) | Done |
 | `shonisaurus` | Shonisaurus | SEA | EPIC (SSR) | Done |
-| `allosaurus` | Allosaurus | LAND | SUPER RARE (SR) | Done |
+| `allosaurus` | Allosaurus | LAND | EPIC (SSR) | Done |
 | `brachiosaurus` | Brachiosaurus | LAND | LEGENDARY (UR) | Done |
 | `dilophosaurus` | Dilophosaurus | LAND | RARE (R) | Done |
 | `dimorphodon` | Dimorphodon | SKY | COMMON (N) | Done |
@@ -71,10 +71,10 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `sharovipteryx` | Sharovipteryx | SKY | COMMON (N) | Needed |
 | `placodus` | Placodus | SEA | RARE (R) | Needed |
 | `torvosaurus` | Torvosaurus | LAND | LEGENDARY (UR) | Needed |
-| `cryolophosaurus` | Cryolophosaurus | LAND | EPIC (SSR) | Needed |
+| `cryolophosaurus` | Cryolophosaurus | LAND | SUPER RARE (SR) | Needed |
 | `ceratosaurus` | Ceratosaurus | LAND | SUPER RARE (SR) | Needed |
-| `dakosaurus` | Dakosaurus | SEA | SUPER RARE (SR) | Needed |
-| `yi_qi` | Yi qi | SKY | SUPER RARE (SR) | Needed |
+| `dakosaurus` | Dakosaurus | SEA | RARE (R) | Needed |
+| `yi_qi` | Yi qi | SKY | RARE (R) | Needed |
 | `protoceratops` | Protoceratops | LAND | COMMON (N) | Needed |
 | `hesperornis` | Hesperornis | SEA | COMMON (N) | Needed |
 | `tapejara` | Tapejara | SKY | RARE (R) | Needed |
