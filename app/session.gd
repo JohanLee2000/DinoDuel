@@ -143,7 +143,17 @@ func save() -> void:
 ## game from the name entry. Sound settings are kept; they're device preferences, not progress.
 func restart_game() -> void:
 	SaveStore.delete_all()
-	profile = PlayerProfile.new_game(randi())
+	_switch_profile(PlayerProfile.new_game(randi()))
+
+
+## Settings > Import save (after the player confirms): the imported progress replaces this
+## phone's, and the game starts again from the main screen.
+func import_profile(imported: PlayerProfile) -> void:
+	_switch_profile(imported)
+
+
+func _switch_profile(new_profile: PlayerProfile) -> void:
+	profile = new_profile
 	player_party = []
 	rival_party = []
 	rival = rivals[0]

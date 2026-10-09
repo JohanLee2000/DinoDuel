@@ -98,6 +98,12 @@ const SVG := {
 	&"map": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
 <path d="M5 14 L22 8 L42 14 L59 8 L59 50 L42 56 L22 50 L5 56 Z"/>
 <line x1="22" y1="8" x2="22" y2="50"/><line x1="42" y1="14" x2="42" y2="56"/></g></svg>""",
+	# Export save: an arrow up out of a tray.
+	&"export": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M10 38 L10 54 L54 54 L54 38"/><line x1="32" y1="8" x2="32" y2="40"/><path d="M19 21 L32 8 L45 21"/></g></svg>""",
+	# Import save: an arrow down into a tray.
+	&"import": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+<path d="M10 38 L10 54 L54 54 L54 38"/><line x1="32" y1="8" x2="32" y2="40"/><path d="M19 27 L32 40 L45 27"/></g></svg>""",
 	# Restart game: an arrow going back around the circle.
 	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
 <path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",

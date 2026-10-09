@@ -415,3 +415,23 @@ func test_sets_cover_every_dino_once_and_pay_once() -> void:
 	assert_eq(p.amber, amber + 3 * DinoSets.AMBER_PER_DINO)
 	assert_false(DinoSets.claim(p, &"croc_cousins"), "only once")
 	assert_eq(DinoSets.sets_of(&"t_rex"), [&"hunters", &"famous_five"] as Array[StringName])
+
+
+func test_exported_save_imports_and_rejects_damaged_files() -> void:
+	var p := PlayerProfile.new_game(321)
+	p.set_player_name("Jo")
+	p.amber = 777
+	p.add_dino(catalog.find(&"t_rex"), true)
+	p.record_battle(true, &"rae")
+	var text := SaveStore.export_text(p)
+	var back := SaveStore.parse_export(text, catalog)
+	assert_true(back != null, "a fresh export loads")
+	assert_eq(JSON.stringify(back.to_dict()), JSON.stringify(p.to_dict()), "everything comes back")
+	assert_true(SaveStore.export_date(text) != "")
+	# Editing the save inside the file breaks the check.
+	var edited := text.replace("\\\"amber\\\":%d" % p.amber, "\\\"amber\\\":99999")
+	assert_true(edited != text, "the edit applied")
+	assert_true(SaveStore.parse_export(edited, catalog) == null, "an edited file is refused")
+	assert_true(SaveStore.parse_export("{}", catalog) == null, "not a save")
+	assert_true(SaveStore.parse_export("not json", catalog) == null, "not even JSON")
+	assert_true(SaveStore.parse_export(JSON.stringify(p.to_dict()), catalog) == null, "a raw save isn't an export")

@@ -130,6 +130,12 @@ A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/col
 - **Sets (Jo, 2026-10-09):** complete a set for 30 Amber per dino in it and a gold ★ badge (Goals and the full card view list each dino's sets). Six **families** split all 45 dinos: Hunters (11), Plant-Eaters (7), Croc Cousins (3), Pterosaurs (8), Feathers & Gliders (6), Sea Reptiles (10). Eight **themes** cross types and overlap: Famous Five, Crested Heads, Ichthyosaurs, Giants, Horns & Armor, Gliders, Bird Origins, Sea Monsters. Lists in `core/collection/dino_sets.gd`.
 - **Achievements:** 18, in-game only (Jo chose to stay offline: no Google Play Games for now, which would need internet, a privacy-policy and Data safety change, and Play Console setup). Each gives 50-500 Amber when claimed. Battles, hatches and crafts feed their counters (`PlayerProfile.stats`).
 
+## Saves and moving phones (decided 2026-10-09)
+- Progress is saved on the device (`user://save.json` plus a backup copy). No account, no server, no internet permission.
+- **Android Auto Backup** is on (`user_data_backup/allow=true` in both export presets): if the player's Google backup is on, Android copies the save to their own Google account (about daily, on Wi-Fi while charging) and restores it on a new phone or reinstall. The app's files are ~2 MB, far under Android's 25 MB limit.
+- **Settings > Export save** writes `DinoDuel_<name>_<date>.json` and opens the share sheet; **Import save** opens the phone's file picker (Godot 4.6+ reads its content:// links directly), shows what's in the file (name, dinos, Amber, wins, date) and asks before replacing this phone's progress. The file carries a check value, so damaged or hand-edited files are refused (`SaveStore.parse_export`).
+- The privacy policy describes both (updated 2026-10-09).
+
 ## Journey (proposal)
 Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
 
