@@ -53,7 +53,7 @@ const SVG := {
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="url(#g)" stroke="#5a3404" stroke-width="3" stroke-linejoin="round"/></svg>""",
 	&"star_empty": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <path d="M32 4 L40 23 L60 24 L44 37 L50 58 L32 46 L14 58 L20 37 L4 24 L24 23 Z" fill="#1c2c48" stroke="#4d6a96" stroke-width="3" stroke-linejoin="round"/></svg>""",
-	# Professor Saurus placeholder portrait (until assets/characters/professor_saurus.webp exists).
+	# The Professaur's placeholder portrait (until assets/characters/professaur.webp exists).
 	&"professor": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
 <circle cx="64" cy="64" r="61" fill="#1c2c48" stroke="#ffd34d" stroke-width="5"/>
 <path d="M22 124 Q28 94 64 90 Q100 94 106 124 Z" fill="#b89a5e"/>

@@ -1,12 +1,12 @@
 class_name ProfessorTour
 extends Control
-## Professor Saurus shows a new player around after they pick a partner: what the top bar and each
+## The Professaur shows a new player around after they pick a partner: what the top bar and each
 ## tab are for, then the First steps banner. Each step switches to its tab, dims everything except
 ## the part being explained, and shows his speech box. Tap to continue; Skip ends it.
 
 signal finished
 
-const PORTRAIT_ART := "res://assets/characters/professor_saurus.webp"
+const PORTRAIT_ART := "res://assets/characters/professaur.webp"
 const PORTRAIT_SIZE := 132.0
 
 var _main: MainScreen
@@ -63,10 +63,8 @@ func _ready() -> void:
 ## point at (from MainScreen).
 func _script() -> Array[Dictionary]:
 	var profile := Session.profile
-	var partner := Session.catalog.find(profile.partner)
-	var partner_name := partner.display_name if partner else "your partner"
 	return [
-		{"text": "Welcome to camp, [b]%s[/b]! I'm Professor Saurus. Those fossil eggs are the real thing, and your %s is the proof. Let me show you around." % [profile.player_name, partner_name],
+		{"text": "Ah, [b]%s[/b]! Welcome to camp! I'm the Professaur. Yes, that's really my name. No, I won't be taking questions." % profile.player_name,
 				"tab": Session.Tab.BATTLE},
 		{"text": "Up here are your [b]Amber[/b] and your [b]egg clutches[/b]. You earn Amber from battles and duplicate dinos, and spend it on eggs and crafting.",
 				"target": _main.stats_rect},
@@ -81,7 +79,7 @@ func _script() -> Array[Dictionary]:
 				"tab": Session.Tab.DEX, "target": _main.tab_rect.bind(Session.Tab.DEX)},
 		{"text": "Sound settings and [b]How to play[/b] are behind the gear, whenever you need a refresher.",
 				"target": _main.gear_rect},
-		{"text": "I've written your [b]first steps[/b] up here. Finish them all and I'll send you a bonus egg clutch. Start by hatching your eggs. Good luck, %s!" % profile.player_name,
+		{"text": "I've written your [b]first steps[/b] up here. Finish them all and I'll send you a bonus egg clutch. Start by hatching your eggs. Good luck, %s! Try not to become extinct!" % profile.player_name,
 				"tab": Session.Tab.EGGS, "target": _main.first_steps_rect, "show_steps": true},
 	]
 
@@ -91,7 +89,7 @@ func _build_box() -> PanelContainer:
 	row.add_child(_portrait())
 	var column := UiKit.vbox(6)
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_child(UiKit.title("Professor Saurus", 28, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	column.add_child(UiKit.title("The Professaur", 28, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	_text = RichTextLabel.new()
 	_text.bbcode_enabled = true
 	_text.fit_content = true

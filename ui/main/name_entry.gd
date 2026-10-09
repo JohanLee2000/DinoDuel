@@ -1,7 +1,7 @@
 class_name NameEntry
 extends Control
 ## The very first screen for a new player: type your name. It's saved in the profile and used by
-## Professor Saurus (and the story later). Kept in the top half so the phone keyboard doesn't
+## the Professaur (and the story later). Kept in the top half so the phone keyboard doesn't
 ## cover it.
 
 signal finished

@@ -1,7 +1,7 @@
 class_name MainScreen
 extends Control
 ## The app shell: top bar with Amber and clutches, the current tab, and the bottom tab bar.
-## New players go through the name entry, story, partner pick and Professor Saurus's tour here.
+## New players go through the name entry, story, partner pick and the Professaur's tour here.
 
 const TABS := [
 	{"name": "Battle", "script": "res://ui/tabs/battle_tab.gd"},
@@ -73,7 +73,7 @@ func _ready() -> void:
 
 
 ## Brand-new players: their name, the story panels, then the partner pick. Picking reloads this
-## screen, and Professor Saurus's tour starts from _ready.
+## screen, and the Professaur's tour starts from _ready.
 func _start_new_player() -> void:
 	if Session.profile.player_name.is_empty():
 		await NameEntry.open().finished
@@ -85,7 +85,7 @@ func show_tab(index: int) -> void:
 	_show_tab(index)
 
 
-# Screen rects for Professor Saurus's tour.
+# Screen rects for the Professaur's tour.
 
 func tab_rect(index: int) -> Rect2:
 	return _buttons[index].get_global_rect()

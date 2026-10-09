@@ -1,6 +1,6 @@
 shader_type canvas_item;
 // Dims the whole screen except one rounded rectangle (the "hole"), with a soft edge. Used by
-// Professor Saurus's tour to point at a tab or the top bar. A zero-size hole dims everything.
+// the Professaur's tour to point at a tab or the top bar. A zero-size hole dims everything.
 
 uniform vec2 rect_size = vec2(720.0, 1280.0);
 uniform vec4 hole = vec4(0.0);   // x, y, width, height in pixels

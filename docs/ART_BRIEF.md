@@ -119,9 +119,9 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `panel_3.webp` | Other collectors are hunting too. Battle them, win their eggs, and fill your Dino Dex. | Two rival dinosaurs facing off across a rocky arena under a stormy sky, a Tyrannosaurus and a Mosasaurus rising from crashing surf, dramatic rim light, dust and spray; dark foreground in the lower third. |
 | `panel_4.webp` | Every hunter needs a partner. Choose yours. | Three small young dinosaurs side by side on a sunlit ridge at dawn, a Dilophosaurus, an Archaeopteryx perched on a rock and a Tanystropheus at the water's edge, looking toward the viewer; soft clouds below the ridge in the lower third. |
 
-## Professor Saurus portrait (needed)
+## The Professaur portrait (needed)
 
-Professor Saurus guides new players through the tabs (`ui/main/professor_tour.gd`). Until a portrait exists he's a simple drawn placeholder (pith helmet, round glasses, white mustache). Generate a **square (1024 x 1024)** head-and-shoulders portrait, face centred, plain softly lit background (it's shown in a round frame), same painterly style as the cards, and save it as `assets/characters/professor_saurus.webp`; the tour uses it automatically.
+The Professaur (a human paleontologist; the name is a pun on professor + saur) guides new players through the tabs (`ui/main/professor_tour.gd`). Until a portrait exists he's a simple drawn placeholder (pith helmet, round glasses, white mustache). Generate a **square (1024 x 1024)** head-and-shoulders portrait, face centred, plain softly lit background (it's shown in a round frame), same painterly style as the cards, and save it as `assets/characters/professaur.webp`; the tour uses it automatically.
 
 Prompt idea: *A friendly elderly paleontologist, head and shoulders, warm smile, round wire glasses, bushy white mustache, weathered khaki field shirt and a dusty pith helmet, a small fossil brush in his shirt pocket, soft golden lantern light, painterly cinematic style, plain dark warm background, centred, no text.*
 

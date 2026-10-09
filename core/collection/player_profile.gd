@@ -29,10 +29,10 @@ var tutorial_done := false
 ## their 6 starters already, so they count as chosen.
 var partner_chosen := false
 var partner: StringName = &""
-## What the player asked to be called (entered before the story intro; used by Professor Saurus).
+## What the player asked to be called (entered before the story intro; used by the Professaur).
 var player_name := ""
 const NAME_MAX_LENGTH := 16
-## Professor Saurus has shown a new player around the tabs (old saves count as shown).
+## The Professaur has shown a new player around the tabs (old saves count as shown).
 var tour_done := false
 ## The new-player "First steps" checklist is showing (new games only; off once its reward is claimed).
 var first_steps_active := false
