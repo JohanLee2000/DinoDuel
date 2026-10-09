@@ -8,13 +8,13 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 
 **Short description** (80 max):
 
-> Hatch fossil eggs, collect 30 prehistoric beasts and outsmart rival collectors.
+> Hatch fossil eggs, collect 45+ prehistoric beasts and outsmart rival collectors.
 
 **Full description** (4000 max):
 
 > Travel back through time as a fossil hunter, hatch prehistoric creatures from fossil eggs, and battle rival collectors in quick, tactical card duels.
 >
-> COLLECT 30 PREHISTORIC CREATURES
+> COLLECT 45+ PREHISTORIC CREATURES
 > Dinosaurs, pterosaurs and sea reptiles from the Triassic, Jurassic and Cretaceous, each painted as a full-art card with its real size, era and a fossil fact. Five tiers from Common to Legendary, plus rare Shiny versions with a holographic look.
 >
 > HATCH FOSSIL EGGS
@@ -28,6 +28,9 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 >
 > RIVALS WITH PERSONALITIES
 > From Rookie Rae, who loves to Bite, to Rival Rory, who learns your habits. Every rival plays differently, and every win brings more eggs.
+>
+> DAILY GOALS
+> Three new quests every day, rewards as your collection grows, and 18 achievements to chase.
 >
 > PLAY ANYWHERE
 > Fully offline. No account, no ads, and your collection is saved on your device. Eggs are earned by playing, never sold for real money.
@@ -45,7 +48,7 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 |---|---|---|
 | App icon | `assets/branding/app_icon_512.png` | 512 x 512 PNG |
 | Feature graphic | `feature_graphic.png` (rendered by `tools/feature_graphic.tscn`) | 1024 x 500 PNG/JPEG, no alpha |
-| Phone screenshots | `screenshots/01..07_*.png` (1142 x 2280; retaken 2026-10-08 for 0.3.0) | 2-8 images, 320-3840 px, at most 2:1 |
+| Phone screenshots | `screenshots/01..07_*.png` (1142 x 2280; taken 2026-10-08 for 0.3.0, before painted eggs, Goals, move icons and the 45-dino roster) | 2-8 images, 320-3840 px, at most 2:1 |
 
 Screenshots come from the phone with the debug-only `--store-shots` showcase save (see `app/session.gd`), so the DEV button never appears. To retake, put the flags in `user://dev_args.txt` on the phone (adb push + `run-as ... cp`), relaunch, and `adb exec-out screencap -p`. Delete `dev_args.txt` afterwards or every launch uses it.
 
