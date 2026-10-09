@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_7fb5w"]
 [ext_resource type="Resource" path="res://data/dinos/icarosaurus.tres" id="2_bapf3"]
-[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="3_hy4gi"]
+[ext_resource type="Resource" path="res://data/dinos/hesperornis.tres" id="3_hy4gi"]
 [ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="4_pqnfk"]
 [ext_resource type="Resource" path="res://data/dinos/archelon.tres" id="5_kjbdo"]
 [ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="6_6y056"]

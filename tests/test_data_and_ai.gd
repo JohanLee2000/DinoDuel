@@ -16,15 +16,20 @@ func test_catalog_loads_all_dinos() -> void:
 	assert_eq(catalog.find(&"t_rex").rarity, DinoDef.Rarity.LEGENDARY)
 
 
-func test_starter_parties_get_both_bonuses() -> void:
+func test_starter_parties_get_bonuses() -> void:
 	var catalog := DinoCatalog.load_default()
-	for ids in [[&"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus"],
-			[&"coelophysis", &"eudimorphodon", &"tanystropheus"]]:
-		var starter: Array[DinoDef] = []
+	var defs := func(ids: Array) -> Array[DinoDef]:
+		var out: Array[DinoDef] = []
 		for id in ids:
-			starter.append(catalog.find(id))
-		assert_true(PartyRules.has_era_bond(starter), "%s era bond" % [ids])
-		assert_true(PartyRules.is_balanced(starter), "%s balanced" % [ids])
+			out.append(catalog.find(id))
+		return out
+	var triassic: Array[DinoDef] = defs.call([&"coelophysis", &"eudimorphodon", &"tanystropheus"])
+	assert_true(PartyRules.has_era_bond(triassic), "Triassic starter trio has an era bond")
+	assert_true(PartyRules.is_balanced(triassic), "Triassic starter trio is balanced")
+	var basics: Array[DinoDef] = defs.call([&"protoceratops", &"rhamphorhynchus", &"hesperornis"])
+	assert_true(PartyRules.is_balanced(basics), "the basics alone can make a balanced party")
+	for id in Economy.STARTER_BASICS:
+		assert_eq(catalog.find(id).rarity, DinoDef.Rarity.COMMON, "%s is a Common" % id)
 
 
 func test_rival_roster_is_valid() -> void:

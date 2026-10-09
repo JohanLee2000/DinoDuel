@@ -22,11 +22,12 @@ const LOSS_AMBER := 10
 const CLUTCH_PRICE := 150
 const DAILY_CLUTCHES := 1
 
-## New players get these 5, then pick one partner from STARTER_PARTNERS to make the 6 they bring.
-## Stegosaurus, Rhamphorhynchus and Ichthyosaurus are a ready-made Jurassic party (era bond and
-## Balanced); Tanystropheus completes a Triassic one with Coelophysis and Eudimorphodon.
+## New players get these 5 Commons, then pick one partner from STARTER_PARTNERS to make the 6 they
+## bring. Protoceratops, Rhamphorhynchus and Hesperornis make a Balanced party (Land, Sky, Sea);
+## Tanystropheus completes a Triassic one with Coelophysis and Eudimorphodon (era bond + Balanced).
+## All Commons on purpose: the rival ladder (tools/rival_ladder.gd) is tuned to this strength.
 const STARTER_BASICS: Array[StringName] = [
-	&"coelophysis", &"eudimorphodon", &"stegosaurus", &"rhamphorhynchus", &"ichthyosaurus",
+	&"coelophysis", &"eudimorphodon", &"protoceratops", &"rhamphorhynchus", &"hesperornis",
 ]
 ## The first-launch partner choice: one Land, one Sky, one Sea, all Rare.
 const STARTER_PARTNERS: Array[StringName] = [&"dilophosaurus", &"archaeopteryx", &"tanystropheus"]

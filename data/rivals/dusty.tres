@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://data/dinos/postosuchus.tres" id="3_nf1kg"]
 [ext_resource type="Resource" path="res://data/dinos/dilophosaurus.tres" id="4_ys358"]
 [ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="5_zm1qs"]
-[ext_resource type="Resource" path="res://data/dinos/allosaurus.tres" id="6_f7uum"]
+[ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="6_f7uum"]
 [ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="7_rx47z"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_b5ecb"]
 

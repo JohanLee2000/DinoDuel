@@ -154,7 +154,7 @@ func test_lineup_rules() -> void:
 	assert_true(p.set_lineup(not_owned) != "")
 	var dupes: Array[StringName] = [&"coelophysis", &"coelophysis"]
 	assert_true(p.set_lineup(dupes) != "")
-	var ok: Array[StringName] = [&"coelophysis", &"stegosaurus"]
+	var ok: Array[StringName] = [&"coelophysis", &"protoceratops"]
 	assert_eq(p.set_lineup(ok), "")
 	assert_eq(p.lineup.size(), 2)
 

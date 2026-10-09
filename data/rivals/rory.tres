@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/dinos/pteranodon.tres" id="4_k5v6g"]
 [ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="5_kindo"]
 [ext_resource type="Resource" path="res://data/dinos/mosasaurus.tres" id="6_pmis1"]
-[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="7_7ii3d"]
+[ext_resource type="Resource" path="res://data/dinos/hesperornis.tres" id="7_7ii3d"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="8_0n7le"]
 
 [resource]
