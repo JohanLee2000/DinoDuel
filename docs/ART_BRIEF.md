@@ -63,21 +63,21 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | `parasaurolophus` | Parasaurolophus | LAND | COMMON (N) | Done |
 | `archelon` | Archelon | SEA | RARE (R) | Done |
 | `microraptor` | Microraptor | SKY | RARE (R) | Done |
-| `cymbospondylus` | Cymbospondylus | SEA | LEGENDARY (UR) | Needed |
-| `liliensternus` | Liliensternus | LAND | EPIC (SSR) | Needed |
-| `herrerasaurus` | Herrerasaurus | LAND | SUPER RARE (SR) | Needed |
-| `desmatosuchus` | Desmatosuchus | LAND | SUPER RARE (SR) | Needed |
-| `raeticodactylus` | Raeticodactylus | SKY | SUPER RARE (SR) | Needed |
-| `sharovipteryx` | Sharovipteryx | SKY | COMMON (N) | Needed |
-| `placodus` | Placodus | SEA | RARE (R) | Needed |
-| `torvosaurus` | Torvosaurus | LAND | LEGENDARY (UR) | Needed |
-| `cryolophosaurus` | Cryolophosaurus | LAND | SUPER RARE (SR) | Needed |
-| `ceratosaurus` | Ceratosaurus | LAND | SUPER RARE (SR) | Needed |
-| `dakosaurus` | Dakosaurus | SEA | RARE (R) | Needed |
-| `yi_qi` | Yi qi | SKY | RARE (R) | Needed |
-| `protoceratops` | Protoceratops | LAND | COMMON (N) | Needed |
-| `hesperornis` | Hesperornis | SEA | COMMON (N) | Needed |
-| `tapejara` | Tapejara | SKY | RARE (R) | Needed |
+| `cymbospondylus` | Cymbospondylus | SEA | LEGENDARY (UR) | Done |
+| `liliensternus` | Liliensternus | LAND | EPIC (SSR) | Done |
+| `herrerasaurus` | Herrerasaurus | LAND | SUPER RARE (SR) | Done |
+| `desmatosuchus` | Desmatosuchus | LAND | SUPER RARE (SR) | Done |
+| `raeticodactylus` | Raeticodactylus | SKY | SUPER RARE (SR) | Done |
+| `sharovipteryx` | Sharovipteryx | SKY | COMMON (N) | Done |
+| `placodus` | Placodus | SEA | RARE (R) | Done |
+| `torvosaurus` | Torvosaurus | LAND | LEGENDARY (UR) | Done |
+| `cryolophosaurus` | Cryolophosaurus | LAND | SUPER RARE (SR) | Done |
+| `ceratosaurus` | Ceratosaurus | LAND | SUPER RARE (SR) | Done |
+| `dakosaurus` | Dakosaurus | SEA | RARE (R) | Done |
+| `yi_qi` | Yi qi | SKY | RARE (R) | Done |
+| `protoceratops` | Protoceratops | LAND | COMMON (N) | Done |
+| `hesperornis` | Hesperornis | SEA | COMMON (N) | Done |
+| `tapejara` | Tapejara | SKY | RARE (R) | Done |
 
 Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized and fully feathered") helps ChatGPT get the anatomy right.
 

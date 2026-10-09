@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://bayk58ie0ltyf"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_vqw36"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_vqw36"]
 
 [resource]
 script = ExtResource("1_vqw36")
 id = &"yi_qi"
 display_name = "Yi qi"
+epithet = "Strange Wing"
 dino_type = 1
 era = 1
 rarity = 1
@@ -16,4 +17,3 @@ health = 10
 group = "Bat-winged dinosaur"
 size_text = "Wingspan about 60 cm"
 flavor_text = "Its name means 'strange wing'. This small feathered dinosaur glided on bat-like wings of skin held out by a long rod of bone on each wrist."
-epithet = "Strange Wing"

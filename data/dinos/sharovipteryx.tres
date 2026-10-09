@@ -1,19 +1,16 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://clmblnq5jef00"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_6xqrz"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_6xqrz"]
 
 [resource]
 script = ExtResource("1_6xqrz")
 id = &"sharovipteryx"
 display_name = "Sharovipteryx"
+epithet = "Delta-Wing Glider"
 dino_type = 1
-era = 0
-rarity = 0
 attack = 4
-defense = 0
 speed = 11
 health = 9
 group = "Gliding reptile"
 size_text = "Length about 25 cm"
 flavor_text = "A tiny reptile that glided on skin stretched between its long hind legs and tail: the oldest known 'delta wing' in nature."
-epithet = "Delta-Wing Glider"

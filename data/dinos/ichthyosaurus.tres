@@ -1,19 +1,19 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://bif0wq34anxmy"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_b3tis"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_b3tis"]
 
 [resource]
 script = ExtResource("1_b3tis")
 id = &"ichthyosaurus"
 display_name = "Ichthyosaurus"
-defense = 1
-rarity = 1
+epithet = "Swift Swimmer"
 dino_type = 2
 era = 1
+rarity = 1
 attack = 6
+defense = 1
 speed = 8
 health = 12
 group = "Marine reptile (ichthyosaur)"
 size_text = "Length 2 m"
 flavor_text = "Shaped like a dolphin, it gave birth to live young at sea. Early skeletons were found by Mary Anning's family."
-epithet = "Swift Swimmer"

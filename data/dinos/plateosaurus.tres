@@ -1,13 +1,12 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://cr1mv7u3nrgpi"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_o9095"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_o9095"]
 
 [resource]
 script = ExtResource("1_o9095")
 id = &"plateosaurus"
 display_name = "Plateosaurus"
-dino_type = 0
-era = 0
+epithet = "Early Giant"
 rarity = 1
 attack = 6
 defense = 2
@@ -16,4 +15,3 @@ health = 16
 group = "Early long-necked dinosaur"
 size_text = "Length 5–10 m"
 flavor_text = "One of the first big plant-eating dinosaurs. Many skeletons were found in German and Swiss bonebeds, some stuck in ancient mud."
-epithet = "Early Giant"

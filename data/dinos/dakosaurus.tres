@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="DinoDef" format=3]
+[gd_resource type="Resource" script_class="DinoDef" format=3 uid="uid://xprsxa00sfoh"]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_2u3a9"]
+[ext_resource type="Script" uid="uid://b4k3omqiutbyx" path="res://core/dino_def.gd" id="1_2u3a9"]
 
 [resource]
 script = ExtResource("1_2u3a9")
 id = &"dakosaurus"
 display_name = "Dakosaurus"
+epithet = "Godzilla of the Seas"
 dino_type = 2
 era = 1
 rarity = 1
@@ -16,4 +17,3 @@ health = 13
 group = "Marine crocodile"
 size_text = "Length 4–5 m"
 flavor_text = "A sea-going crocodile with flippers and a shark-like tail, nicknamed 'Godzilla'. Its huge teeth let it hunt big prey, much like a killer whale."
-epithet = "Godzilla of the Seas"
