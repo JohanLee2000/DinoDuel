@@ -132,16 +132,12 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	var color := Palette.RARITY_COLORS[rarity]
 	var card_center := _screen() / 2 + Vector2(0, 10)
 
-	var rays := LightBurst.new()
-	rays.color = color
-	rays.size = Vector2.ONE * 900
-	rays.position = card_center - rays.size / 2
-	rays.pivot_offset = rays.size / 2
-	_content.add_child(rays)
-	_content.move_child(rays, 0)
-	_stage_nodes.append(rays)
-	rays.scale = Vector2(0.1, 0.1)
-	rays.create_tween().tween_property(rays, "scale", Vector2.ONE * (0.8 + rarity * 0.1), 0.4).set_trans(Tween.TRANS_BACK)
+	var fx := RevealFx.create(rarity)
+	fx.size = Vector2.ONE * 1000
+	fx.position = card_center - fx.size / 2
+	_content.add_child(fx)
+	_content.move_child(fx, 0)
+	_stage_nodes.append(fx)
 
 	_spawn_shells(egg_center, 10 + rarity * 3)
 	_spawn_sparks(egg_center, color, 24 + rarity * 12)
@@ -433,29 +429,3 @@ func _flash_and_shake(rarity: int) -> void:
 		var falloff := 1.0 - i / 10.0
 		shake.tween_property(_content, "position", Vector2(randf_range(-1, 1), randf_range(-1, 1)) * strength * falloff, 0.04)
 	shake.tween_property(_content, "position", Vector2.ZERO, 0.04)
-
-
-## Rotating light rays behind a freshly hatched card.
-class LightBurst:
-	extends Control
-
-	const RAYS := 14
-	var color := Color.WHITE
-
-	func _ready() -> void:
-		mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var spin := create_tween().set_loops()
-		spin.tween_property(self, "rotation", TAU, 14.0).from(0.0)
-
-	func _draw() -> void:
-		var center := size / 2
-		var radius := size.x / 2
-		for i in RAYS:
-			var a := TAU * i / RAYS
-			var half := PI / RAYS * 0.45
-			var points := PackedVector2Array([center,
-					center + Vector2(cos(a - half), sin(a - half)) * radius,
-					center + Vector2(cos(a + half), sin(a + half)) * radius])
-			draw_colored_polygon(points, Color(color, 0.22))
-		for i in range(6, 0, -1):
-			draw_circle(center, radius * 0.12 * i, Color(color, 0.05), true, -1.0, true)

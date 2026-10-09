@@ -68,11 +68,10 @@ static func _compose(root: Control, dino: DinoDef, shiny: bool, hatched: bool) -
 	var card := DinoCard.create(dino, DinoCard.Mode.LARGE, null, shiny, CARD_WIDTH)
 	card.inspect_on_hold = false
 	var card_top := 280.0
-	var rays := HatchView.LightBurst.new()
-	rays.color = color
-	rays.size = Vector2.ONE * 1300
-	rays.position = Vector2(size.x / 2, card_top + card.size.y / 2) - rays.size / 2
-	root.add_child(rays)
+	var fx := RevealFx.create(dino.rarity, false)
+	fx.size = Vector2.ONE * 1300
+	fx.position = Vector2(size.x / 2, card_top + card.size.y / 2) - fx.size / 2
+	root.add_child(fx)
 	card.position = Vector2((size.x - card.size.x) / 2, card_top)
 	root.add_child(card)
 

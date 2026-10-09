@@ -130,9 +130,9 @@ Prompt idea: *A friendly elderly paleontologist, head and shoulders, warm smile,
 In `assets/eggs/`: the egg in three stages (intact, first crack, about to burst), 8 shell pieces, the hatch backdrop (`hatch_background.webp`, dig site at night; the egg sits on the slab at 74% of its height) and the Eggs tab banner (`clutch_banner.webp`). `tools/prepare_eggs.py whole.png crack1.png crack2.png shards.png` crops the frames to one box and splits each crack frame into the shell and its light (`egg_crack_N_light.webp`), which the game tints with the rarity color, so the light in new crack art should be white or warm white. The animation itself (wobble, shakes, light flicker, shell pieces, sparks) is code in `ui/eggs/egg_view.gd` and `hatch_view.gd`.
 
 
-## Hatch reveal light effects (requested 2026-10-09)
+## Hatch reveal light effects (done, Jo 2026-10-09)
 
-Layers behind a freshly hatched card, replacing the drawn rays (`HatchView.LightBurst`). Generate each on **pure black (#000000)** in **white / pale grey only**: the game adds them on top with additive blending (black disappears) and tints them with the rarity color, so one set of images works for every tier. Square, centered, radially symmetric, fading to black well before the edges (no hard edge at the border, since they rotate and scale). No text, no card, no dinosaur, no logos. Prompts in chat (2026-10-09); files go in `assets/eggs/fx/`:
+Layers behind a freshly hatched card, replacing the drawn rays (`HatchView.LightBurst`). Generate each on **pure black (#000000)** in **white / pale grey only**: the game adds them on top with additive blending (black disappears) and tints them with the rarity color, so one set of images works for every tier. Square, centered, radially symmetric, fading to black well before the edges (no hard edge at the border, since they rotate and scale). No text, no card, no dinosaur, no logos. Prepared with `tools/prepare_fx.py rays halo ring sparkles sigil` into `assets/eggs/fx/`; shown by `ui/eggs/reveal_fx.gd` (also behind the card in share images). By rarity: N glow; R + rays; SR + sparkles; SSR + shockwave ring and sigil; UR all, cycling rainbow.
 
 | File | Layer | How it moves |
 |---|---|---|
