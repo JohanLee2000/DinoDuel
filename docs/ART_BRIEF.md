@@ -148,7 +148,7 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `tylosaurus` | Tylosaurus | SEA | EPIC (SSR) | Done |
 | `gojirasaurus` | Gojirasaurus | LAND | EPIC (SSR) | Done |
 | `lessemsaurus` | Lessemsaurus | LAND | EPIC (SSR) | Done |
-| `hatzegopteryx` | Hatzegopteryx | SKY | EPIC (SSR) | Waiting for art |
+| `hatzegopteryx` | Hatzegopteryx | SKY | EPIC (SSR) | Done |
 | `therizinosaurus` | Therizinosaurus | LAND | LEGENDARY (UR) | Done |
 | `giganotosaurus` | Giganotosaurus | LAND | LEGENDARY (UR) | Done |
 | `fasolasuchus` | Fasolasuchus | LAND | LEGENDARY (UR) | Done |
