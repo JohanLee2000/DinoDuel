@@ -143,7 +143,7 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `henodus` | Henodus | SEA | SUPER RARE (SR) | Done |
 | `elasmosaurus` | Elasmosaurus | SEA | SUPER RARE (SR) | Done |
 | `smilosuchus` | Smilosuchus | SEA | SUPER RARE (SR) | Done |
-| `ornithocheirus` | Ornithocheirus | SKY | SUPER RARE (SR) | Waiting for art |
+| `ornithocheirus` | Ornithocheirus | SKY | SUPER RARE (SR) | Done |
 | `diplodocus` | Diplodocus | LAND | EPIC (SSR) | Done |
 | `tylosaurus` | Tylosaurus | SEA | EPIC (SSR) | Done |
 | `gojirasaurus` | Gojirasaurus | LAND | EPIC (SSR) | Done |
@@ -152,7 +152,7 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `therizinosaurus` | Therizinosaurus | LAND | LEGENDARY (UR) | Done |
 | `giganotosaurus` | Giganotosaurus | LAND | LEGENDARY (UR) | Done |
 | `fasolasuchus` | Fasolasuchus | LAND | LEGENDARY (UR) | Done |
-| `argentinosaurus` | Argentinosaurus | LAND | LEGENDARY (UR) | Waiting for art |
+| `argentinosaurus` | Argentinosaurus | LAND | LEGENDARY (UR) | Done |
 
 ## Rights and rules
 
