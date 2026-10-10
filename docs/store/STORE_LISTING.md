@@ -8,13 +8,13 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 
 **Short description** (80 max):
 
-> Hatch fossil eggs, collect 45+ prehistoric beasts and outsmart rival collectors.
+> Hatch fossil eggs, collect 65+ prehistoric beasts and outsmart rival collectors.
 
 **Full description** (4000 max):
 
 > Travel back through time as a fossil hunter, hatch prehistoric creatures from fossil eggs, and battle rival collectors in quick, tactical card duels.
 >
-> COLLECT 45+ PREHISTORIC CREATURES
+> COLLECT 65+ PREHISTORIC CREATURES
 > Dinosaurs, pterosaurs and sea reptiles from the Triassic, Jurassic and Cretaceous, each painted as a full-art card with its real size, era and a fossil fact. Five tiers from Common to Legendary, plus rare Shiny versions with a holographic look.
 >
 > HATCH FOSSIL EGGS

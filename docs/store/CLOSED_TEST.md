@@ -42,6 +42,19 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.5.2 (version code 10)
+
+```
+<en-US>
+Dino Duel 0.5.2
+- 23 new prehistoric creatures: 68 in all, each with its own painting
+- New giants like Argentinosaurus, Giganotosaurus and Therizinosaurus, plus Hatzegopteryx in the sky and Tylosaurus at sea
+- Quetzalcoatlus is now Legendary
+- New collection rewards at 50, 55, 60 and 65 creatures, and a Long Necks set
+Thanks for testing! Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.5.1 (version code 9)
 
 ```
@@ -176,4 +189,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | 2026-10-09 | Jo playtest: hard to tell moves apart, unclear which dinos are benched or knocked out, battle lost when switching apps, no way to show off pulls, stats unexplained | 0.4.1: move icons, BENCH label, K.O. stamp, battle resume, Share button, stats pages in How to play |
 | 2026-10-09 | Jo playtest: worried about battery drain and heat, wanted a bigger roster, a way to start over, and a way for new players to see the tour again | 0.5.0: frame cap and idle throttle, 15 new dinos, Restart game and Professaur's tour in Settings |
 | 2026-10-09 | Jo playtest: text too small and gray text hard to read, switching tabs slow, Goals list jumped to the top on every claim, wanted daily login rewards, better eggs, set collections and punchier battles | 0.5.1: bigger and lighter text, thumbnails for fast tabs, Goals keeps its place, daily check-in streak, Rare clutch, sets, battle effects, results panel |
+| 2026-10-10 | Jo playtest: wanted a much bigger roster with more giants and non-dinosaur creatures and a better Quetzalcoatlus | 0.5.2: 23 new creatures (68), Quetzalcoatlus UR, milestones to 65, Long Necks set |
 | | | |
