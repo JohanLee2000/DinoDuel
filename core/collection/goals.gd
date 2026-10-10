@@ -102,7 +102,7 @@ static func claim_quest_bonus(profile: PlayerProfile) -> bool:
 
 ## [dinos discovered, Amber, clutches].
 const MILESTONES := [[5, 50, 0], [10, 0, 1], [15, 150, 0], [20, 0, 2], [25, 300, 0], [30, 0, 3],
-		[35, 400, 0], [40, 0, 3], [45, 0, 5]]
+		[35, 400, 0], [40, 0, 3], [45, 0, 5], [50, 500, 0], [55, 0, 3], [60, 700, 0], [65, 0, 5]]
 const ERA_CLUTCHES := 1
 
 

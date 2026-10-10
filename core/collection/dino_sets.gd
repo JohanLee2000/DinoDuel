@@ -49,6 +49,9 @@ const THEMES := {
 		&"icarosaurus", &"sharovipteryx", &"yi_qi", &"microraptor"]],
 	&"bird_origins": ["Bird Origins", "Feathered dinosaurs on the road to birds.", [
 		&"archaeopteryx", &"microraptor", &"yi_qi", &"velociraptor", &"hesperornis"]],
+	&"long_necks": ["Long Necks", "Necks built for reaching, on land and at sea.", [
+		&"brachiosaurus", &"diplodocus", &"argentinosaurus", &"amargasaurus", &"lessemsaurus",
+		&"elasmosaurus", &"tanystropheus"]],
 	&"sea_monsters": ["Sea Monsters", "Top predators of ancient seas.", [
 		&"mosasaurus", &"liopleurodon", &"dakosaurus", &"cymbospondylus", &"tylosaurus"]],
 }
