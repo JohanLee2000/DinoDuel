@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_flmma"]
+
+[resource]
+script = ExtResource("1_flmma")
+id = &"pterodaustro"
+display_name = "Pterodaustro"
+epithet = "Flamingo Flier"
+dino_type = 1
+era = 2
+rarity = 0
+attack = 3
+defense = 0
+speed = 10
+health = 10
+group = "Filter-feeding pterosaur"
+size_text = "Wingspan about 2.5 m"
+flavor_text = "Its long, upturned jaw held about a thousand bristle-like teeth for straining tiny animals from the water, much like a flamingo."

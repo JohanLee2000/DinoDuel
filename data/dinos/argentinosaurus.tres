@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_njp6r"]
+
+[resource]
+script = ExtResource("1_njp6r")
+id = &"argentinosaurus"
+display_name = "Argentinosaurus"
+epithet = "Earth Shaker"
+dino_type = 0
+era = 2
+rarity = 4
+attack = 8
+defense = 2
+speed = 1
+health = 26
+group = "Titanosaur sauropod"
+size_text = "Length 30–35 m · 65–75 t"
+flavor_text = "One of the largest land animals ever. A single backbone was about as tall as a person, and it may have weighed as much as ten elephants."

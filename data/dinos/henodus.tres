@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_uekn0"]
+
+[resource]
+script = ExtResource("1_uekn0")
+id = &"henodus"
+display_name = "Henodus"
+epithet = "Single Tooth"
+dino_type = 2
+era = 0
+rarity = 2
+attack = 5
+defense = 4
+speed = 2
+health = 18
+group = "Placodont marine reptile"
+size_text = "Length about 1 m"
+flavor_text = "A turtle-like placodont with a broad, flat shell. It had just one tooth on each side of its mouth and probably filtered food with comb-like jaws."

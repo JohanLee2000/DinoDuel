@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_0lcc0"]
+
+[resource]
+script = ExtResource("1_0lcc0")
+id = &"nyctosaurus"
+display_name = "Nyctosaurus"
+epithet = "Antler Crest"
+dino_type = 1
+era = 2
+rarity = 1
+attack = 5
+defense = 1
+speed = 10
+health = 11
+group = "Crested pterosaur"
+size_text = "Wingspan about 2 m"
+flavor_text = "Some adults grew a huge antler-shaped crest, taller than the rest of the head. It had no claws on its hands, so it probably spent most of its life in the air over the sea."

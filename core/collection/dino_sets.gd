@@ -7,44 +7,50 @@ extends RefCounted
 
 const AMBER_PER_DINO := 30
 
-## id -> [name, blurb, dino ids]. Every dino is in exactly one family (see the tests).
+## id -> [name, blurb, dino ids]. Every dino is in exactly one family (see the tests); new dinos must
+## be added to one.
 const FAMILIES := {
 	&"hunters": ["Hunters", "Meat-eating theropods, from Coelophysis to T. rex.", [
 		&"coelophysis", &"herrerasaurus", &"liliensternus", &"dilophosaurus", &"cryolophosaurus",
-		&"ceratosaurus", &"allosaurus", &"torvosaurus", &"velociraptor", &"spinosaurus", &"t_rex"]],
+		&"ceratosaurus", &"allosaurus", &"torvosaurus", &"velociraptor", &"spinosaurus", &"t_rex",
+		&"eoraptor", &"gojirasaurus", &"carnotaurus", &"giganotosaurus"]],
 	&"plant_eaters": ["Plant-Eaters", "Long necks, horns, plates, clubs and duck bills.", [
 		&"plateosaurus", &"brachiosaurus", &"stegosaurus", &"ankylosaurus", &"triceratops",
-		&"protoceratops", &"parasaurolophus"]],
+		&"protoceratops", &"parasaurolophus", &"therizinosaurus", &"amargasaurus", &"diplodocus",
+		&"kentrosaurus", &"styracosaurus", &"iguanodon", &"stygimoloch", &"lessemsaurus", &"argentinosaurus"]],
 	&"croc_cousins": ["Croc Cousins", "Relatives of crocodiles, on land and at sea.", [
-		&"postosuchus", &"desmatosuchus", &"dakosaurus"]],
+		&"postosuchus", &"desmatosuchus", &"dakosaurus", &"fasolasuchus", &"smilosuchus"]],
 	&"pterosaurs": ["Pterosaurs", "Flying reptiles, the first animals with backbones to truly fly.", [
 		&"eudimorphodon", &"raeticodactylus", &"dimorphodon", &"rhamphorhynchus", &"pterodactylus",
-		&"pteranodon", &"tapejara", &"quetzalcoatlus"]],
+		&"pteranodon", &"tapejara", &"quetzalcoatlus", &"nyctosaurus", &"pterodaustro", &"ornithocheirus",
+		&"hatzegopteryx"]],
 	&"feathers_gliders": ["Feathers & Gliders", "Early birds, feathered dinosaurs and gliding reptiles.", [
 		&"icarosaurus", &"sharovipteryx", &"archaeopteryx", &"yi_qi", &"microraptor", &"hesperornis"]],
 	&"sea_reptiles": ["Sea Reptiles", "They ruled the oceans while dinosaurs ruled the land.", [
 		&"nothosaurus", &"placodus", &"tanystropheus", &"cymbospondylus", &"shonisaurus",
-		&"ichthyosaurus", &"plesiosaurus", &"liopleurodon", &"archelon", &"mosasaurus"]],
+		&"ichthyosaurus", &"plesiosaurus", &"liopleurodon", &"archelon", &"mosasaurus", &"henodus",
+		&"mixosaurus", &"elasmosaurus", &"tylosaurus"]],
 }
 
 const THEMES := {
 	&"famous_five": ["Famous Five", "The dinosaurs everyone knows.", [
 		&"t_rex", &"triceratops", &"stegosaurus", &"brachiosaurus", &"velociraptor"]],
 	&"crested_heads": ["Crested Heads", "Showy head crests, probably for display.", [
-		&"dilophosaurus", &"cryolophosaurus", &"raeticodactylus", &"tapejara", &"parasaurolophus"]],
+		&"dilophosaurus", &"cryolophosaurus", &"raeticodactylus", &"tapejara", &"parasaurolophus", &"nyctosaurus"]],
 	&"ichthyosaurs": ["Ichthyosaurs", "Dolphin-shaped reptiles that gave birth at sea.", [
-		&"cymbospondylus", &"shonisaurus", &"ichthyosaurus"]],
+		&"cymbospondylus", &"shonisaurus", &"ichthyosaurus", &"mixosaurus"]],
 	&"giants": ["Giants", "The biggest of their kind.", [
 		&"brachiosaurus", &"spinosaurus", &"quetzalcoatlus", &"shonisaurus", &"cymbospondylus",
-		&"mosasaurus"]],
+		&"mosasaurus", &"argentinosaurus", &"giganotosaurus", &"hatzegopteryx"]],
 	&"horns_armor": ["Horns & Armor", "Built for defense.", [
-		&"triceratops", &"protoceratops", &"ankylosaurus", &"stegosaurus", &"desmatosuchus"]],
+		&"triceratops", &"protoceratops", &"ankylosaurus", &"stegosaurus", &"desmatosuchus", &"styracosaurus",
+		&"kentrosaurus"]],
 	&"gliders": ["Gliders", "Took to the air without flapping.", [
 		&"icarosaurus", &"sharovipteryx", &"yi_qi", &"microraptor"]],
 	&"bird_origins": ["Bird Origins", "Feathered dinosaurs on the road to birds.", [
 		&"archaeopteryx", &"microraptor", &"yi_qi", &"velociraptor", &"hesperornis"]],
 	&"sea_monsters": ["Sea Monsters", "Top predators of ancient seas.", [
-		&"mosasaurus", &"liopleurodon", &"dakosaurus", &"cymbospondylus"]],
+		&"mosasaurus", &"liopleurodon", &"dakosaurus", &"cymbospondylus", &"tylosaurus"]],
 }
 
 

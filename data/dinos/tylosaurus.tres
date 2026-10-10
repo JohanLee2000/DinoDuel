@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_2v5jg"]
+
+[resource]
+script = ExtResource("1_2v5jg")
+id = &"tylosaurus"
+display_name = "Tylosaurus"
+epithet = "Knob Snout"
+dino_type = 2
+era = 2
+rarity = 3
+attack = 9
+defense = 1
+speed = 6
+health = 17
+group = "Mosasaur"
+size_text = "Length 11–13 m"
+flavor_text = "Named for the bony knob on its snout, which it may have used to ram prey. Fossils show it ate fish, sharks, seabirds and even other mosasaurs."

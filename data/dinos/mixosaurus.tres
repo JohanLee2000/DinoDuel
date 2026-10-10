@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_7i9bj"]
+
+[resource]
+script = ExtResource("1_7i9bj")
+id = &"mixosaurus"
+display_name = "Mixosaurus"
+epithet = "Mixed Lizard"
+dino_type = 2
+era = 0
+rarity = 0
+attack = 5
+defense = 1
+speed = 7
+health = 10
+group = "Early ichthyosaur"
+size_text = "Length about 1 m"
+flavor_text = "Its name means 'mixed lizard', because it seemed to combine features of earlier and later ichthyosaurs. Its fossils turn up on several continents."

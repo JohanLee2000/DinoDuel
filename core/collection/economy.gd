@@ -44,6 +44,6 @@ const STARTER_BASICS: Array[StringName] = [
 ]
 ## The first-launch partner choice: one Land, one Sky, one Sea, all Rare.
 const STARTER_PARTNERS: Array[StringName] = [&"dilophosaurus", &"archaeopteryx", &"tanystropheus"]
-const STARTER_CLUTCHES := 2
+const STARTER_CLUTCHES := 1
 ## Reward for finishing the new-player "First steps" checklist.
 const FIRST_STEPS_CLUTCHES := 1

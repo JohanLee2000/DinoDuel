@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_1h2q4"]
+
+[resource]
+script = ExtResource("1_1h2q4")
+id = &"elasmosaurus"
+display_name = "Elasmosaurus"
+epithet = "Serpent Neck"
+dino_type = 2
+era = 2
+rarity = 2
+attack = 7
+defense = 1
+speed = 5
+health = 15
+group = "Plesiosaur"
+size_text = "Length about 10 m"
+flavor_text = "More than half of its length was neck, with 72 neck bones, more than any other known animal."

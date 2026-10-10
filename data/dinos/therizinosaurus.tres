@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_a7u27"]
+
+[resource]
+script = ExtResource("1_a7u27")
+id = &"therizinosaurus"
+display_name = "Therizinosaurus"
+epithet = "Scythe Lizard"
+dino_type = 0
+era = 2
+rarity = 4
+attack = 9
+defense = 3
+speed = 3
+health = 21
+group = "Plant-eating theropod"
+size_text = "Length 9–10 m · 3–5 t"
+flavor_text = "Its hand claws grew over half a metre long, yet it was a plant-eater that probably used them to pull branches within reach."

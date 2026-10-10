@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_yjyof"]
+
+[resource]
+script = ExtResource("1_yjyof")
+id = &"fasolasuchus"
+display_name = "Fasolasuchus"
+epithet = "Triassic Tyrant"
+dino_type = 0
+era = 0
+rarity = 4
+attack = 10
+defense = 3
+speed = 4
+health = 19
+group = "Rauisuchian (crocodile-line)"
+size_text = "Length 8–10 m"
+flavor_text = "Probably the largest land predator that wasn't a dinosaur. This distant relative of crocodiles hunted in South America near the end of the Triassic."

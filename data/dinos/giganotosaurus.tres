@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_suef4"]
+
+[resource]
+script = ExtResource("1_suef4")
+id = &"giganotosaurus"
+display_name = "Giganotosaurus"
+epithet = "Giant Southern Lizard"
+dino_type = 0
+era = 2
+rarity = 4
+attack = 10
+defense = 2
+speed = 5
+health = 19
+group = "Carcharodontosaur theropod"
+size_text = "Length 12–13 m · 6–8 t"
+flavor_text = "One of the biggest meat-eating dinosaurs, about as long as T. rex. It lived in South America some 30 million years earlier, so the two never met."

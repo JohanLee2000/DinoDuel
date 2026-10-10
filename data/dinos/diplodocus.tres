@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_lkt1g"]
+
+[resource]
+script = ExtResource("1_lkt1g")
+id = &"diplodocus"
+display_name = "Diplodocus"
+epithet = "Whip-Tailed Giant"
+dino_type = 0
+era = 1
+rarity = 3
+attack = 8
+defense = 2
+speed = 3
+health = 20
+group = "Sauropod dinosaur"
+size_text = "Length about 25 m · 12–15 t"
+flavor_text = "One of the longest dinosaurs, with a thin tail that may have cracked like a whip. Its small head had peg-like teeth for stripping leaves."

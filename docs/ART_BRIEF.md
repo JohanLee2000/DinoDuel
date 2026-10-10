@@ -34,7 +34,7 @@ Jo's master prompt lives in [ART_PROMPT.md](ART_PROMPT.md). Paste it into ChatGP
 | id | `[DINOSAUR]` | `[TYPE]` | `[RARITY]` | Status |
 |---|---|---|---|---|
 | `t_rex` | Tyrannosaurus rex | LAND | LEGENDARY (UR) | Done |
-| `quetzalcoatlus` | Quetzalcoatlus | SKY | EPIC (SSR) | Done |
+| `quetzalcoatlus` | Quetzalcoatlus | SKY | LEGENDARY (UR) | Done |
 | `triceratops` | Triceratops | LAND | SUPER RARE (SR) | Done |
 | `pteranodon` | Pteranodon | SKY | SUPER RARE (SR) | In game; the painting shows teeth, but Pteranodon was toothless |
 | `mosasaurus` | Mosasaurus | SEA | LEGENDARY (UR) | Done |
@@ -130,6 +130,29 @@ Adding the species notes below to `[DINOSAUR]` (e.g. "Velociraptor, turkey-sized
 | `protoceratops` | A Protoceratops, a Late Cretaceous horned dinosaur about 1.8 m long: stocky four-legged body, large head with a parrot-like beak and a wide bony neck frill, no big horns. Habitat: Late Cretaceous Gobi desert dunes at sunset. |
 | `hesperornis` | A Hesperornis, a Late Cretaceous flightless diving bird 1.5–2 m long: streamlined body, long neck, long beak with small teeth, tiny useless wings, big lobed feet set far back, swimming underwater after fish. Habitat: Late Cretaceous Western Interior Seaway, underwater with sunlight from above. |
 | `tapejara` | A Tapejara, an Early Cretaceous pterosaur from Brazil with a 1.3–1.5 m wingspan: short deep toothless beak, a tall semicircular crest over the snout with a bony prong sweeping back behind the head, colorful crest, long skin wings. Habitat: Early Cretaceous Brazilian lagoon with tropical forest. |
+| `eoraptor` | Eoraptor | LAND | COMMON (N) | Waiting for art |
+| `iguanodon` | Iguanodon | LAND | COMMON (N) | Waiting for art |
+| `pterodaustro` | Pterodaustro | SKY | COMMON (N) | Waiting for art |
+| `mixosaurus` | Mixosaurus | SEA | COMMON (N) | Waiting for art |
+| `kentrosaurus` | Kentrosaurus | LAND | RARE (R) | Waiting for art |
+| `nyctosaurus` | Nyctosaurus | SKY | RARE (R) | Waiting for art |
+| `stygimoloch` | Stygimoloch | LAND | RARE (R) | Waiting for art |
+| `carnotaurus` | Carnotaurus | LAND | SUPER RARE (SR) | Waiting for art |
+| `amargasaurus` | Amargasaurus | LAND | SUPER RARE (SR) | Waiting for art |
+| `styracosaurus` | Styracosaurus | LAND | SUPER RARE (SR) | Waiting for art |
+| `henodus` | Henodus | SEA | SUPER RARE (SR) | Waiting for art |
+| `elasmosaurus` | Elasmosaurus | SEA | SUPER RARE (SR) | Waiting for art |
+| `smilosuchus` | Smilosuchus | SEA | SUPER RARE (SR) | Waiting for art |
+| `ornithocheirus` | Ornithocheirus | SKY | SUPER RARE (SR) | Waiting for art |
+| `diplodocus` | Diplodocus | LAND | EPIC (SSR) | Waiting for art |
+| `tylosaurus` | Tylosaurus | SEA | EPIC (SSR) | Waiting for art |
+| `gojirasaurus` | Gojirasaurus | LAND | EPIC (SSR) | Waiting for art |
+| `lessemsaurus` | Lessemsaurus | LAND | EPIC (SSR) | Waiting for art |
+| `hatzegopteryx` | Hatzegopteryx | SKY | EPIC (SSR) | Waiting for art |
+| `therizinosaurus` | Therizinosaurus | LAND | LEGENDARY (UR) | Waiting for art |
+| `giganotosaurus` | Giganotosaurus | LAND | LEGENDARY (UR) | Waiting for art |
+| `fasolasuchus` | Fasolasuchus | LAND | LEGENDARY (UR) | Waiting for art |
+| `argentinosaurus` | Argentinosaurus | LAND | LEGENDARY (UR) | Waiting for art |
 
 ## Rights and rules
 

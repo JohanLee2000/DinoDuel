@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_wqp4y"]
+
+[resource]
+script = ExtResource("1_wqp4y")
+id = &"stygimoloch"
+display_name = "Stygimoloch"
+epithet = "River Styx Demon"
+dino_type = 0
+era = 2
+rarity = 1
+attack = 6
+defense = 2
+speed = 5
+health = 14
+group = "Dome-headed dinosaur"
+size_text = "Length about 3 m"
+flavor_text = "Its name means 'demon from the river Styx', after the Hell Creek rocks it was found in. Many scientists now think it was a young Pachycephalosaurus."

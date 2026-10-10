@@ -34,8 +34,9 @@ func _ready() -> void:
 	var column := UiKit.vbox(22)
 	column.custom_minimum_size.x = 680
 	column.add_child(UiKit.title("Choose your partner", 48, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
-	column.add_child(UiKit.label("Your first dino. You also get %d more to start your party, plus %d egg clutches to hatch." \
-			% [Economy.STARTER_BASICS.size(), Economy.STARTER_CLUTCHES], 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("Your first dino. You also get %d more to start your party, plus %d egg clutch%s to hatch." \
+			% [Economy.STARTER_BASICS.size(), Economy.STARTER_CLUTCHES, "" if Economy.STARTER_CLUTCHES == 1 else "es"],
+			29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 
 	var row := UiKit.hbox(16, BoxContainer.ALIGNMENT_CENTER)
 	for id in Economy.STARTER_PARTNERS:

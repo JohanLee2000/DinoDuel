@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_rgoc5"]
+
+[resource]
+script = ExtResource("1_rgoc5")
+id = &"smilosuchus"
+display_name = "Smilosuchus"
+epithet = "Chisel Croc"
+dino_type = 2
+era = 0
+rarity = 2
+attack = 8
+defense = 2
+speed = 4
+health = 15
+group = "Phytosaur (crocodile look-alike)"
+size_text = "Length 7–12 m"
+flavor_text = "It looked like a crocodile but wasn't one. A phytosaur's nostrils sat high up near its eyes instead of at the tip of its snout."

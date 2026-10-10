@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_w4thh"]
+
+[resource]
+script = ExtResource("1_w4thh")
+id = &"amargasaurus"
+display_name = "Amargasaurus"
+epithet = "Spined Neck"
+dino_type = 0
+era = 2
+rarity = 2
+attack = 5
+defense = 3
+speed = 2
+health = 19
+group = "Spined sauropod"
+size_text = "Length 9–10 m"
+flavor_text = "Two rows of tall spines ran down its neck and back. They may have held up skin sails or horn sheaths, perhaps for display."

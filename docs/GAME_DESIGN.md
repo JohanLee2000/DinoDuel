@@ -79,7 +79,7 @@ Difficulty knobs per rival: `temperature` (randomness), `*_bias` (a readable hab
 - **Tilt shine (2026-10-09):** in the full-screen card view, UR and Shiny cards catch the light: tilting the phone (gravity sensor, `input_devices/sensors/enable_gravity`; no measurable battery cost on the A35) or dragging the card slides a glare and the holo sheen across them.
 - **Duplicates auto-melt into Amber** (N 7, R 25, SR 60, SSR 180, UR 480). A Shiny duplicate upgrades a non-Shiny copy instead.
 - **Crafting** from the Dex: N 40, R 100, SR 400, SSR 1000, UR 2000 Amber.
-- New players start by **choosing a partner** (decided 2026-10-08): Dilophosaurus (Land), Archaeopteryx (Sky; replaced Microraptor at Jo's request, same day) or Tanystropheus (Sea), all Rare. They also get five Commons: Coelophysis, Eudimorphodon, Protoceratops, Rhamphorhynchus and Hesperornis (Protoceratops + Rhamphorhynchus + Hesperornis is Balanced; Tanystropheus completes a Triassic party with both bonuses). Stegosaurus and Ichthyosaurus were starters until Jo moved them to SR and R (2026-10-09); they were swapped out so the rival ladder keeps its tuning and **2 clutches**.
+- New players start by **choosing a partner** (decided 2026-10-08): Dilophosaurus (Land), Archaeopteryx (Sky; replaced Microraptor at Jo's request, same day) or Tanystropheus (Sea), all Rare. They also get five Commons: Coelophysis, Eudimorphodon, Protoceratops, Rhamphorhynchus and Hesperornis (Protoceratops + Rhamphorhynchus + Hesperornis is Balanced; Tanystropheus completes a Triassic party with both bonuses). Stegosaurus and Ichthyosaurus were starters until Jo moved them to SR and R (2026-10-09); they were swapped out so the rival ladder keeps its tuning. New players also get **1 egg clutch** (Jo lowered it from 2 on 2026-10-10).
 - **Party:** you bring 6; before each battle you see the rival's 6 and pick 3.
 - **Dino Dex:** grouped by era; owned dinos show in full, dinos you've faced show faded, the rest are "???".
 - Results are rolled and saved before the hatch animation plays, so closing the app can't reroll a clutch.
@@ -127,7 +127,7 @@ Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, dail
 A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/collection/goals.gd`, tests in `tests/test_goals.gd`.
 - **Daily quests:** 3 a day from a pool of 11 (win 2, battle 3, hatch 3, win with a Land/Sky/Sea dino, era bond, balanced party, flawless, 12 turns or fewer, beat a 3-star+ rival), never two of the same kind. 25-50 Amber each; all 3 done gives a **bonus clutch**. Same quests all day for a player; reset at local midnight like the daily check-in. Forfeits don't count; losses count only for "battle 3 times".
 - **Collection:** milestones at 5/10/15/20/25/30/35/40/45 dinos discovered (50 Amber, 1 clutch, 150 Amber, 2 clutches, 300 Amber, 3 clutches, 400 Amber, 3 clutches, 5 clutches; 35-45 added with the 45-dino roster) and **1 clutch per completed era**, which also turns the Dex era heading gold ("★ Complete"). New players can claim the 5-dino milestone right after picking a partner.
-- **Sets (Jo, 2026-10-09):** complete a set for 30 Amber per dino in it and a gold ★ badge (shown in Goals). Six **families** split all 45 dinos: Hunters (11), Plant-Eaters (7), Croc Cousins (3), Pterosaurs (8), Feathers & Gliders (6), Sea Reptiles (10). Eight **themes** cross types and overlap: Famous Five, Crested Heads, Ichthyosaurs, Giants, Horns & Armor, Gliders, Bird Origins, Sea Monsters. Lists in `core/collection/dino_sets.gd`.
+- **Sets (Jo, 2026-10-09):** complete a set for 30 Amber per dino in it and a gold ★ badge (shown in Goals). Six **families** split every dino (68 after the 2026-10-10 additions): Hunters (15), Plant-Eaters (16), Croc Cousins (5), Pterosaurs (12), Feathers & Gliders (6), Sea Reptiles (14). Eight **themes** cross types and overlap: Famous Five, Crested Heads, Ichthyosaurs, Giants, Horns & Armor, Gliders, Bird Origins, Sea Monsters. Lists in `core/collection/dino_sets.gd`.
 - **Achievements:** 18, in-game only (Jo chose to stay offline: no Google Play Games for now, which would need internet, a privacy-policy and Data safety change, and Play Console setup). Each gives 50-500 Amber when claimed. Battles, hatches and crafts feed their counters (`PlayerProfile.stats`).
 
 ## Saves and moving phones (decided 2026-10-09)
@@ -150,7 +150,7 @@ Deck codes and "ghost duels" (fight a friend's party as AI), challenge codes wit
 ## PvP (future)
 Needs a server for online play (Play Games multiplayer APIs were shut down in 2020). The battle engine is pure, deterministic code with no UI dependencies so it can run on a server later.
 
-## The set: 45 dinos
+## The set: 68 dinos
 | Dino | Type | Era | Tier | Atk | Def | Spd | HP |
 |---|---|---|---|---|---|---|---|
 | Coelophysis | Land | Triassic | N | 5 | 1 | 7 | 10 |
@@ -162,7 +162,7 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Rhamphorhynchus | Sky | Jurassic | N | 5 | 0 | 8 | 9 |
 | Archaeopteryx | Sky | Jurassic | R | 6 | 1 | 10 | 11 |
 | Pteranodon | Sky | Cretaceous | R | 5 | 1 | 7 | 14 |
-| Quetzalcoatlus | Sky | Cretaceous | SSR | 8 | 2 | 6 | 17 |
+| Quetzalcoatlus | Sky | Cretaceous | UR | 9 | 2 | 7 | 18 |
 | Nothosaurus | Sea | Triassic | R | 6 | 1 | 6 | 13 |
 | Ichthyosaurus | Sea | Jurassic | R | 6 | 1 | 8 | 12 |
 | Plesiosaurus | Sea | Jurassic | R | 6 | 1 | 5 | 13 |
@@ -198,6 +198,29 @@ Needs a server for online play (Play Games multiplayer APIs were shut down in 20
 | Protoceratops | Land | Cretaceous | N | 5 | 2 | 4 | 13 |
 | Hesperornis | Sea | Cretaceous | N | 5 | 0 | 6 | 10 |
 | Tapejara | Sky | Cretaceous | SR | 6 | 1 | 9 | 13 |
+| Eoraptor | Land | Triassic | N | 4 | 1 | 8 | 10 |
+| Iguanodon | Land | Cretaceous | N | 5 | 2 | 3 | 14 |
+| Pterodaustro | Sky | Cretaceous | N | 3 | 0 | 10 | 10 |
+| Mixosaurus | Sea | Triassic | N | 5 | 1 | 7 | 10 |
+| Kentrosaurus | Land | Jurassic | R | 7 | 2 | 4 | 14 |
+| Nyctosaurus | Sky | Cretaceous | R | 5 | 1 | 10 | 11 |
+| Stygimoloch | Land | Cretaceous | R | 6 | 2 | 5 | 14 |
+| Carnotaurus | Land | Cretaceous | SR | 7 | 1 | 8 | 13 |
+| Amargasaurus | Land | Cretaceous | SR | 5 | 3 | 2 | 19 |
+| Styracosaurus | Land | Cretaceous | SR | 6 | 3 | 3 | 17 |
+| Henodus | Sea | Triassic | SR | 5 | 4 | 2 | 18 |
+| Elasmosaurus | Sea | Cretaceous | SR | 7 | 1 | 5 | 15 |
+| Smilosuchus | Sea | Triassic | SR | 8 | 2 | 4 | 15 |
+| Ornithocheirus | Sky | Cretaceous | SR | 6 | 1 | 9 | 13 |
+| Diplodocus | Land | Jurassic | SSR | 8 | 2 | 3 | 20 |
+| Tylosaurus | Sea | Cretaceous | SSR | 9 | 1 | 6 | 17 |
+| Gojirasaurus | Land | Triassic | SSR | 8 | 1 | 8 | 15 |
+| Lessemsaurus | Land | Triassic | SSR | 6 | 3 | 2 | 22 |
+| Hatzegopteryx | Sky | Cretaceous | SSR | 9 | 2 | 6 | 16 |
+| Therizinosaurus | Land | Cretaceous | UR | 9 | 3 | 3 | 21 |
+| Giganotosaurus | Land | Cretaceous | UR | 10 | 2 | 5 | 19 |
+| Fasolasuchus | Land | Triassic | UR | 10 | 3 | 4 | 19 |
+| Argentinosaurus | Land | Cretaceous | UR | 8 | 2 | 1 | 26 |
 
 ## Milestones
 1. **M1: Battle on your phone.** Battle engine + tests + balance sim, party pick and battle screens with placeholder cards, one AI rival, Android debug build.

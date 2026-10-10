@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_yfger"]
+
+[resource]
+script = ExtResource("1_yfger")
+id = &"ornithocheirus"
+display_name = "Ornithocheirus"
+epithet = "Bird Hand"
+dino_type = 1
+era = 2
+rarity = 2
+attack = 6
+defense = 1
+speed = 9
+health = 13
+group = "Pterosaur"
+size_text = "Wingspan about 5 m"
+flavor_text = "Once shown on TV as a 12 m giant, it's now thought to have had a wingspan nearer 5 m. A rounded crest on the tip of its snout may have helped it skim the sea for fish."

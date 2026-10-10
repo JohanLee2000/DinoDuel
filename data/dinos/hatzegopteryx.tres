@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_dm7c4"]
+
+[resource]
+script = ExtResource("1_dm7c4")
+id = &"hatzegopteryx"
+display_name = "Hatzegopteryx"
+epithet = "Island Terror"
+dino_type = 1
+era = 2
+rarity = 3
+attack = 9
+defense = 2
+speed = 6
+health = 16
+group = "Giant pterosaur (azhdarchid)"
+size_text = "Wingspan 10–12 m"
+flavor_text = "It lived on an island in what is now Romania, where it was probably the top predator. Its short, heavy skull was built for grabbing small dinosaurs."

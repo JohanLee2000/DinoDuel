@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_ysfm1"]
+
+[resource]
+script = ExtResource("1_ysfm1")
+id = &"kentrosaurus"
+display_name = "Kentrosaurus"
+epithet = "Spike Shoulders"
+dino_type = 0
+era = 1
+rarity = 1
+attack = 7
+defense = 2
+speed = 4
+health = 14
+group = "Stegosaur"
+size_text = "Length 4–4.5 m · 0.7–1.6 t"
+flavor_text = "A smaller African cousin of Stegosaurus, with long spikes along its tail and a pair sticking out from its shoulders."

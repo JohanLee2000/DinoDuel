@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_36hp1"]
+
+[resource]
+script = ExtResource("1_36hp1")
+id = &"eoraptor"
+display_name = "Eoraptor"
+epithet = "Dawn Plunderer"
+dino_type = 0
+era = 0
+rarity = 0
+attack = 4
+defense = 1
+speed = 8
+health = 10
+group = "Early dinosaur"
+size_text = "Length about 1 m · 10 kg"
+flavor_text = "One of the earliest known dinosaurs, about 231 million years old. It was small and quick, and probably ate both plants and small animals."

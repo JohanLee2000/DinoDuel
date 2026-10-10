@@ -412,7 +412,7 @@ func test_sets_cover_every_dino_once_and_pay_once() -> void:
 	assert_true(Goals.anything_to_claim(p, catalog))
 	var amber := p.amber
 	assert_true(DinoSets.claim(p, &"croc_cousins"))
-	assert_eq(p.amber, amber + 3 * DinoSets.AMBER_PER_DINO)
+	assert_eq(p.amber, amber + DinoSets.members(&"croc_cousins").size() * DinoSets.AMBER_PER_DINO)
 	assert_false(DinoSets.claim(p, &"croc_cousins"), "only once")
 	assert_eq(DinoSets.sets_of(&"t_rex"), [&"hunters", &"famous_five"] as Array[StringName])
 

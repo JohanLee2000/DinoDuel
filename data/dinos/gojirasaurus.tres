@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_k0xse"]
+
+[resource]
+script = ExtResource("1_k0xse")
+id = &"gojirasaurus"
+display_name = "Gojirasaurus"
+epithet = "Godzilla Lizard"
+dino_type = 0
+era = 0
+rarity = 3
+attack = 8
+defense = 1
+speed = 8
+health = 15
+group = "Coelophysoid theropod"
+size_text = "Length about 5.5–6 m"
+flavor_text = "Named after Godzilla (Gojira in Japanese), it was one of the biggest predators of its time. It's known from only a few bones, so its size is a careful guess."

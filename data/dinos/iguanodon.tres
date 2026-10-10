@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DinoDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_xk9hc"]
+
+[resource]
+script = ExtResource("1_xk9hc")
+id = &"iguanodon"
+display_name = "Iguanodon"
+epithet = "Thumb Spike"
+dino_type = 0
+era = 2
+rarity = 0
+attack = 5
+defense = 2
+speed = 3
+health = 14
+group = "Iguanodontian dinosaur"
+size_text = "Length about 10 m · 3 t"
+flavor_text = "One of the first dinosaurs ever named, in 1825. Its thumb spike was first mistaken for a horn on its nose."
