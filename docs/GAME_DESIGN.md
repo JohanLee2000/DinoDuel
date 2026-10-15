@@ -68,7 +68,7 @@ Difficulty knobs per rival: `temperature` (randomness), `*_bias` (a readable hab
 | Dusty Dunes | 4 | 2 N, 3 R, 1 SR | None | Yes | ~33% |
 | Rival Rory | 5 | 1 N, 1 R, 3 SR, 1 UR | None | Yes | ~16% |
 
-**Win rates above are out of date** (2026-10-09: tiers changed, starters became five Commons, and rival parties swapped Ichthyosaurus, Stegosaurus and Allosaurus for Hesperornis, Plateosaurus and Ceratosaurus to keep their tier mix). Jo is revamping the rival ladder, so it was deliberately not retuned. "Starter party wins" = the original 6 starter dinos played by a strong AI, 300 battles each (`tools/rival_ladder.gd` measures it for each starter partner now). With the partner starters (2026-10-08) the first three rivals stay in the same range for every partner, but Dusty and Rory swing widely with which 3 the player brings (e.g. Dilophosaurus + Rhamphorhynchus + Ichthyosaurus, a Jurassic party with both bonuses, beats Dusty most of the time; weaker picks rarely do). Revisit with tester feedback. A human who reads the habits should do better against the first three. The Battle tab lists rivals easiest first with stars and your record against each.
+**Replaced by the Journey (below, decided 2026-10-15).** **Win rates above are out of date** (2026-10-09: tiers changed, starters became five Commons, and rival parties swapped Ichthyosaurus, Stegosaurus and Allosaurus for Hesperornis, Plateosaurus and Ceratosaurus to keep their tier mix). Jo is revamping the rival ladder, so it was deliberately not retuned. "Starter party wins" = the original 6 starter dinos played by a strong AI, 300 battles each (`tools/rival_ladder.gd` measures it for each starter partner now). With the partner starters (2026-10-08) the first three rivals stay in the same range for every partner, but Dusty and Rory swing widely with which 3 the player brings (e.g. Dilophosaurus + Rhamphorhynchus + Ichthyosaurus, a Jurassic party with both bonuses, beats Dusty most of the time; weaker picks rarely do). Revisit with tester feedback. A human who reads the habits should do better against the first three. The Battle tab lists rivals easiest first with stars and your record against each.
 
 ## Collection (decided)
 - Rewards come as a **clutch of 3 fossil eggs**; each egg hatches **one dino**. First tap cracks the egg and its **glow shows the rarity**; second tap hatches it.
@@ -136,8 +136,53 @@ A fifth tab, **Goals** ("(!)" when something can be claimed). Rules in `core/col
 - **Export / Import save: built, then switched off (Jo, 2026-10-09)** until Jo decides whether it ships in production; the Settings buttons and handlers are commented out in `ui/common/settings_view.gd` (the save-file code in `SaveStore` stays live and tested), and its privacy-policy paragraph is in an HTML comment. When on: **Settings > Export save** writes `DinoDuel_<name>_<date>.json` and opens the share sheet; **Import save** opens the phone's file picker (Godot 4.6+ reads its content:// links directly), shows what's in the file (name, dinos, Amber, wins, date) and asks before replacing this phone's progress. The file carries a check value, so damaged or hand-edited files are refused (`SaveStore.parse_export`).
 - The privacy policy describes Auto Backup (updated 2026-10-09).
 
-## Journey (proposal)
-Chapters by era: Triassic, Jurassic, Cretaceous. About 6 rivals per chapter plus a boss with an Alpha dino. Each rival has a learnable habit (e.g. always Braces after being hit). Final boss: the meteor. Up to 3 stars per level: win, win without losing a dino, win within N turns.
+## Journey (decided 2026-10-15, Jo)
+The Battle tab becomes a **Journey through time**: three era chapters, Rory as the boss at the end of each, and a finale at the meteor. Replaces the flat 5-rival ladder (which was never retuned after the 2026-10-09 tier changes). Ships as 0.6.0. Art prompts: [JOURNEY_ART.md](JOURNEY_ART.md).
+
+**Structure:** Triassic → Jurassic → Cretaceous → **Extinction Day**: 5 rivals + a boss per chapter, plus the finale = 19 battles. Stages unlock in order; beating a boss opens the next era. Cleared stages can be replayed. Rivals bring creatures from their chapter's era (mostly), so collecting matters. The first battle is still the coached one against Rookie Rae.
+
+**Stars:** a win earns 1-3 stars, one per dino still standing at the end. Each stage keeps its best. 57 stars in all.
+
+**Rewards:**
+- Every win: 1 egg clutch. First clear: + 25 / 35 / 50 Amber (by chapter) + a first-clear bonus of 50 / 100 / 150 Amber; a boss's first clear gives a **Rare clutch** as its bonus, the finale's **2 Rare clutches**.
+- Replay wins (after the first clear): 1 clutch + 10 Amber. Losses: 10 Amber.
+- Star chests per chapter at 6 / 12 / 18 stars: 100 Amber, 1 clutch, 1 Rare clutch.
+
+**Rivals** (habit hints go in each rival's intro text; habits get harder through the journey):
+
+| # | Chapter | Rival | Team | Habit |
+|---|---|---|---|---|
+| 1 | Triassic | Rookie Rae | Commons | Bites a lot |
+| 2 | Triassic | Ranger Fern | Commons + Rares | Braces a lot |
+| 3 | Triassic | Captain Cora | Sea creatures | Charges a lot |
+| 4 | Triassic | Glider Gus | Sky creatures | Swaps out when at a type disadvantage |
+| 5 | Triassic | Dusty Dunes | Rares + SRs | Braces right after taking a hit |
+| 6 | Triassic boss | Rival Rory | Alpha Liliensternus + SRs | Adapts to you |
+| 7 | Jurassic | Pilot Pip | Early flyers | Copies your last move |
+| 8 | Jurassic | Marina Marsh | Sea reptiles | Braces, then Charges next turn |
+| 9 | Jurassic | Hiker Hank | Plated and armored | Bites when its dino is hurt |
+| 10 | Jurassic | Sage Sela | Mixed SR/SSR | Plays the counter to your last move |
+| 11 | Jurassic | Boulder Bo | Giants | No habit, adapts |
+| 12 | Jurassic boss | Rival Rory | Alpha Allosaurus + giants | Adapts |
+| 13 | Cretaceous | Tracker Tia | Raptors and horned dinos | Bites a lot + Braces after a hit |
+| 14 | Cretaceous | Storm Sully | Pterosaurs | Swaps on disadvantage, adapts |
+| 15 | Cretaceous | Deep-Sea Della | Mosasaurs and plesiosaurs | Brace-then-Charge, adapts |
+| 16 | Cretaceous | Vera Volcano | SR/SSR | Counters your last move, adapts |
+| 17 | Cretaceous | Old Grit | Strongest regular team, one UR | No habit, adapts hard |
+| 18 | Cretaceous boss | Rival Rory | Alpha T. rex | Adapts |
+| 19 | Finale | Rival Rory, Extinction Day | Best of all eras, two Alphas | Adapts; meteor shower from turn 8 |
+
+Rory is the recurring rival, always one era ahead of the player.
+
+**Alphas:** a boss's signature creature gets extra Health and Attack and a gold ALPHA badge, always plays, and is shown on the boss's team so the player can plan around it.
+
+**Journey screen:** an illustrated path map per era (Jo's paintings) with the stages as markers along the trail; era tabs at the top (the finale locked until the Cretaceous boss falls); a chapter banner with stars x/18 and the three chest markers; the boss marker bigger and gold. Tapping a marker shows the rival (portrait, intro, their 6, best stars) and Challenge. The pre-battle screen shows how stars work and any Alpha; the results screen fills in the stars and shows a first-clear bonus. The Professaur introduces each new chapter in a few lines. No rule stages (e.g. "Sky only") for now.
+
+**Difficulty:** tuned with a simulated player that starts with the starters, plays the Journey in order, hatches every clutch it earns and brings its best 3. Targets for a player arriving with that collection: about 80% wins on a chapter's first stage, about 60% mid-chapter, about 45% on bosses.
+
+**Elsewhere:** the Battle tab's difficulty stars go away (stars now mean earned stars); the quest "Beat a 3-star rival" becomes "Earn 3 stars on any stage"; "Rival Sweep" becomes Clear the Triassic / Jurassic / Cretaceous, plus "Extinction Survivor" and "Star Collector" (all 57 stars); First steps and How to play get a Journey page. Existing saves: wins against Rae, Fern, Cora and Dusty count as cleared stages with 1 star.
+
+**Build order:** (1) rules: conditional AI habits, Alphas, per-battle meteor turn, Journey progress in the save, stars and rewards, with tests; (2) content: the 19 stage teams, the simulated-player tool, tuning; (3) screens: Journey map, pre-battle and results, chapter intros, Goals / How to play / First steps.
 
 ## Monetization (decided)
 Free to play. IAP sells era expansions (new chapter plus its cards in eggs) and cosmetics. No paid randomized packs, nothing that buys power.
