@@ -13,7 +13,7 @@
 script = ExtResource("9_r92oo")
 id = &"rory_triassic"
 display_name = "Rival Rory"
-intro = "Rory got to the Triassic first and tamed an Alpha Liliensternus. He's quick to learn your habits."
+intro = "Rory got to the Triassic first with an Alpha Liliensternus: extra Health and Attack, and it always plays. He is quick to learn your habits."
 brings = Array[ExtResource("1_r92oo")]([ExtResource("2_6c4aw"), ExtResource("3_tc2wc"), ExtResource("4_16gwd"), ExtResource("5_duqfp"), ExtResource("6_es33b"), ExtResource("7_u8e1k")])
 chapter = 0
 is_boss = true

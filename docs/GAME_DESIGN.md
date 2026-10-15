@@ -174,7 +174,7 @@ The Battle tab becomes a **Journey through time**: three era chapters, Rory as t
 
 Rory is the recurring rival, always one era ahead of the player.
 
-**Alphas:** a boss's signature creature gets extra Health and Attack and a gold ALPHA badge, always plays, and is shown on the boss's team so the player can plan around it.
+**Alphas:** a boss's signature creature gets extra Health and Attack and always plays. The boss's description names it (no badge on the card; Jo, 2026-10-15), and the pick screen repeats it, so the player can plan around it.
 
 **Journey screen:** an illustrated path map per era (Jo's paintings) with the stages as markers along the trail; era tabs at the top (the finale locked until the Cretaceous boss falls); a chapter banner with stars x/18 and the three chest markers; the boss marker bigger and gold. Tapping a marker shows the rival (pixel-art sprite, intro, their 6, best stars) and Challenge. Rivals are pixel-art trainer sprites (Jo, 2026-10-15), shown whole in the rival's details and as a head crop in the round map markers. The pre-battle screen shows how stars work and any Alpha; the results screen fills in the stars and shows a first-clear bonus. The Professaur introduces each new chapter in a few lines. No rule stages (e.g. "Sky only") for now.
 

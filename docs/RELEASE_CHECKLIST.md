@@ -3,6 +3,7 @@
 Go through this before building a production release (signed `.aab` for Google Play).
 
 ## Remove development tools
+- [ ] **Delete the DEV "unlock all stages" button** in `ui/tabs/battle_tab.gd` and `Journey.dev_unlock_all` in `core/collection/journey.gd` (debug builds only, doesn't touch the save, but it shouldn't ship).
 - [ ] **Delete the DEV "unlock all dinos" button** in `ui/tabs/dex_tab.gd`, plus `PlayerProfile.unlock_all()` in `core/collection/player_profile.gd` and its test `test_unlock_all_keeps_shinies` in `tests/test_collection.gd`. It only shows in debug builds, but it shouldn't ship at all.
   Jo's call (2026-10-08): keep it through closed testing (Play builds are release builds, so testers never see it), delete it before the production release.
 

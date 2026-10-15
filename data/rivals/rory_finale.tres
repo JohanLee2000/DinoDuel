@@ -13,7 +13,7 @@
 script = ExtResource("9_ks5qt")
 id = &"rory_finale"
 display_name = "Rival Rory"
-intro = "Extinction Day. Rory brings his best from every era, two Alphas included, and the meteor shower starts on turn 8."
+intro = "Extinction Day. Rory brings his best from every era, including an Alpha Torvosaurus and an Alpha Cymbospondylus (extra Health and Attack, always play), and the meteor shower starts on turn 8."
 brings = Array[ExtResource("1_ks5qt")]([ExtResource("2_4bu0q"), ExtResource("3_c4ypl"), ExtResource("4_p877b"), ExtResource("5_3h4g8"), ExtResource("6_nvuku"), ExtResource("7_8jzpc")])
 point_cap = 11
 chapter = 3

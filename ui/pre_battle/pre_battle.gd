@@ -45,13 +45,14 @@ func _ready() -> void:
 	_rival_label.reparent(heading)
 	_rival_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	for dino in rival.brings:
-		var card := DinoCard.create(dino, DinoCard.Mode.MINI)
-		if dino.id in rival.alphas:
-			card.set_badge("ALPHA")
-		_rival_brings.add_child(card)
+		_rival_brings.add_child(DinoCard.create(dino, DinoCard.Mode.MINI))
 	var notes := "Stars: one for each of your dinos still standing when you win."
 	if not rival.alphas.is_empty():
-		notes = "ALPHA: extra Health and Attack, and it always plays. " + notes
+		var names: Array[String] = []
+		for dino in rival.brings:
+			if dino.id in rival.alphas:
+				names.append(dino.display_name)
+		notes = "Alpha %s: extra Health and Attack, and always plays. " % " and ".join(names) + notes
 	if rival.meteor_turn > 0:
 		notes += " The meteor shower starts on turn %d." % rival.meteor_turn
 	_rival_label.get_parent().get_parent().add_child(UiKit.label(notes, 24, Palette.TEXT_DIM))

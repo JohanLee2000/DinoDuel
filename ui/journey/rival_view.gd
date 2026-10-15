@@ -1,7 +1,7 @@
 class_name RivalView
 extends Control
-## A Journey stage up close (tap a map marker): the rival's sprite, name and habit hint, their 6
-## (Alphas marked; tap a card to see it), your best stars and record, what a win pays, and
+## A Journey stage up close (tap a map marker): the rival's sprite, name and habit hint (a boss's
+## names its Alpha), their 6 (tap a card to see it), your best stars and record, what a win pays, and
 ## Challenge. Locked stages say who to beat first.
 
 const CARD_WIDTH := 100.0
@@ -73,13 +73,10 @@ func _ready() -> void:
 
 	column.add_child(UiKit.label(_stage.intro, 28, Palette.TEXT))
 
-	var team_label := "Their team" + (" · ALPHA: extra Health and Attack, always plays" if not _stage.alphas.is_empty() else "")
-	column.add_child(UiKit.label(team_label, 24, Palette.TEXT_DIM))
+	column.add_child(UiKit.label("Their team", 24, Palette.TEXT_DIM))
 	var team := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	for dino in _stage.brings:
 		var card := DinoCard.create(dino, DinoCard.Mode.MINI, null, false, CARD_WIDTH)
-		if dino.id in _stage.alphas:
-			card.set_badge("ALPHA")
 		card.pressed.connect(CardViewer.open.bind(dino))
 		team.add_child(card)
 	column.add_child(team)

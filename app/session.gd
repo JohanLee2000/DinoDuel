@@ -63,6 +63,7 @@ func _ready() -> void:
 		args.append_array(FileAccess.get_file_as_string(DEV_ARGS_FILE).strip_edges().split(" ", false))
 	Power.setup(get_tree(), not "--uncapped" in args)
 	DinoArt.use_thumbs = not "--no-thumbs" in args
+	Journey.dev_unlock_all = "--unlock-stages" in args
 	dev_tab_timing = "--tab-timing" in args
 	if DisplayServer.get_name() != "headless" and DinoArt.use_thumbs:
 		DinoArt.warm_up(catalog)

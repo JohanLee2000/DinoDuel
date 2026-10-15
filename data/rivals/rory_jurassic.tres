@@ -13,7 +13,7 @@
 script = ExtResource("9_ll8xx")
 id = &"rory_jurassic"
 display_name = "Rival Rory"
-intro = "Rory raced ahead to the Jurassic with an Alpha Allosaurus. He learns your habits."
+intro = "Rory raced ahead to the Jurassic with an Alpha Allosaurus: extra Health and Attack, and it always plays. He learns your habits."
 brings = Array[ExtResource("1_ll8xx")]([ExtResource("2_4bre4"), ExtResource("3_i11dx"), ExtResource("4_9elu5"), ExtResource("5_mflci"), ExtResource("6_x3aq5"), ExtResource("7_4lhkl")])
 chapter = 1
 is_boss = true

@@ -543,8 +543,6 @@ func _rebuild_side(side: int) -> void:
 			battle_side.active_dino(), _is_shiny(side, battle_side.active_dino().def),
 			DinoCard.WIDTHS[DinoCard.Mode.BATTLE] * _card_scale)
 	card.display_health(_shown_health[side][battle_side.active])
-	if battle_side.active_dino().alpha:
-		card.set_badge("ALPHA")
 	_slots[side].custom_minimum_size = card.size
 	_slots[side].add_child(card)
 	_active_cards[side] = card
@@ -564,8 +562,6 @@ func _rebuild_side(side: int) -> void:
 		var mini := DinoCard.create(battle_side.party[i].def, DinoCard.Mode.MINI, battle_side.party[i],
 				_is_shiny(side, battle_side.party[i].def), BENCH_CARD_WIDTH * _card_scale)
 		mini.display_health(_shown_health[side][i])
-		if battle_side.party[i].alpha:
-			mini.set_badge("ALPHA")
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)
 		_bench_cards[side][i] = mini

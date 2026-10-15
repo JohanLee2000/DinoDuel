@@ -13,7 +13,7 @@
 script = ExtResource("9_u2pff")
 id = &"rory_cretaceous"
 display_name = "Rival Rory"
-intro = "Rory found an Alpha T. rex in the Cretaceous. This is his best team yet."
+intro = "Rory found an Alpha T. rex in the Cretaceous: extra Health and Attack, and it always plays. This is his best team yet."
 brings = Array[ExtResource("1_u2pff")]([ExtResource("2_mekbq"), ExtResource("3_so2qa"), ExtResource("4_djqqt"), ExtResource("5_i3e2s"), ExtResource("6_a4epx"), ExtResource("7_bm9ge")])
 point_cap = 11
 chapter = 2
