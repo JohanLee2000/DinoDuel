@@ -82,7 +82,7 @@ func _script() -> Array[Dictionary]:
 				"tab": Session.Tab.BATTLE},
 		{"text": "Let's get started. Up here are your [b]Amber[/b] and your [b]egg clutches[/b]. You earn Amber from battles and duplicate dinos, and spend it on eggs and crafting.",
 				"target": _main.stats_rect},
-		{"text": "[b]Battle[/b]: challenge rival collectors. Each turn you both secretly pick Bite, Charge, Brace or Swap. Win to earn a clutch of %d eggs!" % Economy.EGGS_PER_CLUTCH,
+		{"text": "[b]Battle[/b]: the Journey through time. Beat rival collectors one by one, from the Triassic all the way to the meteor. Each turn you both secretly pick Bite, Charge, Brace or Swap, and every win earns a clutch of %d eggs!" % Economy.EGGS_PER_CLUTCH,
 				"tab": Session.Tab.BATTLE, "target": _main.tab_rect.bind(Session.Tab.BATTLE)},
 		{"text": "[b]Party[/b]: the %d dinos you bring. Before each battle you see your rival's %d and pick %d, up to %d Party Points." \
 				% [PartyRules.BRING_SIZE, PartyRules.BRING_SIZE, PartyRules.PARTY_SIZE, PartyRules.POINT_CAP],
@@ -134,30 +134,51 @@ func _build_box() -> PanelContainer:
 	return box
 
 
-## Jo's painting if it exists, otherwise the placeholder icon.
+## Jo's pixel-art portrait if it exists, otherwise the placeholder icon.
 func _portrait() -> Control:
+	return portrait(PORTRAIT_SIZE)
+
+
+## The Professaur's round, gold-rimmed portrait, `diameter` across (also used for chapter intros).
+static func portrait(diameter: float) -> Control:
 	var frame := Panel.new()
-	frame.custom_minimum_size = Vector2.ONE * PORTRAIT_SIZE
+	frame.custom_minimum_size = Vector2.ONE * diameter
 	frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var image := TextureRect.new()
 	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	image.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if ResourceLoader.exists(PORTRAIT_ART):
-		# Round, gold-rimmed crop of the painting.
-		var round_style := StyleBoxFlat.new()
-		round_style.bg_color = Color.WHITE
-		round_style.set_corner_radius_all(int(PORTRAIT_SIZE / 2))
-		frame.add_theme_stylebox_override("panel", round_style)
+		var disc := StyleBoxFlat.new()
+		disc.bg_color = Color("f3e3c3")
+		disc.set_corner_radius_all(int(diameter / 2))
+		frame.add_theme_stylebox_override("panel", disc)
 		frame.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
 		image.texture = load(PORTRAIT_ART)
 	else:
 		frame.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-		image.texture = Icons.texture(&"professor", int(PORTRAIT_SIZE))
+		image.texture = Icons.texture(&"professor", int(diameter))
 	frame.add_child(image)
-	return frame
+	var holder := Control.new()
+	holder.custom_minimum_size = frame.custom_minimum_size
+	holder.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(frame)
+	frame.size = frame.custom_minimum_size
+	var rim := Panel.new()
+	var ring := StyleBoxFlat.new()
+	ring.draw_center = false
+	ring.border_color = Palette.HIGHLIGHT
+	ring.set_border_width_all(4)
+	ring.set_corner_radius_all(int(diameter / 2))
+	rim.add_theme_stylebox_override("panel", ring)
+	rim.size = frame.custom_minimum_size
+	rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(rim)
+	return holder
 
 
 func _on_input(event: InputEvent) -> void:

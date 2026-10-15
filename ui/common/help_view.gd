@@ -41,6 +41,16 @@ const PAGES := [
 		],
 	},
 	{
+		"title": "The Journey",
+		"rows": [
+			["map", "Travel from the Triassic to the Cretaceous. Each win opens the next rival on the trail."],
+			["", "Every rival has a [b]habit[/b], and their description hints at it. Read it and play the counter."],
+			["star", "[b]Stars[/b]: one for each of your dinos still standing when you win. Fill a chapter's chests with them."],
+			["crown", "Rival Rory waits at the end of every era with an [b]Alpha[/b]: a stronger dino that always plays."],
+			["egg", "Every win gives an egg clutch. Your first win against a rival also pays a bonus."],
+		],
+	},
+	{
 		"title": "Eggs and Amber",
 		"rows": [
 			["egg", "Win a battle: a clutch of [b]3 eggs[/b] and %d Amber. Lose: %d Amber."],

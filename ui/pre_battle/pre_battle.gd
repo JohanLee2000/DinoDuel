@@ -29,8 +29,32 @@ func _ready() -> void:
 
 	var rival := Session.rival
 	_rival_label.text = "%s brings these 6 and will pick 3:" % rival.display_name
+	_rival_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_rival_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# The rival's sprite beside who they are.
+	var heading := UiKit.hbox(12)
+	_rival_label.get_parent().add_child(heading)
+	_rival_label.get_parent().move_child(heading, 0)
+	var sprite := TextureRect.new()
+	sprite.texture = RivalArt.sprite(rival.character)
+	sprite.custom_minimum_size = Vector2(120, 120)
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	heading.add_child(sprite)
+	_rival_label.reparent(heading)
+	_rival_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	for dino in rival.brings:
-		_rival_brings.add_child(DinoCard.create(dino, DinoCard.Mode.MINI))
+		var card := DinoCard.create(dino, DinoCard.Mode.MINI)
+		if dino.id in rival.alphas:
+			card.set_badge("ALPHA")
+		_rival_brings.add_child(card)
+	var notes := "Stars: one for each of your dinos still standing when you win."
+	if not rival.alphas.is_empty():
+		notes = "ALPHA: extra Health and Attack, and it always plays. " + notes
+	if rival.meteor_turn > 0:
+		notes += " The meteor shower starts on turn %d." % rival.meteor_turn
+	_rival_label.get_parent().get_parent().add_child(UiKit.label(notes, 24, Palette.TEXT_DIM))
 
 	var profile := Session.profile
 	for dino in profile.lineup_defs(Session.catalog):

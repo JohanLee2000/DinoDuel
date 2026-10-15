@@ -3,7 +3,8 @@
 Usage:
     python tools/prepare_sprites.py <image> <id>              one sprite, e.g. rory.png rory
     python tools/prepare_sprites.py <sheet> <id1,id2,...>     a sprite sheet, cut into a grid
-                                                              (4 x 4 for 16 ids, 4 x 2 for 8)
+                                                              (4 x 4 for 16 ids, 4 x 2 for 8;
+                                                              "-" skips a cell)
 
 Each sprite is trimmed to the character (transparent background; a flat light background is
 removed if the image has none), padded a little, capped at 1024 px and saved as lossless WebP in
@@ -12,7 +13,9 @@ the game draws it scaled down, where the "pixels" still read as crisp blocks.
 
 It also records where the head is, as fractions of the sprite (x, y, size of a square), in
 assets/rivals/heads.json; the round Journey map markers show that crop.
-Requires Pillow and numpy.
+A sheet is cut along its emptiest columns and, per column, its emptiest rows near the grid lines
+(sprites can reach across a straight cut), and stray bits of neighbours are dropped.
+Requires Pillow, numpy and scipy.
 """
 import json
 import sys
@@ -20,6 +23,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from scipy import ndimage
 
 PROJECT = Path(__file__).resolve().parent.parent
 OUT = PROJECT / "assets" / "rivals"
@@ -57,6 +61,27 @@ def remove_flat_background(im: Image.Image) -> Image.Image:
     return Image.fromarray(a)
 
 
+def keep_main_figure(im: Image.Image) -> Image.Image:
+    """Drops small detached bits (pieces of a neighbouring sprite that crossed into the cell)."""
+    a = np.asarray(im).copy()
+    labels, count = ndimage.label(a[..., 3] > 40)
+    if count <= 1:
+        return im
+    sizes = ndimage.sum(np.ones_like(labels), labels, range(1, count + 1))
+    keep = [i + 1 for i, size in enumerate(sizes) if size >= sizes.max() * 0.03]
+    a[~np.isin(labels, keep) & (labels > 0), 3] = 0
+    return Image.fromarray(a)
+
+
+def emptiest(profile: np.ndarray, near: float, span: int) -> int:
+    """The index near `near` whose opaque-pixel count is lowest (the middle of the emptiest run)."""
+    lo, hi = max(0, int(near - span)), min(len(profile), int(near + span))
+    window = profile[lo:hi]
+    best = window.min()
+    hits = np.where(window == best)[0]
+    return lo + int(hits[len(hits) // 2])
+
+
 def trim(im: Image.Image) -> Image.Image:
     alpha = np.asarray(im)[..., 3]
     ys, xs = np.where(alpha > 40)
@@ -89,7 +114,7 @@ def head_box(im: Image.Image) -> list:
 
 
 def save(im: Image.Image, sprite_id: str, heads: dict) -> None:
-    sprite = trim(remove_flat_background(im))
+    sprite = trim(keep_main_figure(remove_flat_background(im)))
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"{sprite_id}.webp"
     sprite.save(path, "WEBP", lossless=True, quality=100, method=6)
@@ -108,10 +133,17 @@ def main() -> None:
     else:
         cols = 4
         rows = (len(ids) + cols - 1) // cols
+        clean = remove_flat_background(source)
+        opaque = np.asarray(clean)[..., 3] > 40
         w, h = source.width / cols, source.height / rows
+        xs = [0] + [emptiest(opaque.sum(axis=0), c * w, w * 0.2) for c in range(1, cols)] + [source.width]
         for i, sprite_id in enumerate(ids):
+            if sprite_id in ("-", "skip"):
+                continue
             r, c = divmod(i, cols)
-            cell = source.crop((round(c * w), round(r * h), round((c + 1) * w), round((r + 1) * h)))
+            column = opaque[:, xs[c]:xs[c + 1]].sum(axis=1)
+            ys = [0] + [emptiest(column, k * h, h * 0.15) for k in range(1, rows)] + [source.height]
+            cell = clean.crop((xs[c], ys[r], xs[c + 1], ys[r + 1]))
             save(cell, sprite_id, heads)
     HEADS.write_text(json.dumps(dict(sorted(heads.items())), indent=1))
 

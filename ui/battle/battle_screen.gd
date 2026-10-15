@@ -152,9 +152,56 @@ func _ready() -> void:
 		bonuses.append("Balanced party")
 	if not bonuses.is_empty():
 		_say("Your party bonuses: %s." % ", ".join(bonuses))
+	await _rival_entrance()
 	if _coaching:
 		await HelpView.open(0, true).closed
 	_begin_choice()
+
+
+## "<Rival> wants to battle!": the rival's sprite slides in over a dark band, then the battle starts.
+## Tap to skip.
+func _rival_entrance() -> void:
+	var art := RivalArt.sprite(Session.rival.character)
+	if art == null:
+		return
+	var layer := ColorRect.new()
+	layer.color = Color(0, 0, 0, 0.0)
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(layer)
+	var view := get_viewport_rect().size
+	var band := ColorRect.new()
+	band.color = Color(0.02, 0.04, 0.09, 0.92)
+	band.size = Vector2(view.x, 360)
+	band.position = Vector2(0, view.y * 0.5 - 180)
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(band)
+	var sprite := TextureRect.new()
+	sprite.texture = art
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	sprite.size = Vector2(320, 320)
+	sprite.position = Vector2(view.x, band.position.y + 20)
+	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(sprite)
+	var words := UiKit.title("%s\nwants to battle!" % Session.rival.display_name, 40,
+			Palette.HIGHLIGHT if Session.rival.is_boss else Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	words.position = Vector2(-view.x, band.position.y + 130)
+	words.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(words)
+	var tween := create_tween()
+	tween.tween_property(layer, "color:a", 0.45, 0.15)
+	tween.parallel().tween_property(sprite, "position:x", view.x - 340, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(words, "position:x", 28.0, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(0.5 if Session.autoplay else 1.3)
+	tween.tween_property(layer, "modulate:a", 0.0, 0.25)
+	var skipped := [false]
+	layer.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and not skipped[0]:
+			skipped[0] = true
+			tween.custom_step(10.0))
+	await tween.finished
+	layer.queue_free()
 
 
 # --- Player input ---------------------------------------------------------------------------
@@ -496,6 +543,8 @@ func _rebuild_side(side: int) -> void:
 			battle_side.active_dino(), _is_shiny(side, battle_side.active_dino().def),
 			DinoCard.WIDTHS[DinoCard.Mode.BATTLE] * _card_scale)
 	card.display_health(_shown_health[side][battle_side.active])
+	if battle_side.active_dino().alpha:
+		card.set_badge("ALPHA")
 	_slots[side].custom_minimum_size = card.size
 	_slots[side].add_child(card)
 	_active_cards[side] = card
@@ -515,6 +564,8 @@ func _rebuild_side(side: int) -> void:
 		var mini := DinoCard.create(battle_side.party[i].def, DinoCard.Mode.MINI, battle_side.party[i],
 				_is_shiny(side, battle_side.party[i].def), BENCH_CARD_WIDTH * _card_scale)
 		mini.display_health(_shown_health[side][i])
+		if battle_side.party[i].alpha:
+			mini.set_badge("ALPHA")
 		mini.pressed.connect(_on_bench_pressed.bind(side, i))
 		_benches[side].add_child(mini)
 		_bench_cards[side][i] = mini
@@ -610,9 +661,21 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 	tiles.add_child(_result_tile("Dinos standing", "%d / %d" % [left, party_size],
 			Palette.HEAL if left > 0 else Palette.DAMAGE))
 	if reward["stars"] > 0:
-		# Journey stars: one per dino left standing.
-		tiles.add_child(_result_tile("Stars" if not reward["new_best"] or reward["first_clear"] else "New best!",
-				"★".repeat(reward["stars"]) + "☆".repeat(Journey.MAX_STARS - reward["stars"]), Palette.HIGHLIGHT))
+		# Journey stars: one per dino left standing, filling in one at a time.
+		var tile := _result_tile("Stars" if not reward["new_best"] or reward["first_clear"] else "New best!",
+				"☆".repeat(Journey.MAX_STARS), Palette.HIGHLIGHT)
+		tiles.add_child(tile)
+		var value: Label = tile.get_child(0).get_child(0)
+		var fill := value.create_tween()
+		fill.tween_interval(0.45)
+		for i in reward["stars"]:
+			fill.tween_callback(func() -> void:
+				value.text = "★".repeat(i + 1) + "☆".repeat(Journey.MAX_STARS - i - 1)
+				value.pivot_offset = value.size / 2
+				value.scale = Vector2(1.35, 1.35)
+				value.create_tween().tween_property(value, "scale", Vector2.ONE, 0.18)
+				Sound.play(&"card_pick"))
+			fill.tween_interval(0.3)
 	column.add_child(tiles)
 
 	var rewards := UiKit.vbox(10)

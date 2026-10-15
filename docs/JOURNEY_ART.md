@@ -7,8 +7,8 @@ When you have them, paste them in chat in any order and say which is which; they
 | Art | Size | File | Status |
 |---|---|---|---|
 | Era maps (3) + finale | 1024 x 1536 portrait | `map_triassic`, `map_jurassic`, `map_cretaceous`, `map_finale` | Done (2026-10-15) |
-| Rival sprites (16) | 1024 x 1024 square, pixel art | `<rival id>` (e.g. `rae`, `rory`) | Rory done; 15 waiting |
-| Professaur (optional) | 1024 x 1024 square, pixel art | `professaur` | Waiting |
+| Rival sprites (16) | 1024 x 1024 square, pixel art | `<rival id>` (e.g. `rae`, `rory`) | Done (2026-10-15) |
+| Professaur | 1024 x 1024 square, pixel art | `assets/characters/professaur` | Done (2026-10-15; head-and-shoulders, not the sheet's) |
 
 ---
 

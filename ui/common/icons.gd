@@ -107,6 +107,17 @@ const SVG := {
 	# Restart game: an arrow going back around the circle.
 	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
 <path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",
+	# A locked Journey stage.
+	&"lock": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M20 28 L20 20 A12 12 0 0 1 44 20 L44 28" fill="none" stroke="#dfe7f5" stroke-width="7" stroke-linecap="round"/>
+<rect x="12" y="27" width="40" height="31" rx="7" fill="#dfe7f5" stroke="#0b1220" stroke-width="3"/><circle cx="32" cy="41" r="5" fill="#0b1220"/><rect x="30" y="42" width="4" height="9" rx="2" fill="#0b1220"/></svg>""",
+	# Journey star chest.
+	&"chest": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 56">
+<defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c47a2c"/><stop offset="1" stop-color="#7a4314"/></linearGradient></defs>
+<path d="M6 22 Q6 6 32 6 Q58 6 58 22 Z" fill="url(#w)" stroke="#3a1e06" stroke-width="3" stroke-linejoin="round"/>
+<rect x="6" y="22" width="52" height="28" rx="3" fill="url(#w)" stroke="#3a1e06" stroke-width="3"/>
+<rect x="6" y="20" width="52" height="6" fill="#ffd34d" stroke="#3a1e06" stroke-width="2"/>
+<rect x="27" y="22" width="10" height="13" rx="2" fill="#ffd34d" stroke="#3a1e06" stroke-width="2"/>
+<rect x="13" y="8" width="5" height="42" fill="#ffd34d" opacity="0.85"/><rect x="46" y="8" width="5" height="42" fill="#ffd34d" opacity="0.85"/></svg>""",
 	# Volume slider knob.
 	&"knob": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ffd34d" stroke="#0b1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="#fff2c4"/></svg>""",
 	# Settings button.
