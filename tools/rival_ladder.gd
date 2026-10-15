@@ -27,7 +27,7 @@ func _win_rate(party: Array[DinoDef], rival: RivalDef, battles: int) -> float:
 	for b in battles:
 		var player := BattleAI.new(b * 7 + 1)
 		var ai := rival.make_ai(b * 7 + 3)
-		var state := BattleEngine.create(player.choose_party(party), ai.choose_party(rival.brings, rival.point_cap))
+		var state := rival.start_battle(player.choose_party(party), rival.pick_party(ai))
 		var ais: Array[BattleAI] = [player, ai]
 		while not state.is_over():
 			var pair: Array[BattleAction] = [player.choose_action(state, 0), ai.choose_action(state, 1)]

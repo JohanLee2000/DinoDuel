@@ -10,9 +10,9 @@ func _party(ids: Array) -> Array[DinoDef]:
 	return defs
 
 
-func _win(profile: PlayerProfile, party: Array[DinoDef], turns := 15, left := 2, difficulty := 1) -> void:
-	profile.record_battle(true, &"rae")
-	Goals.on_battle(profile, {"won": true, "rival_id": &"rae", "difficulty": difficulty, "party": party,
+func _win(profile: PlayerProfile, party: Array[DinoDef], turns := 15, left := 2) -> void:
+	profile.record_battle(true, Journey.find(&"rae"), left)
+	Goals.on_battle(profile, {"won": true, "rival_id": &"rae", "party": party,
 			"turns": turns, "dinos_left": left})
 
 
@@ -51,7 +51,7 @@ func test_quest_progress_claim_and_bonus() -> void:
 	assert_true(Goals.claim_quest(p, 1))
 	assert_eq(p.amber, amber + Goals.quest_reward(p.quests[1]))
 	assert_false(Goals.claim_quest(p, 1), "only once")
-	p.record_battle(false, &"rae")
+	p.record_battle(false, Journey.find(&"rae"))
 	Goals.on_battle(p, {"won": false, "party": sea_party, "turns": 10, "dinos_left": 0})
 	assert_eq(int(p.quests[0]["progress"]), 1, "losses don't count as wins")
 	_win(p, sea_party)

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_ll8xx"]
+[ext_resource type="Resource" path="res://data/dinos/allosaurus.tres" id="2_4bre4"]
+[ext_resource type="Resource" path="res://data/dinos/torvosaurus.tres" id="3_i11dx"]
+[ext_resource type="Resource" path="res://data/dinos/diplodocus.tres" id="4_9elu5"]
+[ext_resource type="Resource" path="res://data/dinos/liopleurodon.tres" id="5_mflci"]
+[ext_resource type="Resource" path="res://data/dinos/cryolophosaurus.tres" id="6_x3aq5"]
+[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="7_4lhkl"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_ll8xx"]
+
+[resource]
+script = ExtResource("9_ll8xx")
+id = &"rory_jurassic"
+display_name = "Rival Rory"
+intro = "Rory raced ahead to the Jurassic with an Alpha Allosaurus. He learns your habits."
+brings = Array[ExtResource("1_ll8xx")]([ExtResource("2_4bre4"), ExtResource("3_i11dx"), ExtResource("4_9elu5"), ExtResource("5_mflci"), ExtResource("6_x3aq5"), ExtResource("7_4lhkl")])
+point_cap = 12
+chapter = 1
+is_boss = true
+character = &"rory"
+alphas = Array[StringName]([&"allosaurus"])
+temperature = 0.06

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_f0wpe"]
+[ext_resource type="Resource" path="res://data/dinos/pteranodon.tres" id="2_nywnz"]
+[ext_resource type="Resource" path="res://data/dinos/nyctosaurus.tres" id="3_uix8i"]
+[ext_resource type="Resource" path="res://data/dinos/tapejara.tres" id="4_wtrm4"]
+[ext_resource type="Resource" path="res://data/dinos/ornithocheirus.tres" id="5_i1jzg"]
+[ext_resource type="Resource" path="res://data/dinos/hatzegopteryx.tres" id="6_6lp8j"]
+[ext_resource type="Resource" path="res://data/dinos/pterodaustro.tres" id="7_f22bt"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_f0wpe"]
+
+[resource]
+script = ExtResource("9_f0wpe")
+id = &"sully"
+display_name = "Storm Sully"
+intro = "Sully rides the storms with pterosaurs. Give him a bad matchup and he swaps out, and he learns your habits."
+brings = Array[ExtResource("1_f0wpe")]([ExtResource("2_nywnz"), ExtResource("3_uix8i"), ExtResource("4_wtrm4"), ExtResource("5_i1jzg"), ExtResource("6_6lp8j"), ExtResource("7_f22bt")])
+chapter = 2
+character = &"sully"
+temperature = 0.08
+habits = Array[StringName]([&"swap_on_disadvantage"])

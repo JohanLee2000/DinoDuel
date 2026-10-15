@@ -10,8 +10,6 @@ const QUESTS_PER_DAY := 3
 const QUEST_BONUS_CLUTCHES := 1
 ## A win this fast (or faster) counts for "quick" quests.
 const QUICK_WIN_TURNS := 12
-## Rivals with this many stars or more count as "hard".
-const HARD_RIVAL_STARS := 3
 ## id -> [text, target, Amber reward, group]. A day never has two quests from the same group.
 const QUEST_POOL := {
 	&"win_2": ["Win 2 battles", 2, 40, &"win"],
@@ -24,7 +22,7 @@ const QUEST_POOL := {
 	&"win_balanced": ["Win with a balanced party (Land, Sky and Sea)", 1, 40, &"balanced"],
 	&"win_flawless": ["Win without losing a dino", 1, 50, &"flawless"],
 	&"win_quick": ["Win in 12 turns or fewer", 1, 45, &"quick"],
-	&"win_hard": ["Beat a rival with 3 stars or more", 1, 50, &"hard"],
+	&"win_hard": ["Clear a new Journey stage", 1, 50, &"hard"],
 }
 
 
@@ -45,6 +43,9 @@ static func refresh_quests(profile: PlayerProfile, today: int) -> void:
 		ids[j] = swap
 	var groups := {}
 	for id in ids:
+		# Nothing new to clear once the Journey is done.
+		if id == &"win_hard" and Journey.complete(profile):
+			continue
 		var group: StringName = QUEST_POOL[id][3]
 		if groups.has(group):
 			continue
@@ -158,14 +159,20 @@ static func claim_era(profile: PlayerProfile, catalog: DinoCatalog, era: int) ->
 # --- Achievements ---------------------------------------------------------------------------
 
 const FAST_WIN_TURNS := 8
+## Chapter-clear achievements, indexed by Journey chapter.
+const CHAPTER_ACHIEVEMENTS: Array[StringName] = [&"clear_triassic", &"clear_jurassic", &"clear_cretaceous",
+		&"extinction_survivor"]
 const METEOR_TURN := 20
 ## id -> [title, description, target, Amber]. The order is the order they're listed in.
 const ACHIEVEMENTS := {
 	&"first_win": ["First Victory", "Win a battle.", 1, 50],
 	&"veteran": ["Veteran Hunter", "Win 25 battles.", 25, 150],
 	&"champion": ["Champion", "Win 100 battles.", 100, 300],
-	&"rival_sweep": ["Rival Sweep", "Beat every rival at least once.", 5, 150],
-	&"beat_rory": ["Rory Who?", "Beat Rival Rory.", 1, 100],
+	&"clear_triassic": ["Triassic Trailblazer", "Beat Rory at the end of the Triassic.", 1, 150],
+	&"clear_jurassic": ["Jurassic Journeyer", "Beat Rory at the end of the Jurassic.", 1, 200],
+	&"clear_cretaceous": ["Cretaceous Conqueror", "Beat Rory at the end of the Cretaceous.", 1, 250],
+	&"extinction_survivor": ["Extinction Survivor", "Beat Rory on Extinction Day.", 1, 500],
+	&"star_collector": ["Star Collector", "Earn every star on the Journey.", 57, 300],
 	&"flawless": ["Flawless", "Win without losing a dino.", 1, 75],
 	&"lightning": ["Lightning Strike", "Win in 8 turns or fewer.", 1, 75],
 	&"last_standing": ["Last Dino Standing", "Win with only one dino left.", 1, 75],
@@ -186,10 +193,10 @@ static func achievement_progress(profile: PlayerProfile, catalog: DinoCatalog, i
 	match id:
 		&"first_win", &"veteran", &"champion":
 			return profile.wins
-		&"rival_sweep":
-			return _rivals().filter(func(rival: RivalDef) -> bool: return profile.record_against(rival.id)[0] > 0).size()
-		&"beat_rory":
-			return profile.record_against(&"rory")[0]
+		&"clear_triassic", &"clear_jurassic", &"clear_cretaceous", &"extinction_survivor":
+			return 1 if Journey.chapter_cleared(profile, CHAPTER_ACHIEVEMENTS.find(id)) else 0
+		&"star_collector":
+			return Journey.total_stars(profile)
 		&"flawless":
 			return _stat(profile, &"flawless_wins")
 		&"lightning":
@@ -219,8 +226,8 @@ static func achievement_progress(profile: PlayerProfile, catalog: DinoCatalog, i
 
 static func achievement_target(catalog: DinoCatalog, id: StringName) -> int:
 	match id:
-		&"rival_sweep":
-			return _rivals().size()
+		&"star_collector":
+			return Journey.max_total_stars()
 		&"complete_dex":
 			return catalog.dinos.size()
 	return ACHIEVEMENTS[id][2]
@@ -245,8 +252,8 @@ static func claim_achievement(profile: PlayerProfile, catalog: DinoCatalog, id: 
 
 # --- Events (called by PlayerProfile and Session) -------------------------------------------
 
-## After a finished battle (not a forfeit). `summary`: won, rival_id, difficulty, party (the 3
-## picked DinoDefs), turns, dinos_left.
+## After a finished battle (not a forfeit). `summary`: won, rival_id, party (the 3 picked
+## DinoDefs), turns, dinos_left, first_clear (a new Journey stage cleared), meteor_turn.
 static func on_battle(profile: PlayerProfile, summary: Dictionary) -> void:
 	var won: bool = summary.get("won", false)
 	var party: Array[DinoDef] = []
@@ -261,7 +268,7 @@ static func on_battle(profile: PlayerProfile, summary: Dictionary) -> void:
 			_add(profile, &"fast_wins")
 		if left == 1:
 			_add(profile, &"last_standing_wins")
-		if turns >= METEOR_TURN:
+		if turns >= int(summary.get("meteor_turn", METEOR_TURN)):
 			_add(profile, &"meteor_wins")
 		if PartyRules.has_era_bond(party) and PartyRules.is_balanced(party):
 			_add(profile, &"perfect_party_wins")
@@ -310,7 +317,7 @@ static func _battle_counts_for(id: StringName, summary: Dictionary, party: Array
 		&"win_quick":
 			return 1 if int(summary.get("turns", 999)) <= QUICK_WIN_TURNS else 0
 		&"win_hard":
-			return 1 if int(summary.get("difficulty", 0)) >= HARD_RIVAL_STARS else 0
+			return 1 if summary.get("first_clear", false) else 0
 	return 0
 
 
@@ -335,15 +342,6 @@ static func anything_to_claim(profile: PlayerProfile, catalog: DinoCatalog) -> b
 		if not achievement_claimed(profile, id) and achievement_unlocked(profile, catalog, id):
 			return true
 	return false
-
-
-static var _roster: Array[RivalDef] = []
-
-
-static func _rivals() -> Array[RivalDef]:
-	if _roster.is_empty():
-		_roster = RivalDef.load_roster()
-	return _roster
 
 
 static func _claimed(profile: PlayerProfile, key: String) -> bool:

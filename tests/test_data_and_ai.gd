@@ -32,22 +32,41 @@ func test_starter_parties_get_bonuses() -> void:
 		assert_eq(catalog.find(id).rarity, DinoDef.Rarity.COMMON, "%s is a Common" % id)
 
 
-func test_rival_roster_is_valid() -> void:
+func test_journey_roster_is_valid() -> void:
 	var rivals := RivalDef.load_roster()
-	assert_true(rivals.size() >= 5)
+	assert_eq(rivals.size(), 19, "3 chapters x (5 rivals + a boss) + the finale")
 	var ids := {}
-	var last_difficulty := 0
+	var last_chapter := 0
 	for rival in rivals:
-		assert_false(ids.has(rival.id), "duplicate rival %s" % rival.id)
+		assert_false(ids.has(rival.id), "duplicate stage %s" % rival.id)
 		ids[rival.id] = true
 		assert_eq(rival.brings.size(), PartyRules.BRING_SIZE, "%s brings 6" % rival.id)
-		assert_true(PartyRules.has_valid_pick(rival.brings, rival.point_cap), "%s can field a party" % rival.id)
-		assert_true(rival.difficulty >= last_difficulty, "roster is ordered easiest first")
-		last_difficulty = rival.difficulty
+		assert_true(rival.chapter >= last_chapter, "stages are in chapter order")
+		last_chapter = rival.chapter
+		assert_true(rival.character != &"", "%s has a character" % rival.id)
+		for habit in rival.habits:
+			assert_true(habit in BattleAI.HABITS, "%s: unknown habit %s" % [rival.id, habit])
+		var alphas_brought := rival.brings.filter(func(d: DinoDef) -> bool: return d.id in rival.alphas)
+		assert_eq(alphas_brought.size(), rival.alphas.size(), "%s brings its Alphas" % rival.id)
+		for seed_value in 5:
+			var picked := rival.pick_party(rival.make_ai(seed_value))
+			assert_eq(PartyRules.validate(picked, rival.point_cap), "", "%s fields a legal party" % rival.id)
+			for alpha in rival.alphas:
+				assert_true(picked.any(func(d: DinoDef) -> bool: return d.id == alpha), "%s plays its Alpha" % rival.id)
+	for chapter in 3:
+		var stages := Journey.chapter_stages(chapter)
+		assert_eq(stages.size(), 6, "%s has 6 stages" % Journey.CHAPTER_NAMES[chapter])
+		for i in stages.size():
+			assert_eq(stages[i].is_boss, i == 5, "only the last stage of a chapter is the boss")
+		assert_eq(stages[5].character, &"rory", "Rory is the boss")
+		assert_false(stages[5].alphas.is_empty(), "the boss has an Alpha")
+	var finale := Journey.chapter_stages(Journey.FINALE)
+	assert_eq(finale.size(), 1)
+	assert_true(finale[0].meteor_turn > 0 and finale[0].meteor_turn < BattleEngine.METEOR_START_TURN, "early meteor")
 
 
 func test_ai_picks_legal_party() -> void:
-	var rival := load("res://data/rivals/rory.tres") as RivalDef
+	var rival := load("res://data/rivals/rory_cretaceous.tres") as RivalDef
 	var ai := rival.make_ai(7)
 	var picked := ai.choose_party(rival.brings, rival.point_cap)
 	assert_eq(PartyRules.validate(picked, rival.point_cap), "")

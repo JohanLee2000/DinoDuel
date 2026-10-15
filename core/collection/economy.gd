@@ -29,9 +29,19 @@ const CHECKIN_BONUSES: Array[Dictionary] = [
 	{"rare_clutches": 1},
 ]
 
+## A win always gives WIN_CLUTCHES. Outside the Journey (sims, old calls) a win also gives WIN_AMBER.
 const WIN_AMBER := 25
 const WIN_CLUTCHES := 1
 const LOSS_AMBER := 10
+## The Journey (Jo, 2026-10-15), indexed by chapter (Triassic, Jurassic, Cretaceous, finale).
+## First clear of a stage: JOURNEY_WIN_AMBER + JOURNEY_FIRST_CLEAR_AMBER; a boss's first clear
+## gives BOSS_FIRST_CLEAR_RARE_CLUTCHES instead of the Amber bonus (the finale's
+## FINALE_FIRST_CLEAR_RARE_CLUTCHES). Replays (any win after the first): REPLAY_AMBER.
+const JOURNEY_WIN_AMBER: Array[int] = [25, 35, 50, 50]
+const JOURNEY_FIRST_CLEAR_AMBER: Array[int] = [50, 100, 150, 0]
+const BOSS_FIRST_CLEAR_RARE_CLUTCHES := 1
+const FINALE_FIRST_CLEAR_RARE_CLUTCHES := 2
+const REPLAY_AMBER := 10
 const CLUTCH_PRICE := 150
 const DAILY_CLUTCHES := 1
 

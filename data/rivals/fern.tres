@@ -1,21 +1,22 @@
 [gd_resource type="Resource" script_class="RivalDef" format=3]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_gnvfg"]
-[ext_resource type="Resource" path="res://data/dinos/parasaurolophus.tres" id="2_29hw7"]
-[ext_resource type="Resource" path="res://data/dinos/rhamphorhynchus.tres" id="3_dz7po"]
-[ext_resource type="Resource" path="res://data/dinos/dimorphodon.tres" id="4_4ziya"]
-[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="5_cd5cw"]
-[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="6_1hq65"]
-[ext_resource type="Resource" path="res://data/dinos/tanystropheus.tres" id="7_d4gjt"]
-[ext_resource type="Script" path="res://core/rival_def.gd" id="9_3f8gr"]
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_al77a"]
+[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_zzafo"]
+[ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="3_opc4i"]
+[ext_resource type="Resource" path="res://data/dinos/mixosaurus.tres" id="4_e4ny4"]
+[ext_resource type="Resource" path="res://data/dinos/eoraptor.tres" id="5_yvi91"]
+[ext_resource type="Resource" path="res://data/dinos/placodus.tres" id="6_7c81o"]
+[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="7_dbv9j"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_al77a"]
 
 [resource]
-script = ExtResource("9_3f8gr")
+script = ExtResource("9_al77a")
 id = &"fern"
 display_name = "Ranger Fern"
 intro = "Fern plays it safe and loves to Brace. Catch her with a Charge when you expect it."
-brings = Array[ExtResource("1_gnvfg")]([ExtResource("2_29hw7"), ExtResource("3_dz7po"), ExtResource("4_4ziya"), ExtResource("5_cd5cw"), ExtResource("6_1hq65"), ExtResource("7_d4gjt")])
-difficulty = 2
+brings = Array[ExtResource("1_al77a")]([ExtResource("2_zzafo"), ExtResource("3_opc4i"), ExtResource("4_e4ny4"), ExtResource("5_yvi91"), ExtResource("6_7c81o"), ExtResource("7_dbv9j")])
+chapter = 0
+character = &"fern"
 temperature = 0.15
 brace_bias = 0.3
 learns_habits = false

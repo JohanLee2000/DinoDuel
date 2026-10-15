@@ -86,7 +86,7 @@ func _ready() -> void:
 	if _coaching:
 		extra_height -= COACH_PANEL_HEIGHT
 	_card_scale = clampf(1.0 + extra_height / EXTRA_HEIGHT_PER_SCALE, 1.0, MAX_CARD_SCALE)
-	_state = BattleEngine.create(Session.player_party, Session.rival_party)
+	_state = Session.rival.start_battle(Session.player_party, Session.rival_party)
 	_ai = Session.rival.make_ai(Session.battle_seed)
 	# Continuing a battle the game was closed during: replay its moves to get back to that point.
 	var resumed := not Session.resume_events.is_empty()
@@ -609,13 +609,20 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 	tiles.add_child(_result_tile("Turns", str(_state.turn - 1), Palette.TEXT))
 	tiles.add_child(_result_tile("Dinos standing", "%d / %d" % [left, party_size],
 			Palette.HEAL if left > 0 else Palette.DAMAGE))
+	if reward["stars"] > 0:
+		# Journey stars: one per dino left standing.
+		tiles.add_child(_result_tile("Stars" if not reward["new_best"] or reward["first_clear"] else "New best!",
+				"★".repeat(reward["stars"]) + "☆".repeat(Journey.MAX_STARS - reward["stars"]), Palette.HIGHLIGHT))
 	column.add_child(tiles)
 
 	var rewards := UiKit.vbox(10)
-	rewards.add_child(UiKit.title("Rewards", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	rewards.add_child(UiKit.title("First clear!" if reward["first_clear"] else "Rewards", 30, Palette.HIGHLIGHT,
+			HORIZONTAL_ALIGNMENT_CENTER, false))
 	var row := UiKit.hbox(28, BoxContainer.ALIGNMENT_CENTER)
 	if reward["clutches"] > 0:
 		row.add_child(_reward_item(&"egg", "+%d clutch%s" % [reward["clutches"], "" if reward["clutches"] == 1 else "es"]))
+	if reward["rare_clutches"] > 0:
+		row.add_child(_reward_item(&"egg", "+%d Rare" % reward["rare_clutches"]))
 	row.add_child(_reward_item(&"amber", "+%d Amber" % reward["amber"]))
 	rewards.add_child(row)
 	column.add_child(_result_well(rewards))

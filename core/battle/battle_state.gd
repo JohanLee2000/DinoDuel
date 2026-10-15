@@ -8,6 +8,8 @@ const DRAW := 2
 var sides: Array[BattleSide] = []
 var turn := 1
 var winner := ONGOING
+## The turn the meteor shower starts. The Journey finale starts it early (RivalDef.meteor_turn).
+var meteor_turn := BattleEngine.METEOR_START_TURN
 
 
 func side(index: int) -> BattleSide:
@@ -24,6 +26,7 @@ func clone() -> BattleState:
 		state.sides.append(s.clone())
 	state.turn = turn
 	state.winner = winner
+	state.meteor_turn = meteor_turn
 	return state
 
 

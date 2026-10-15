@@ -7,7 +7,8 @@ extends RefCounted
 ## stays unpredictable. It also remembers which actions the opponent has been using (call
 ## observe() after every turn), so a player who always Bites gets punished. Personality biases
 ## nudge it toward a style (e.g. a rival who loves to Charge), which gives players a habit to
-## learn and exploit in return.
+## learn and exploit in return. Conditional habits (HABITS, set from RivalDef.habits) are readable
+## patterns on top, like "Braces right after taking a hit" (the Journey, Jo 2026-10-15).
 
 ## How many observed turns it takes for the opponent's habits to count as much as reasoning.
 const HABIT_TRUST_TURNS := 3.0
@@ -16,6 +17,24 @@ const MAX_HABIT_WEIGHT := 0.85
 ## Starting count for each action kind, so nothing is ruled out before the opponent has acted.
 const HABIT_PRIOR := 0.25
 const WIN_BONUS := 1.0
+
+## Conditional habits: when the condition holds, that move gets HABIT_PULL added to its score.
+##   brace_after_hit       Braces right after its active dino took damage
+##   brace_then_charge     Charges right after Bracing
+##   bite_when_hurt        Bites when its active dino is at half Health or less
+##   copy_last             Copies the opponent's last move (not Swaps)
+##   counter_last          Plays what beats the opponent's last move
+##   swap_on_disadvantage  Swaps out when the opponent has the type edge (and a bench dino doesn't
+##                         lose to it too)
+const HABITS: Array[StringName] = [&"brace_after_hit", &"brace_then_charge", &"bite_when_hurt",
+		&"copy_last", &"counter_last", &"swap_on_disadvantage"]
+const HABIT_PULL := 0.6
+## What beats each move: Brace blocks Bite, Bite cancels Charge, Charge smashes Brace.
+const COUNTER_OF := {
+	BattleAction.Kind.BITE: BattleAction.Kind.BRACE,
+	BattleAction.Kind.CHARGE: BattleAction.Kind.BITE,
+	BattleAction.Kind.BRACE: BattleAction.Kind.CHARGE,
+}
 
 var rng: RandomNumberGenerator
 ## Difficulty knob. Lower = picks the best-scoring action more often. Higher = more random.
@@ -28,6 +47,13 @@ var learns_habits := true
 ## How often the opponent has used each action kind.
 var _seen_kinds: Array[float] = [HABIT_PRIOR, HABIT_PRIOR, HABIT_PRIOR, HABIT_PRIOR]
 var _turns_seen := 0
+## Conditional habits this AI has (ids from HABITS).
+var habits: Array[StringName] = []
+## What happened last turn, for the conditional habits. -1 = nothing yet.
+var _my_last_kind := -1
+var _their_last_kind := -1
+var _last_active := -1
+var _last_health := -1
 
 
 func _init(seed_value: int = 0) -> void:
@@ -75,13 +101,54 @@ func choose_action(state: BattleState, me: int) -> BattleAction:
 		for b in theirs.size():
 			value += their_guess[b] * payoff[a][b]
 		my_scores.append(value + biases[mine[a].kind])
-	return mine[_sample(_softmax(my_scores, temperature, _even_weights(mine)))]
+	var pulls := _habit_pulls(state, me)
+	for a in mine.size():
+		my_scores[a] += pulls[mine[a].kind]
+	var chosen := mine[_sample(_softmax(my_scores, temperature, _even_weights(mine)))]
+	var side := state.side(me)
+	_my_last_kind = chosen.kind
+	_last_active = side.active
+	_last_health = side.active_dino().health
+	return chosen
 
 
 ## Records what the opponent did this turn. Call once per resolved turn.
 func observe(opponent_action: BattleAction) -> void:
 	_seen_kinds[opponent_action.kind] += 1.0
 	_turns_seen += 1
+	_their_last_kind = opponent_action.kind
+
+
+## Extra score per action kind from the conditional habits that apply right now.
+func _habit_pulls(state: BattleState, me: int) -> Array[float]:
+	var pulls: Array[float] = [0.0, 0.0, 0.0, 0.0]
+	if habits.is_empty():
+		return pulls
+	var side := state.side(me)
+	var mine := side.active_dino()
+	var theirs := state.side(BattleState.other(me)).active_dino()
+	for habit in habits:
+		match habit:
+			&"brace_after_hit":
+				if side.active == _last_active and mine.health < _last_health:
+					pulls[BattleAction.Kind.BRACE] += HABIT_PULL
+			&"brace_then_charge":
+				if _my_last_kind == BattleAction.Kind.BRACE and side.active == _last_active:
+					pulls[BattleAction.Kind.CHARGE] += HABIT_PULL
+			&"bite_when_hurt":
+				if mine.health * 2 <= mine.max_health:
+					pulls[BattleAction.Kind.BITE] += HABIT_PULL
+			&"copy_last":
+				if _their_last_kind >= 0 and _their_last_kind != BattleAction.Kind.SWAP:
+					pulls[_their_last_kind] += HABIT_PULL
+			&"counter_last":
+				if COUNTER_OF.has(_their_last_kind):
+					pulls[COUNTER_OF[_their_last_kind]] += HABIT_PULL
+			&"swap_on_disadvantage":
+				if BattleEngine.has_advantage(theirs, mine) and side.bench().any(
+						func(i: int) -> bool: return not BattleEngine.has_advantage(theirs, side.party[i])):
+					pulls[BattleAction.Kind.SWAP] += HABIT_PULL
+	return pulls
 
 
 ## The opponent's legal actions weighted by how often they've used each kind.
@@ -120,12 +187,17 @@ func choose_replacement(state: BattleState, me: int) -> int:
 	return best
 
 
-## Picks PARTY_SIZE dinos out of the ones brought, within the point cap.
-func choose_party(brought: Array[DinoDef], cap: int = PartyRules.POINT_CAP) -> Array[DinoDef]:
+## Picks PARTY_SIZE dinos out of the ones brought, within the point cap. `required` (a boss's
+## Alphas) are always in it.
+func choose_party(brought: Array[DinoDef], cap: int = PartyRules.POINT_CAP,
+		required: Array[StringName] = []) -> Array[DinoDef]:
 	var best: Array[DinoDef] = []
 	var best_score := -INF
 	for combo in _combinations(brought, PartyRules.PARTY_SIZE):
 		if PartyRules.validate(combo, cap) != "":
+			continue
+		var ids: Array = combo.map(func(dino: DinoDef) -> StringName: return dino.id)
+		if required.any(func(id: StringName) -> bool: return not id in ids):
 			continue
 		var score := party_strength(combo) + rng.randf() * 3.0
 		if score > best_score:

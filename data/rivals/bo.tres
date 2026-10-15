@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_io96d"]
+[ext_resource type="Resource" path="res://data/dinos/diplodocus.tres" id="2_31dcp"]
+[ext_resource type="Resource" path="res://data/dinos/brachiosaurus.tres" id="3_y45j0"]
+[ext_resource type="Resource" path="res://data/dinos/kentrosaurus.tres" id="4_p8co8"]
+[ext_resource type="Resource" path="res://data/dinos/stegosaurus.tres" id="5_e0qwy"]
+[ext_resource type="Resource" path="res://data/dinos/dakosaurus.tres" id="6_326q0"]
+[ext_resource type="Resource" path="res://data/dinos/dimorphodon.tres" id="7_yu85o"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_io96d"]
+
+[resource]
+script = ExtResource("9_io96d")
+id = &"bo"
+display_name = "Boulder Bo"
+intro = "Bo brings Jurassic giants. No tells to read, and he learns how you play."
+brings = Array[ExtResource("1_io96d")]([ExtResource("2_31dcp"), ExtResource("3_y45j0"), ExtResource("4_p8co8"), ExtResource("5_e0qwy"), ExtResource("6_326q0"), ExtResource("7_yu85o")])
+chapter = 1
+character = &"bo"
+temperature = 0.08

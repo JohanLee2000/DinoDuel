@@ -12,12 +12,20 @@ const BENCH_HEAL := 1
 ## From this turn on, a meteor shower hits both active dinos each turn so battles always end.
 ## It can bring a dino down to 1 HP but never knocks one out by itself.
 const METEOR_START_TURN := 20
+## Journey bosses' Alphas (Jo, 2026-10-15): this much more Health (a fraction, rounded up) and
+## this much more Attack.
+const ALPHA_HEALTH_BONUS := 0.25
+const ALPHA_ATTACK_BONUS := 1
 
 
-static func create(player_party: Array[DinoDef], opponent_party: Array[DinoDef]) -> BattleState:
+## `opponent_alphas`: ids of the opponent's Alphas. `meteor_turn`: when the meteor shower starts
+## (0 = METEOR_START_TURN). RivalDef.start_battle fills both in for a Journey stage.
+static func create(player_party: Array[DinoDef], opponent_party: Array[DinoDef],
+		opponent_alphas: Array[StringName] = [], meteor_turn := 0) -> BattleState:
 	var state := BattleState.new()
 	state.sides.append(BattleSide.from_party(player_party))
-	state.sides.append(BattleSide.from_party(opponent_party))
+	state.sides.append(BattleSide.from_party(opponent_party, opponent_alphas))
+	state.meteor_turn = meteor_turn if meteor_turn > 0 else METEOR_START_TURN
 	return state
 
 
@@ -174,8 +182,8 @@ static func _speed_groups(state: BattleState, actions: Array[BattleAction], kind
 
 
 static func _end_turn(state: BattleState, actions: Array[BattleAction], events: Array[Dictionary]) -> void:
-	if state.turn >= METEOR_START_TURN:
-		var meteor := state.turn - METEOR_START_TURN + 1
+	if state.turn >= state.meteor_turn:
+		var meteor := state.turn - state.meteor_turn + 1
 		var hits: Array[Dictionary] = []
 		for i in 2:
 			var dino := state.side(i).active_dino()

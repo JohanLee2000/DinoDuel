@@ -1,24 +1,33 @@
 extends VBoxContainer
-## Battle tab: the rivals you can challenge, easiest first, each with their difficulty, the 6 dinos
-## they bring and your record against them. The Journey map replaces this in M3.
+## Battle tab: the Journey stages in order, by chapter, each with the 6 dinos they bring, your best
+## stars and your record. Locked stages open one by one. (Interim list: the illustrated Journey map
+## replaces it, see docs/GAME_DESIGN.md.)
 
 const BRING_CARD_WIDTH := 96.0
 
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
-	add_child(UiKit.title("Rivals"))
-	add_child(UiKit.label("Win: %d egg clutch + %d Amber.   Lose: %d Amber.   Harder rivals bring rarer dinos." % [
-			Economy.WIN_CLUTCHES, Economy.WIN_AMBER, Economy.LOSS_AMBER], 28, Palette.TEXT_DIM))
+	add_child(UiKit.title("Journey"))
+	add_child(UiKit.label("Every win: an egg clutch. Clearing a stage the first time pays a bonus. Stars: one per dino still standing.",
+			28, Palette.TEXT_DIM))
 
 	var problem := _party_problem()
 	if problem != "":
 		add_child(UiKit.label(problem, 29, Palette.HIGHLIGHT))
 
 	var list := UiKit.vbox(14)
+	var chapter := -1
 	for rival in Session.rivals:
-		list.add_child(_rival_panel(rival, problem == "", rival == Session.rivals[0] and Session.wants_coach() \
-				and (not Session.profile.first_steps_active or Session.profile.next_first_step() == &"battle")))
+		if rival.chapter != chapter:
+			chapter = rival.chapter
+			list.add_child(UiKit.title("%s  ★ %d/%d" % [Journey.CHAPTER_NAMES[chapter],
+					Journey.chapter_stars(Session.profile, chapter), Journey.chapter_stages(chapter).size() * Journey.MAX_STARS],
+					30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
+		var unlocked := Journey.is_unlocked(Session.profile, rival)
+		var start_here := rival == Session.rivals[0] and Session.wants_coach() \
+				and (not Session.profile.first_steps_active or Session.profile.next_first_step() == &"battle")
+		list.add_child(_rival_panel(rival, problem == "" and unlocked, unlocked, start_here))
 	add_child(UiKit.vscroll(list))
 
 	if Session.autoplay and problem == "" and Session.profile.tour_done:
@@ -37,16 +46,18 @@ func _party_problem() -> String:
 	return ""
 
 
-func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Control:
+func _rival_panel(rival: RivalDef, can_fight: bool, unlocked: bool, start_here := false) -> Control:
 	var box := UiKit.vbox(10)
 
 	var header := UiKit.hbox(10)
-	var name_label := UiKit.title(rival.display_name, 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	var name_label := UiKit.title(rival.display_name + ("  ·  BOSS" if rival.is_boss else ""), 30,
+			Palette.HIGHLIGHT if rival.is_boss else Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(name_label)
-	for i in 5:
+	var best := Journey.best_stars(Session.profile, rival)
+	for i in Journey.MAX_STARS:
 		var star := TextureRect.new()
-		star.texture = Icons.texture(&"star" if i < rival.difficulty else &"star_empty", 26)
+		star.texture = Icons.texture(&"star" if i < best else &"star_empty", 26)
 		star.custom_minimum_size = Vector2(26, 26)
 		star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -68,6 +79,8 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 	var record_text := "Not fought yet"
 	if record[0] + record[1] > 0:
 		record_text = "Won %d · Lost %d" % [record[0], record[1]]
+	if not unlocked:
+		record_text = "Beat %s to unlock" % Session.rivals[Session.rivals.find(rival) - 1].display_name
 	if start_here:
 		record_text = "Start here! A coach shows you the moves."
 	var record_label := UiKit.label(record_text, 29, Palette.HIGHLIGHT if record[0] > 0 or start_here \
@@ -81,4 +94,7 @@ func _rival_panel(rival: RivalDef, can_fight: bool, start_here := false) -> Cont
 	challenge.pressed.connect(Session.go_to_pre_battle.bind(rival))
 	footer.add_child(challenge)
 	box.add_child(footer)
-	return UiKit.panel(box)
+	var panel := UiKit.panel(box)
+	if not unlocked:
+		panel.modulate = Color(1, 1, 1, 0.55)
+	return panel

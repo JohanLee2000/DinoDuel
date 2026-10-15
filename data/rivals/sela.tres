@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_daxvx"]
+[ext_resource type="Resource" path="res://data/dinos/cryolophosaurus.tres" id="2_zyifk"]
+[ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="3_tcpy0"]
+[ext_resource type="Resource" path="res://data/dinos/stegosaurus.tres" id="4_tbwbq"]
+[ext_resource type="Resource" path="res://data/dinos/liopleurodon.tres" id="5_qfooz"]
+[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="6_osq5c"]
+[ext_resource type="Resource" path="res://data/dinos/ichthyosaurus.tres" id="7_4j3ic"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_daxvx"]
+
+[resource]
+script = ExtResource("9_daxvx")
+id = &"sela"
+display_name = "Sage Sela"
+intro = "Sela plays whatever beats your last move. Change it up, or bait her."
+brings = Array[ExtResource("1_daxvx")]([ExtResource("2_zyifk"), ExtResource("3_tcpy0"), ExtResource("4_tbwbq"), ExtResource("5_qfooz"), ExtResource("6_osq5c"), ExtResource("7_4j3ic")])
+chapter = 1
+character = &"sela"
+temperature = 0.1
+habits = Array[StringName]([&"counter_last"])
+learns_habits = false

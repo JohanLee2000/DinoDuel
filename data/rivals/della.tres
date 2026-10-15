@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_su0pv"]
+[ext_resource type="Resource" path="res://data/dinos/elasmosaurus.tres" id="2_etpje"]
+[ext_resource type="Resource" path="res://data/dinos/tylosaurus.tres" id="3_iynyn"]
+[ext_resource type="Resource" path="res://data/dinos/archelon.tres" id="4_cbtm3"]
+[ext_resource type="Resource" path="res://data/dinos/hesperornis.tres" id="5_ofhay"]
+[ext_resource type="Resource" path="res://data/dinos/mosasaurus.tres" id="6_xvcf4"]
+[ext_resource type="Resource" path="res://data/dinos/nyctosaurus.tres" id="7_g6bzu"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_su0pv"]
+
+[resource]
+script = ExtResource("9_su0pv")
+id = &"della"
+display_name = "Deep-Sea Della"
+intro = "Della brings monsters of the deep. She Braces, then Charges, and she learns how you play."
+brings = Array[ExtResource("1_su0pv")]([ExtResource("2_etpje"), ExtResource("3_iynyn"), ExtResource("4_cbtm3"), ExtResource("5_ofhay"), ExtResource("6_xvcf4"), ExtResource("7_g6bzu")])
+chapter = 2
+character = &"della"
+temperature = 0.08
+habits = Array[StringName]([&"brace_then_charge"])

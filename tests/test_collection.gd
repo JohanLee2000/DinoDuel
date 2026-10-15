@@ -190,12 +190,12 @@ func test_battle_rewards() -> void:
 
 func test_record_per_rival() -> void:
 	var p := PlayerProfile.new_game(1)
-	p.record_battle(true, &"rae")
-	p.record_battle(false, &"rae")
-	p.record_battle(true, &"fern")
+	p.record_battle(true, Journey.find(&"rae"), 2)
+	p.record_battle(false, Journey.find(&"rae"))
+	p.record_battle(true, Journey.find(&"fern"), 1)
 	assert_eq(p.record_against(&"rae"), [1, 1])
 	assert_eq(p.record_against(&"fern"), [1, 0])
-	assert_eq(p.record_against(&"rory"), [0, 0])
+	assert_eq(p.record_against(&"rory_triassic"), [0, 0])
 	var loaded := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(p.to_dict())), catalog)
 	assert_eq(loaded.record_against(&"rae"), [1, 1])
 
@@ -345,7 +345,7 @@ func test_first_steps_follow_progress_and_pay_once() -> void:
 		assert_eq(p.set_lineup(lineup), "")
 	assert_eq(p.next_first_step(), &"battle")
 	assert_false(p.claim_first_steps_reward(), "not finished yet")
-	p.record_battle(true, &"rae")
+	p.record_battle(true, Journey.find(&"rae"), 2)
 	assert_eq(p.next_first_step(), &"")
 	var clutches := p.clutches
 	assert_true(p.claim_first_steps_reward())
@@ -422,7 +422,7 @@ func test_exported_save_imports_and_rejects_damaged_files() -> void:
 	p.set_player_name("Jo")
 	p.amber = 777
 	p.add_dino(catalog.find(&"t_rex"), true)
-	p.record_battle(true, &"rae")
+	p.record_battle(true, Journey.find(&"rae"), 2)
 	var text := SaveStore.export_text(p)
 	var back := SaveStore.parse_export(text, catalog)
 	assert_true(back != null, "a fresh export loads")

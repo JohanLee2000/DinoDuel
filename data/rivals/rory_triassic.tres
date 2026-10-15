@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_r92oo"]
+[ext_resource type="Resource" path="res://data/dinos/liliensternus.tres" id="2_6c4aw"]
+[ext_resource type="Resource" path="res://data/dinos/herrerasaurus.tres" id="3_tc2wc"]
+[ext_resource type="Resource" path="res://data/dinos/smilosuchus.tres" id="4_16gwd"]
+[ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="5_duqfp"]
+[ext_resource type="Resource" path="res://data/dinos/henodus.tres" id="6_es33b"]
+[ext_resource type="Resource" path="res://data/dinos/postosuchus.tres" id="7_u8e1k"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_r92oo"]
+
+[resource]
+script = ExtResource("9_r92oo")
+id = &"rory_triassic"
+display_name = "Rival Rory"
+intro = "Rory got to the Triassic first and tamed an Alpha Liliensternus. He's quick to learn your habits."
+brings = Array[ExtResource("1_r92oo")]([ExtResource("2_6c4aw"), ExtResource("3_tc2wc"), ExtResource("4_16gwd"), ExtResource("5_duqfp"), ExtResource("6_es33b"), ExtResource("7_u8e1k")])
+point_cap = 12
+chapter = 0
+is_boss = true
+character = &"rory"
+alphas = Array[StringName]([&"liliensternus"])
+temperature = 0.06

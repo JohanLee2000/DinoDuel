@@ -3,7 +3,7 @@
 Godot 4.7 (GDScript) portrait mobile game for Android: collect dinosaur cards, battle rival AIs in a Party Battle. Design decisions live in [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md); Jo makes the design calls, so propose options for anything not decided there.
 
 ## Layout
-- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `PartyRules`, `core/battle/` (engine, state, AI), and `core/collection/` (`PlayerProfile` save model, `Economy` numbers). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
+- `core/`: pure game logic, no nodes or UI. `DinoDef`/`RivalDef`/`DinoCatalog` resources, `PartyRules`, `core/battle/` (engine, state, AI), and `core/collection/` (`PlayerProfile` save model, `Economy` numbers, `Journey` progress; stages are `RivalDef`s in `data/rivals/`, listed in `RivalDef.ROSTER`). Keep it deterministic and UI-free so it can run in sims, tests, and a future PvP server.
 - `data/`: `.tres` resources (dinos, catalog, rivals). New dinos must be added to `data/dino_catalog.tres`.
 - `app/session.gd`: `Session` autoload (profile, navigation, cross-scene state). `app/save_store.gd`: JSON save in `user://` with backup.
 - `ui/`: `main/` (tab shell, new-player intro), `tabs/` (Battle, Party, Eggs, Dex, Goals; built in code with `UiKit`), `pre_battle/`, `battle/`, `eggs/` (egg + hatch view), shared `common/`.

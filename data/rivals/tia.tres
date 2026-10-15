@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_9q0kk"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="2_si05u"]
+[ext_resource type="Resource" path="res://data/dinos/microraptor.tres" id="3_8n6i2"]
+[ext_resource type="Resource" path="res://data/dinos/triceratops.tres" id="4_9i8c8"]
+[ext_resource type="Resource" path="res://data/dinos/styracosaurus.tres" id="5_zvyup"]
+[ext_resource type="Resource" path="res://data/dinos/protoceratops.tres" id="6_li3co"]
+[ext_resource type="Resource" path="res://data/dinos/stygimoloch.tres" id="7_kcfop"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_9q0kk"]
+
+[resource]
+script = ExtResource("9_9q0kk")
+id = &"tia"
+display_name = "Tracker Tia"
+intro = "Tia hunts with raptors and horns. She Bites a lot, and Braces right after she's hit."
+brings = Array[ExtResource("1_9q0kk")]([ExtResource("2_si05u"), ExtResource("3_8n6i2"), ExtResource("4_9i8c8"), ExtResource("5_zvyup"), ExtResource("6_li3co"), ExtResource("7_kcfop")])
+chapter = 2
+character = &"tia"
+temperature = 0.1
+bite_bias = 0.3
+habits = Array[StringName]([&"brace_after_hit"])
+learns_habits = false

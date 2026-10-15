@@ -54,7 +54,7 @@ var dev_dex_era := -1
 func _ready() -> void:
 	Sound.setup(get_tree())
 	catalog = DinoCatalog.load_default()
-	rivals = RivalDef.load_roster()
+	rivals = Journey.stages()
 	rival = rivals[0]
 	var args := OS.get_cmdline_user_args()
 	if OS.is_debug_build() and FileAccess.file_exists(DEV_ARGS_FILE):
@@ -119,9 +119,11 @@ func _showcase_profile() -> PlayerProfile:
 	var lineup: Array[StringName] = [&"t_rex", &"pteranodon", &"mosasaurus", &"velociraptor",
 			&"triceratops", &"quetzalcoatlus"]
 	showcase.set_lineup(lineup)
-	for result in [[&"rae", true], [&"rae", true], [&"fern", true], [&"fern", false], [&"cora", true],
-			[&"dusty", false]]:
-		showcase.record_battle(result[1], result[0])
+	# Journey: the Triassic cleared, partway through the Jurassic. [stage, won, stars].
+	for result in [[&"rae", true, 3], [&"fern", true, 3], [&"cora", true, 2], [&"gus", false, 0],
+			[&"gus", true, 3], [&"dusty", true, 2], [&"rory_triassic", false, 0], [&"rory_triassic", true, 2],
+			[&"pip", true, 3], [&"marina", true, 2], [&"hank", true, 1], [&"sela", false, 0]]:
+		showcase.record_battle(result[1], Journey.find(result[0]), result[2])
 	showcase.amber = 1240
 	showcase.tutorial_done = true
 	showcase.partner_chosen = true
@@ -186,7 +188,7 @@ func go_to_pre_battle(chosen: RivalDef = null) -> void:
 func start_battle(party: Array[DinoDef]) -> void:
 	player_party = party
 	battle_seed = randi()
-	rival_party = rival.make_ai(battle_seed).choose_party(rival.brings, rival.point_cap)
+	rival_party = rival.pick_party(rival.make_ai(battle_seed))
 	coaching = wants_coach()
 	resume_events = []
 	# Saved from the start, so the battle can continue if Android closes the game mid-fight.
@@ -272,7 +274,6 @@ func rematch() -> void:
 	start_battle(player_party)
 
 
-## Applies rewards and saves. Returns {"amber": int, "clutches": int}.
 ## Rolls today's daily quests if the day has changed since they were last rolled.
 func refresh_quests() -> void:
 	var day := profile.quest_day
@@ -281,13 +282,15 @@ func refresh_quests() -> void:
 		save()
 
 
-## `turns` and `dinos_left` feed daily quests and achievements (see Goals.on_battle).
+## Applies rewards and saves; returns them (see PlayerProfile.record_battle). `dinos_left` is the
+## stars a win earns; `turns` and `dinos_left` also feed daily quests and achievements.
 func finish_battle(won: bool, turns := 0, dinos_left := 0) -> Dictionary:
 	refresh_quests()
 	profile.battle = {}
-	var reward := profile.record_battle(won, rival.id)
-	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "difficulty": rival.difficulty,
-			"party": player_party, "turns": turns, "dinos_left": dinos_left})
+	var reward := profile.record_battle(won, rival, dinos_left)
+	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "party": player_party, "turns": turns,
+			"dinos_left": dinos_left, "first_clear": reward["first_clear"],
+			"meteor_turn": rival.meteor_turn if rival.meteor_turn > 0 else BattleEngine.METEOR_START_TURN})
 	if coaching:
 		profile.tutorial_done = true
 		coaching = false

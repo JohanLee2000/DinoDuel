@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_ks5qt"]
+[ext_resource type="Resource" path="res://data/dinos/torvosaurus.tres" id="2_4bu0q"]
+[ext_resource type="Resource" path="res://data/dinos/cymbospondylus.tres" id="3_c4ypl"]
+[ext_resource type="Resource" path="res://data/dinos/quetzalcoatlus.tres" id="4_p877b"]
+[ext_resource type="Resource" path="res://data/dinos/hatzegopteryx.tres" id="5_3h4g8"]
+[ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="6_nvuku"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="7_8jzpc"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_ks5qt"]
+
+[resource]
+script = ExtResource("9_ks5qt")
+id = &"rory_finale"
+display_name = "Rival Rory"
+intro = "Extinction Day. Rory brings his best from every era, two Alphas included, and the meteor shower starts on turn 8."
+brings = Array[ExtResource("1_ks5qt")]([ExtResource("2_4bu0q"), ExtResource("3_c4ypl"), ExtResource("4_p877b"), ExtResource("5_3h4g8"), ExtResource("6_nvuku"), ExtResource("7_8jzpc")])
+point_cap = 13
+chapter = 3
+is_boss = true
+character = &"rory"
+alphas = Array[StringName]([&"torvosaurus", &"cymbospondylus"])
+meteor_turn = 8
+temperature = 0.05

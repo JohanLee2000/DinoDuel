@@ -182,6 +182,8 @@ Rory is the recurring rival, always one era ahead of the player.
 
 **Elsewhere:** the Battle tab's difficulty stars go away (stars now mean earned stars); the quest "Beat a 3-star rival" becomes "Earn 3 stars on any stage"; "Rival Sweep" becomes Clear the Triassic / Jurassic / Cretaceous, plus "Extinction Survivor" and "Star Collector" (all 57 stars); First steps and How to play get a Journey page. Existing saves: wins against Rae, Fern, Cora and Dusty count as cleared stages with 1 star.
 
+**Built so far (2026-10-15):** step 1. Conditional habits are `BattleAI.HABITS` (brace_after_hit, brace_then_charge, bite_when_hurt, copy_last, counter_last, swap_on_disadvantage), each adding `HABIT_PULL` to that move when its condition holds; Alphas get +25% Health (rounded up) and +1 Attack; stages are `data/rivals/*.tres` in `RivalDef.ROSTER` order, progress rules in `core/collection/journey.gd`, rewards in `PlayerProfile.record_battle`. The 19 teams are a first pass, not tuned yet. The daily quest became **"Clear a new Journey stage"** rather than "Earn 3 stars", because 3 stars is the same as the existing "Win without losing a dino" quest; it stops appearing once the Journey is complete. The Battle tab is an interim list (chapters, stars, locked stages) until the map screen.
+
 **Build order:** (1) rules: conditional AI habits, Alphas, per-battle meteor turn, Journey progress in the save, stars and rewards, with tests; (2) content: the 19 stage teams, the simulated-player tool, tuning; (3) screens: Journey map, pre-battle and results, chapter intros, Goals / How to play / First steps.
 
 ## Monetization (decided)

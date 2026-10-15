@@ -8,12 +8,16 @@ var era_bond := false
 var balanced := false
 
 
-static func from_party(defs: Array[DinoDef]) -> BattleSide:
+## `alphas`: ids of dinos in the party that are Alphas (see Combatant.make_alpha).
+static func from_party(defs: Array[DinoDef], alphas: Array[StringName] = []) -> BattleSide:
 	var side := BattleSide.new()
 	side.era_bond = PartyRules.has_era_bond(defs)
 	side.balanced = PartyRules.is_balanced(defs)
 	for dino in defs:
-		side.party.append(Combatant.from_def(dino, side.era_bond, side.balanced))
+		var c := Combatant.from_def(dino, side.era_bond, side.balanced)
+		if dino.id in alphas:
+			c.make_alpha()
+		side.party.append(c)
 	return side
 
 

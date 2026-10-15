@@ -24,8 +24,10 @@ var last_daily_day := -1
 var checkin_day := 0
 var wins := 0
 var losses := 0
-## Per rival: rival id -> [wins, losses].
+## Per rival (Journey stage): stage id -> [wins, losses].
 var rival_record: Dictionary = {}
+## The Journey: stage id (String) -> best stars (1-3). A stage is cleared once it's in here.
+var journey_stars: Dictionary = {}
 var eggs_hatched := 0
 ## The first battle comes with a coach (see BattleScreen); this flips once it's been played.
 var tutorial_done := false
@@ -260,20 +262,43 @@ func record_against(rival_id: StringName) -> Array:
 	return rival_record.get(rival_id, [0, 0])
 
 
-## Applies battle rewards and returns what was given: {"amber": int, "clutches": int}.
-func record_battle(won: bool, rival_id: StringName = &"") -> Dictionary:
-	var reward := {"amber": Economy.LOSS_AMBER, "clutches": 0}
+## Applies battle rewards and returns what was given:
+## {"amber", "clutches", "rare_clutches": int, "first_clear": bool, "stars": int, "new_best": bool}.
+## Against a Journey `stage`, a win earns `stars` (dinos left standing) and the first clear pays
+## the chapter's bonus (Economy); later wins pay Economy.REPLAY_AMBER.
+func record_battle(won: bool, stage: RivalDef = null, stars := 0) -> Dictionary:
+	var reward := {"amber": Economy.LOSS_AMBER, "clutches": 0, "rare_clutches": 0, "first_clear": false,
+			"stars": 0, "new_best": false}
 	if won:
 		wins += 1
-		reward = {"amber": Economy.WIN_AMBER, "clutches": Economy.WIN_CLUTCHES}
+		reward["clutches"] = Economy.WIN_CLUTCHES
+		reward["amber"] = Economy.WIN_AMBER
 	else:
 		losses += 1
-	if rival_id != &"":
-		var record: Array = rival_record.get(rival_id, [0, 0])
+	if stage:
+		var key := String(stage.id)
+		var record: Array = rival_record.get(stage.id, [0, 0])
 		record[0 if won else 1] += 1
-		rival_record[rival_id] = record
+		rival_record[stage.id] = record
+		if won:
+			var best := int(journey_stars.get(key, 0))
+			reward["first_clear"] = best == 0
+			reward["stars"] = clampi(stars, 1, Journey.MAX_STARS)
+			reward["new_best"] = reward["stars"] > best
+			journey_stars[key] = maxi(best, reward["stars"])
+			if reward["first_clear"]:
+				reward["amber"] = Economy.JOURNEY_WIN_AMBER[stage.chapter]
+				if stage.chapter == Journey.FINALE:
+					reward["rare_clutches"] = Economy.FINALE_FIRST_CLEAR_RARE_CLUTCHES
+				elif stage.is_boss:
+					reward["rare_clutches"] = Economy.BOSS_FIRST_CLEAR_RARE_CLUTCHES
+				else:
+					reward["amber"] += Economy.JOURNEY_FIRST_CLEAR_AMBER[stage.chapter]
+			else:
+				reward["amber"] = Economy.REPLAY_AMBER
 	amber += reward["amber"]
 	clutches += reward["clutches"]
+	rare_clutches += reward["rare_clutches"]
 	return reward
 
 
@@ -354,6 +379,7 @@ func to_dict() -> Dictionary:
 		"wins": wins,
 		"losses": losses,
 		"rival_record": rival_record.duplicate(true),
+		"journey_stars": journey_stars.duplicate(),
 		"eggs_hatched": eggs_hatched,
 		"tutorial_done": tutorial_done,
 		"partner_chosen": partner_chosen,
@@ -406,6 +432,17 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 		var pair: Array = records[key]
 		if pair.size() == 2:
 			profile.rival_record[StringName(key)] = [int(pair[0]), int(pair[1])]
+	if data.has("journey_stars"):
+		var saved_stars: Dictionary = data["journey_stars"]
+		for key in saved_stars:
+			if Journey.find(StringName(key)):
+				profile.journey_stars[String(key)] = clampi(int(saved_stars[key]), 1, Journey.MAX_STARS)
+	else:
+		# Saves from before the Journey: rivals already beaten (Rae, Fern, Cora, Dusty) count as
+		# cleared stages with 1 star. The old Rory stage is gone, so his record doesn't carry over.
+		for stage in Journey.stages():
+			if profile.record_against(stage.id)[0] > 0:
+				profile.journey_stars[String(stage.id)] = 1
 	profile.eggs_hatched = int(data.get("eggs_hatched", 0))
 	# Saves from before the tutorial existed: anyone who has battled already knows the moves.
 	profile.tutorial_done = bool(data.get("tutorial_done", profile.wins + profile.losses > 0))

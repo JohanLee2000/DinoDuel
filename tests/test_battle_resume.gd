@@ -77,7 +77,7 @@ func test_full_battle_replays_to_the_same_winner() -> void:
 
 func test_battle_in_progress_survives_a_save() -> void:
 	var p := PlayerProfile.new_game(21)
-	p.battle = {"rival": "rory", "seed": 12345, "player": ["t_rex", "pteranodon", "ichthyosaurus"],
+	p.battle = {"rival": "rory_cretaceous", "seed": 12345, "player": ["t_rex", "pteranodon", "ichthyosaurus"],
 			"rival_party": ["triceratops", "mosasaurus", "plesiosaurus"], "coaching": false,
 			"events": [[BattleReplay.TURN, 0, -1, 2, -1], [BattleReplay.RIVAL_REPLACE, 1]]}
 	var loaded := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(p.to_dict())), catalog)

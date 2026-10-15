@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RivalDef" format=3]
+
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_0c9ak"]
+[ext_resource type="Resource" path="res://data/dinos/giganotosaurus.tres" id="2_ymedx"]
+[ext_resource type="Resource" path="res://data/dinos/spinosaurus.tres" id="3_3pd5a"]
+[ext_resource type="Resource" path="res://data/dinos/tylosaurus.tres" id="4_rdscr"]
+[ext_resource type="Resource" path="res://data/dinos/carnotaurus.tres" id="5_zavr7"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="6_ttzae"]
+[ext_resource type="Resource" path="res://data/dinos/microraptor.tres" id="7_w5bbe"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_0c9ak"]
+
+[resource]
+script = ExtResource("9_0c9ak")
+id = &"grit"
+display_name = "Old Grit"
+intro = "Old Grit has seen it all. No habits to read, and he learns yours."
+brings = Array[ExtResource("1_0c9ak")]([ExtResource("2_ymedx"), ExtResource("3_3pd5a"), ExtResource("4_rdscr"), ExtResource("5_zavr7"), ExtResource("6_ttzae"), ExtResource("7_w5bbe")])
+chapter = 2
+character = &"grit"
+temperature = 0.05

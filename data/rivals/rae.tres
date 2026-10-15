@@ -1,21 +1,22 @@
 [gd_resource type="Resource" script_class="RivalDef" format=3]
 
-[ext_resource type="Script" path="res://core/dino_def.gd" id="1_qumpm"]
-[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_j96ar"]
-[ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="3_b5lm6"]
-[ext_resource type="Resource" path="res://data/dinos/hesperornis.tres" id="4_ylvuh"]
-[ext_resource type="Resource" path="res://data/dinos/protoceratops.tres" id="5_f9q84"]
-[ext_resource type="Resource" path="res://data/dinos/pterodactylus.tres" id="6_nomef"]
-[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="7_m928e"]
-[ext_resource type="Script" path="res://core/rival_def.gd" id="9_hs49p"]
+[ext_resource type="Script" path="res://core/dino_def.gd" id="1_gt57z"]
+[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="2_r1t4a"]
+[ext_resource type="Resource" path="res://data/dinos/eoraptor.tres" id="3_h0506"]
+[ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="4_vootc"]
+[ext_resource type="Resource" path="res://data/dinos/icarosaurus.tres" id="5_oyheq"]
+[ext_resource type="Resource" path="res://data/dinos/mixosaurus.tres" id="6_1s29q"]
+[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="7_vn0ig"]
+[ext_resource type="Script" path="res://core/rival_def.gd" id="9_gt57z"]
 
 [resource]
-script = ExtResource("9_hs49p")
+script = ExtResource("9_gt57z")
 id = &"rae"
 display_name = "Rookie Rae"
 intro = "Rae just started collecting and Bites a lot. Brace to block it, then bite back."
-brings = Array[ExtResource("1_qumpm")]([ExtResource("2_j96ar"), ExtResource("3_b5lm6"), ExtResource("4_ylvuh"), ExtResource("5_f9q84"), ExtResource("6_nomef"), ExtResource("7_m928e")])
-difficulty = 1
+brings = Array[ExtResource("1_gt57z")]([ExtResource("2_r1t4a"), ExtResource("3_h0506"), ExtResource("4_vootc"), ExtResource("5_oyheq"), ExtResource("6_1s29q"), ExtResource("7_vn0ig")])
+chapter = 0
+character = &"rae"
 temperature = 0.25
 bite_bias = 0.45
 learns_habits = false
