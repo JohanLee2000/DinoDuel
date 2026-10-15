@@ -5,7 +5,7 @@ extends RefCounted
 ## (AMBER_PER_DINO for each dino in it) and a badge, shown in Goals and in the full card view.
 ## Claims are kept in PlayerProfile.claimed_goals as "set_<id>".
 
-const AMBER_PER_DINO := 30
+const AMBER_PER_DINO := 15
 
 ## id -> [name, blurb, dino ids]. Every dino is in exactly one family (see the tests); new dinos must
 ## be added to one.

@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/dinos/tapejara.tres" id="4_wtrm4"]
 [ext_resource type="Resource" path="res://data/dinos/ornithocheirus.tres" id="5_i1jzg"]
 [ext_resource type="Resource" path="res://data/dinos/hatzegopteryx.tres" id="6_6lp8j"]
-[ext_resource type="Resource" path="res://data/dinos/pterodaustro.tres" id="7_f22bt"]
+[ext_resource type="Resource" path="res://data/dinos/carnotaurus.tres" id="7_f22bt"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_f0wpe"]
 
 [resource]
@@ -17,5 +17,5 @@ intro = "Sully rides the storms with pterosaurs. Give him a bad matchup and he s
 brings = Array[ExtResource("1_f0wpe")]([ExtResource("2_nywnz"), ExtResource("3_uix8i"), ExtResource("4_wtrm4"), ExtResource("5_i1jzg"), ExtResource("6_6lp8j"), ExtResource("7_f22bt")])
 chapter = 2
 character = &"sully"
-temperature = 0.08
+temperature = 0.06
 habits = Array[StringName]([&"swap_on_disadvantage"])

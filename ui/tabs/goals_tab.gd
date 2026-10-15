@@ -72,7 +72,7 @@ func _refresh(staged := false) -> void:
 	for era in DinoDef.ERA_NAMES.size():
 		var progress := Goals.era_progress(profile, catalog, era)
 		_body.add_child(_row("Complete the %s" % DinoDef.ERA_NAMES[era], "Discover every %s dino. Earns a gold badge in the Dex." % DinoDef.ERA_NAMES[era],
-				progress[0], progress[1], "+%d egg clutch" % Goals.ERA_CLUTCHES, Goals.era_claimed(profile, era),
+				progress[0], progress[1], "+%d Amber" % Goals.ERA_AMBER, Goals.era_claimed(profile, era),
 				func() -> bool: return Goals.claim_era(profile, catalog, era)))
 
 	if staged:

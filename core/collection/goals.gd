@@ -101,10 +101,11 @@ static func claim_quest_bonus(profile: PlayerProfile) -> bool:
 
 # --- Collection -----------------------------------------------------------------------------
 
-## [dinos discovered, Amber, clutches].
-const MILESTONES := [[5, 50, 0], [10, 0, 1], [15, 150, 0], [20, 0, 2], [25, 300, 0], [30, 0, 3],
-		[35, 400, 0], [40, 0, 3], [45, 0, 5], [50, 500, 0], [55, 0, 3], [60, 700, 0], [65, 0, 5]]
-const ERA_CLUTCHES := 1
+## [dinos discovered, Amber, clutches]. Every 10 dinos, Amber only (Jo, 2026-10-15: milestones
+## every 5 with clutches made collecting snowball).
+const MILESTONES := [[10, 100, 0], [20, 200, 0], [30, 300, 0], [40, 400, 0], [50, 500, 0], [60, 600, 0]]
+## For completing an era (Amber, not a clutch, since 2026-10-15).
+const ERA_AMBER := 150
 
 
 static func discovered(profile: PlayerProfile) -> int:
@@ -152,7 +153,7 @@ static func claim_era(profile: PlayerProfile, catalog: DinoCatalog, era: int) ->
 	if not era_ready(profile, catalog, era):
 		return false
 	profile.claimed_goals["era_%d" % era] = true
-	profile.clutches += ERA_CLUTCHES
+	profile.amber += ERA_AMBER
 	return true
 
 
@@ -164,28 +165,29 @@ const CHAPTER_ACHIEVEMENTS: Array[StringName] = [&"clear_triassic", &"clear_jura
 		&"extinction_survivor"]
 const METEOR_TURN := 20
 ## id -> [title, description, target, Amber]. The order is the order they're listed in.
+## Amber halved by Jo on 2026-10-15.
 const ACHIEVEMENTS := {
-	&"first_win": ["First Victory", "Win a battle.", 1, 50],
-	&"veteran": ["Veteran Hunter", "Win 25 battles.", 25, 150],
-	&"champion": ["Champion", "Win 100 battles.", 100, 300],
-	&"clear_triassic": ["Triassic Trailblazer", "Beat Rory at the end of the Triassic.", 1, 150],
-	&"clear_jurassic": ["Jurassic Journeyer", "Beat Rory at the end of the Jurassic.", 1, 200],
-	&"clear_cretaceous": ["Cretaceous Conqueror", "Beat Rory at the end of the Cretaceous.", 1, 250],
-	&"extinction_survivor": ["Extinction Survivor", "Beat Rory on Extinction Day.", 1, 500],
-	&"star_collector": ["Star Collector", "Earn every star on the Journey.", 57, 300],
-	&"flawless": ["Flawless", "Win without losing a dino.", 1, 75],
-	&"lightning": ["Lightning Strike", "Win in 8 turns or fewer.", 1, 75],
-	&"last_standing": ["Last Dino Standing", "Win with only one dino left.", 1, 75],
-	&"meteor": ["Meteor Survivor", "Win a battle that lasted into the meteor shower.", 1, 75],
-	&"perfect_party": ["Perfect Party", "Win with an era bond and a balanced party at once.", 1, 100],
-	&"egg_cracker": ["Egg Cracker", "Hatch 30 eggs.", 30, 100],
-	&"hatchery": ["Hatchery", "Hatch 100 eggs.", 100, 250],
-	&"legendary": ["Legendary Find", "Hatch a Legendary dino.", 1, 150],
-	&"shiny": ["Something Shiny", "Find a Shiny dino.", 1, 100],
-	&"crafter": ["Fossil Crafter", "Craft a dino with Amber.", 1, 50],
-	&"daily_grind": ["Daily Grind", "Finish all daily quests on 7 days.", 7, 150],
-	&"amber_hoard": ["Amber Hoard", "Have 1,000 Amber at once.", 1000, 100],
-	&"complete_dex": ["Complete Dex", "Discover every dino.", 30, 500],
+	&"first_win": ["First Victory", "Win a battle.", 1, 25],
+	&"veteran": ["Veteran Hunter", "Win 25 battles.", 25, 75],
+	&"champion": ["Champion", "Win 100 battles.", 100, 150],
+	&"clear_triassic": ["Triassic Trailblazer", "Beat Rory at the end of the Triassic.", 1, 75],
+	&"clear_jurassic": ["Jurassic Journeyer", "Beat Rory at the end of the Jurassic.", 1, 100],
+	&"clear_cretaceous": ["Cretaceous Conqueror", "Beat Rory at the end of the Cretaceous.", 1, 125],
+	&"extinction_survivor": ["Extinction Survivor", "Beat Rory on Extinction Day.", 1, 250],
+	&"star_collector": ["Star Collector", "Earn every star on the Journey.", 57, 150],
+	&"flawless": ["Flawless", "Win without losing a dino.", 1, 40],
+	&"lightning": ["Lightning Strike", "Win in 8 turns or fewer.", 1, 40],
+	&"last_standing": ["Last Dino Standing", "Win with only one dino left.", 1, 40],
+	&"meteor": ["Meteor Survivor", "Win a battle that lasted into the meteor shower.", 1, 40],
+	&"perfect_party": ["Perfect Party", "Win with an era bond and a balanced party at once.", 1, 50],
+	&"egg_cracker": ["Egg Cracker", "Hatch 30 eggs.", 30, 50],
+	&"hatchery": ["Hatchery", "Hatch 100 eggs.", 100, 125],
+	&"legendary": ["Legendary Find", "Hatch a Legendary dino.", 1, 75],
+	&"shiny": ["Something Shiny", "Find a Shiny dino.", 1, 50],
+	&"crafter": ["Fossil Crafter", "Craft a dino with Amber.", 1, 25],
+	&"daily_grind": ["Daily Grind", "Finish all daily quests on 7 days.", 7, 75],
+	&"amber_hoard": ["Amber Hoard", "Have 1,000 Amber at once.", 1000, 50],
+	&"complete_dex": ["Complete Dex", "Discover every dino.", 30, 250],
 }
 
 

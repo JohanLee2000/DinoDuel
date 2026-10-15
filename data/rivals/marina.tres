@@ -5,8 +5,8 @@
 [ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="3_9og5z"]
 [ext_resource type="Resource" path="res://data/dinos/dakosaurus.tres" id="4_ht431"]
 [ext_resource type="Resource" path="res://data/dinos/liopleurodon.tres" id="5_0y1s2"]
-[ext_resource type="Resource" path="res://data/dinos/rhamphorhynchus.tres" id="6_xet39"]
-[ext_resource type="Resource" path="res://data/dinos/pterodactylus.tres" id="7_kn6ar"]
+[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="6_xet39"]
+[ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="7_kn6ar"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_u9ctn"]
 
 [resource]
@@ -17,6 +17,6 @@ intro = "Marina Braces, then Charges right after. When she Braces, get ready to 
 brings = Array[ExtResource("1_u9ctn")]([ExtResource("2_mztyr"), ExtResource("3_9og5z"), ExtResource("4_ht431"), ExtResource("5_0y1s2"), ExtResource("6_xet39"), ExtResource("7_kn6ar")])
 chapter = 1
 character = &"marina"
-temperature = 0.12
+temperature = 0.08
 habits = Array[StringName]([&"brace_then_charge"])
 learns_habits = false

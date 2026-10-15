@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_u2pff"]
 [ext_resource type="Resource" path="res://data/dinos/t_rex.tres" id="2_mekbq"]
-[ext_resource type="Resource" path="res://data/dinos/mosasaurus.tres" id="3_so2qa"]
-[ext_resource type="Resource" path="res://data/dinos/quetzalcoatlus.tres" id="4_djqqt"]
-[ext_resource type="Resource" path="res://data/dinos/hatzegopteryx.tres" id="5_i3e2s"]
-[ext_resource type="Resource" path="res://data/dinos/tylosaurus.tres" id="6_a4epx"]
-[ext_resource type="Resource" path="res://data/dinos/triceratops.tres" id="7_bm9ge"]
+[ext_resource type="Resource" path="res://data/dinos/hatzegopteryx.tres" id="3_so2qa"]
+[ext_resource type="Resource" path="res://data/dinos/tylosaurus.tres" id="4_djqqt"]
+[ext_resource type="Resource" path="res://data/dinos/triceratops.tres" id="5_i3e2s"]
+[ext_resource type="Resource" path="res://data/dinos/velociraptor.tres" id="6_a4epx"]
+[ext_resource type="Resource" path="res://data/dinos/elasmosaurus.tres" id="7_bm9ge"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_u2pff"]
 
 [resource]
@@ -15,9 +15,9 @@ id = &"rory_cretaceous"
 display_name = "Rival Rory"
 intro = "Rory found an Alpha T. rex in the Cretaceous. This is his best team yet."
 brings = Array[ExtResource("1_u2pff")]([ExtResource("2_mekbq"), ExtResource("3_so2qa"), ExtResource("4_djqqt"), ExtResource("5_i3e2s"), ExtResource("6_a4epx"), ExtResource("7_bm9ge")])
-point_cap = 12
+point_cap = 11
 chapter = 2
 is_boss = true
 character = &"rory"
 alphas = Array[StringName]([&"t_rex"])
-temperature = 0.05
+temperature = 0.12

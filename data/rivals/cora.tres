@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="RivalDef" format=3]
 
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_711ck"]
-[ext_resource type="Resource" path="res://data/dinos/mixosaurus.tres" id="2_illrq"]
-[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="3_a9vnm"]
-[ext_resource type="Resource" path="res://data/dinos/placodus.tres" id="4_cku25"]
-[ext_resource type="Resource" path="res://data/dinos/tanystropheus.tres" id="5_bribt"]
-[ext_resource type="Resource" path="res://data/dinos/coelophysis.tres" id="6_s85bj"]
-[ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="7_e5wr4"]
+[ext_resource type="Resource" path="res://data/dinos/nothosaurus.tres" id="2_illrq"]
+[ext_resource type="Resource" path="res://data/dinos/placodus.tres" id="3_a9vnm"]
+[ext_resource type="Resource" path="res://data/dinos/tanystropheus.tres" id="4_cku25"]
+[ext_resource type="Resource" path="res://data/dinos/henodus.tres" id="5_bribt"]
+[ext_resource type="Resource" path="res://data/dinos/smilosuchus.tres" id="6_s85bj"]
+[ext_resource type="Resource" path="res://data/dinos/mixosaurus.tres" id="7_e5wr4"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_711ck"]
 
 [resource]
@@ -17,6 +17,6 @@ intro = "Cora sails the Triassic shallows and goes for big Charges. A well-timed
 brings = Array[ExtResource("1_711ck")]([ExtResource("2_illrq"), ExtResource("3_a9vnm"), ExtResource("4_cku25"), ExtResource("5_bribt"), ExtResource("6_s85bj"), ExtResource("7_e5wr4")])
 chapter = 0
 character = &"cora"
-temperature = 0.16
-charge_bias = 0.15
+temperature = 0.06
+charge_bias = 0.1
 learns_habits = false

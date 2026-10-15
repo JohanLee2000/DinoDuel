@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_7qhb5"]
 [ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="2_ffi9l"]
 [ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="3_x0uer"]
-[ext_resource type="Resource" path="res://data/dinos/icarosaurus.tres" id="4_epy9n"]
+[ext_resource type="Resource" path="res://data/dinos/herrerasaurus.tres" id="4_epy9n"]
 [ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="5_nh8os"]
 [ext_resource type="Resource" path="res://data/dinos/postosuchus.tres" id="6_xuss1"]
 [ext_resource type="Resource" path="res://data/dinos/tanystropheus.tres" id="7_ldbk8"]
@@ -17,6 +17,6 @@ intro = "Gus flies Triassic gliders and hates a bad matchup: when you have the t
 brings = Array[ExtResource("1_7qhb5")]([ExtResource("2_ffi9l"), ExtResource("3_x0uer"), ExtResource("4_epy9n"), ExtResource("5_nh8os"), ExtResource("6_xuss1"), ExtResource("7_ldbk8")])
 chapter = 0
 character = &"gus"
-temperature = 0.14
+temperature = 0.09
 habits = Array[StringName]([&"swap_on_disadvantage"])
 learns_habits = false

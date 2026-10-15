@@ -11,8 +11,9 @@ const PITY_CLUTCHES := 10
 ## Odds for the guaranteed egg, indexed by rarity (only Epic and Legendary).
 const PITY_ODDS: Array[float] = [0.0, 0.0, 0.0, 0.8, 0.2]
 
-## Amber for a duplicate, indexed by rarity.
-const MELT_VALUE: Array[int] = [7, 25, 60, 180, 480]
+## Amber for a duplicate, indexed by rarity. Lowered by Jo (2026-10-15): at 7/25/60/180/480 a
+## clutch of duplicates melted back into ~75% of its price, so buying clutches paid for itself.
+const MELT_VALUE: Array[int] = [5, 10, 30, 60, 300]
 ## Amber to craft a specific dino, indexed by rarity.
 const CRAFT_COST: Array[int] = [40, 100, 400, 1000, 2000]
 

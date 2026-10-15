@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="RivalDef" format=3]
 
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_ba23a"]
-[ext_resource type="Resource" path="res://data/dinos/dimorphodon.tres" id="2_6uvpf"]
-[ext_resource type="Resource" path="res://data/dinos/pterodactylus.tres" id="3_qivx9"]
-[ext_resource type="Resource" path="res://data/dinos/rhamphorhynchus.tres" id="4_bmc32"]
-[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="5_82o91"]
-[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="6_aasuc"]
-[ext_resource type="Resource" path="res://data/dinos/cryolophosaurus.tres" id="7_f8row"]
+[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="2_6uvpf"]
+[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="3_qivx9"]
+[ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="4_bmc32"]
+[ext_resource type="Resource" path="res://data/dinos/cryolophosaurus.tres" id="5_82o91"]
+[ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="6_aasuc"]
+[ext_resource type="Resource" path="res://data/dinos/rhamphorhynchus.tres" id="7_f8row"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_ba23a"]
 
 [resource]
@@ -17,6 +17,6 @@ intro = "Pip copies whatever you just did, so your last move tells you their nex
 brings = Array[ExtResource("1_ba23a")]([ExtResource("2_6uvpf"), ExtResource("3_qivx9"), ExtResource("4_bmc32"), ExtResource("5_82o91"), ExtResource("6_aasuc"), ExtResource("7_f8row")])
 chapter = 1
 character = &"pip"
-temperature = 0.12
+temperature = 0.05
 habits = Array[StringName]([&"copy_last"])
 learns_habits = false

@@ -17,5 +17,5 @@ intro = "Vera plays what beats your last move, and she learns fast."
 brings = Array[ExtResource("1_qvu0d")]([ExtResource("2_crr2k"), ExtResource("3_8bzc8"), ExtResource("4_pb6jj"), ExtResource("5_bmrev"), ExtResource("6_in9jn"), ExtResource("7_jkplb")])
 chapter = 2
 character = &"vera"
-temperature = 0.07
+temperature = 0.16
 habits = Array[StringName]([&"counter_last"])

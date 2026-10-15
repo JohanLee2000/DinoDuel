@@ -16,6 +16,7 @@ GODOT="/c/Users/johan/Downloads/Godot_v4.7.2-stable_win64.exe/Godot_v4.7.2-stabl
 "$GODOT" --headless --path . --import                                  # register new class_names
 "$GODOT" --headless --path . --script res://tests/run_tests.gd         # tests (exit 1 on failure)
 "$GODOT" --headless --path . --script res://tools/balance_sim.gd -- 600  # balance report (~50s)
+python tools/journey_report.py 48 12 12                                 # Journey difficulty per stage, simulated players (~3 min)
 "$GODOT" --path . --write-movie captures/frame.png --fixed-fps 5 --quit-after 600 -- --autoplay  # AI plays a battle + hatches, throwaway save
 "$GODOT" --path . --write-movie captures/dex.png --fixed-fps 5 --quit-after 4 -- --sandbox --tab=3 --open-dex=t_rex  # screenshot a tab/popup
 ```

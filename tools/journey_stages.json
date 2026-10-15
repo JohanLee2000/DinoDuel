@@ -1,0 +1,495 @@
+[
+ {
+  "id": "rae",
+  "name": "Rookie Rae",
+  "chapter": 0,
+  "character": "rae",
+  "boss": false,
+  "brings": [
+   "coelophysis",
+   "eoraptor",
+   "eudimorphodon",
+   "icarosaurus",
+   "mixosaurus",
+   "sharovipteryx"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.3,
+  "biases": {
+   "bite_bias": 0.45
+  },
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Rae just started collecting and Bites a lot. Brace to block it, then bite back."
+ },
+ {
+  "id": "fern",
+  "name": "Ranger Fern",
+  "chapter": 0,
+  "character": "fern",
+  "boss": false,
+  "brings": [
+   "coelophysis",
+   "sharovipteryx",
+   "mixosaurus",
+   "eoraptor",
+   "placodus",
+   "plateosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.15,
+  "biases": {
+   "brace_bias": 0.3
+  },
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Fern plays it safe and loves to Brace. Catch her with a Charge when you expect it."
+ },
+ {
+  "id": "cora",
+  "name": "Captain Cora",
+  "chapter": 0,
+  "character": "cora",
+  "boss": false,
+  "brings": [
+   "nothosaurus",
+   "placodus",
+   "tanystropheus",
+   "henodus",
+   "smilosuchus",
+   "mixosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.06,
+  "biases": {
+   "charge_bias": 0.1
+  },
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Cora sails the Triassic shallows and goes for big Charges. A well-timed Bite cancels them."
+ },
+ {
+  "id": "gus",
+  "name": "Glider Gus",
+  "chapter": 0,
+  "character": "gus",
+  "boss": false,
+  "brings": [
+   "eudimorphodon",
+   "sharovipteryx",
+   "herrerasaurus",
+   "raeticodactylus",
+   "postosuchus",
+   "tanystropheus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.09,
+  "biases": {},
+  "habits": [
+   "swap_on_disadvantage"
+  ],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Gus flies Triassic gliders and hates a bad matchup: when you have the type edge, he swaps out."
+ },
+ {
+  "id": "dusty",
+  "name": "Dusty Dunes",
+  "chapter": 0,
+  "character": "dusty",
+  "boss": false,
+  "brings": [
+   "coelophysis",
+   "postosuchus",
+   "plateosaurus",
+   "nothosaurus",
+   "herrerasaurus",
+   "desmatosuchus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.1,
+  "biases": {},
+  "habits": [
+   "brace_after_hit"
+  ],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Dusty is tough as old leather: hit him and he Braces right away. That's your turn to Charge."
+ },
+ {
+  "id": "rory_triassic",
+  "name": "Rival Rory",
+  "chapter": 0,
+  "character": "rory",
+  "boss": true,
+  "brings": [
+   "liliensternus",
+   "herrerasaurus",
+   "smilosuchus",
+   "raeticodactylus",
+   "henodus",
+   "postosuchus"
+  ],
+  "alphas": [
+   "liliensternus"
+  ],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.2,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Rory got to the Triassic first and tamed an Alpha Liliensternus. He's quick to learn your habits."
+ },
+ {
+  "id": "pip",
+  "name": "Pilot Pip",
+  "chapter": 1,
+  "character": "pip",
+  "boss": false,
+  "brings": [
+   "archaeopteryx",
+   "yi_qi",
+   "raeticodactylus",
+   "cryolophosaurus",
+   "ceratosaurus",
+   "rhamphorhynchus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.05,
+  "biases": {},
+  "habits": [
+   "copy_last"
+  ],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Pip copies whatever you just did, so your last move tells you their next one."
+ },
+ {
+  "id": "marina",
+  "name": "Marina Marsh",
+  "chapter": 1,
+  "character": "marina",
+  "boss": false,
+  "brings": [
+   "ichthyosaurus",
+   "plesiosaurus",
+   "dakosaurus",
+   "liopleurodon",
+   "yi_qi",
+   "ceratosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.08,
+  "biases": {},
+  "habits": [
+   "brace_then_charge"
+  ],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Marina Braces, then Charges right after. When she Braces, get ready to Bite."
+ },
+ {
+  "id": "hank",
+  "name": "Hiker Hank",
+  "chapter": 1,
+  "character": "hank",
+  "boss": false,
+  "brings": [
+   "stegosaurus",
+   "kentrosaurus",
+   "raeticodactylus",
+   "ceratosaurus",
+   "yi_qi",
+   "liopleurodon"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.05,
+  "biases": {},
+  "habits": [
+   "bite_when_hurt"
+  ],
+  "habit_strength": 0.25,
+  "learns": true,
+  "intro": "Hank never backs down: once his dino is hurt, all he wants to do is Bite. Brace and let him bite the shield."
+ },
+ {
+  "id": "sela",
+  "name": "Sage Sela",
+  "chapter": 1,
+  "character": "sela",
+  "boss": false,
+  "brings": [
+   "cryolophosaurus",
+   "ceratosaurus",
+   "stegosaurus",
+   "liopleurodon",
+   "yi_qi",
+   "ichthyosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.2,
+  "biases": {},
+  "habits": [
+   "counter_last"
+  ],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Sela plays whatever beats your last move. Change it up, or bait her."
+ },
+ {
+  "id": "bo",
+  "name": "Boulder Bo",
+  "chapter": 1,
+  "character": "bo",
+  "boss": false,
+  "brings": [
+   "diplodocus",
+   "brachiosaurus",
+   "kentrosaurus",
+   "stegosaurus",
+   "liopleurodon",
+   "allosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.03,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Bo brings Jurassic giants. No tells to read, and he learns how you play."
+ },
+ {
+  "id": "rory_jurassic",
+  "name": "Rival Rory",
+  "chapter": 1,
+  "character": "rory",
+  "boss": true,
+  "brings": [
+   "allosaurus",
+   "torvosaurus",
+   "diplodocus",
+   "liopleurodon",
+   "cryolophosaurus",
+   "archaeopteryx"
+  ],
+  "alphas": [
+   "allosaurus"
+  ],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.45,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Rory raced ahead to the Jurassic with an Alpha Allosaurus. He learns your habits."
+ },
+ {
+  "id": "tia",
+  "name": "Tracker Tia",
+  "chapter": 2,
+  "character": "tia",
+  "boss": false,
+  "brings": [
+   "velociraptor",
+   "microraptor",
+   "triceratops",
+   "styracosaurus",
+   "protoceratops",
+   "stygimoloch"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.14,
+  "biases": {
+   "bite_bias": 0.3
+  },
+  "habits": [
+   "brace_after_hit"
+  ],
+  "habit_strength": 1.0,
+  "learns": false,
+  "intro": "Tia hunts with raptors and horns. She Bites a lot, and Braces right after she's hit."
+ },
+ {
+  "id": "sully",
+  "name": "Storm Sully",
+  "chapter": 2,
+  "character": "sully",
+  "boss": false,
+  "brings": [
+   "pteranodon",
+   "nyctosaurus",
+   "tapejara",
+   "ornithocheirus",
+   "hatzegopteryx",
+   "carnotaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.06,
+  "biases": {},
+  "habits": [
+   "swap_on_disadvantage"
+  ],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Sully rides the storms with pterosaurs. Give him a bad matchup and he swaps out, and he learns your habits."
+ },
+ {
+  "id": "della",
+  "name": "Deep-Sea Della",
+  "chapter": 2,
+  "character": "della",
+  "boss": false,
+  "brings": [
+   "elasmosaurus",
+   "tylosaurus",
+   "archelon",
+   "hesperornis",
+   "mosasaurus",
+   "nyctosaurus"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.12,
+  "biases": {},
+  "habits": [
+   "brace_then_charge"
+  ],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Della brings monsters of the deep. She Braces, then Charges, and she learns how you play."
+ },
+ {
+  "id": "vera",
+  "name": "Vera Volcano",
+  "chapter": 2,
+  "character": "vera",
+  "boss": false,
+  "brings": [
+   "carnotaurus",
+   "spinosaurus",
+   "ankylosaurus",
+   "hatzegopteryx",
+   "amargasaurus",
+   "tapejara"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.16,
+  "biases": {},
+  "habits": [
+   "counter_last"
+  ],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Vera plays what beats your last move, and she learns fast."
+ },
+ {
+  "id": "grit",
+  "name": "Old Grit",
+  "chapter": 2,
+  "character": "grit",
+  "boss": false,
+  "brings": [
+   "giganotosaurus",
+   "allosaurus",
+   "shonisaurus",
+   "carnotaurus",
+   "ornithocheirus",
+   "microraptor"
+  ],
+  "alphas": [],
+  "cap": 10,
+  "meteor": 0,
+  "temp": 0.1,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Old Grit has seen it all. No habits to read, and he learns yours."
+ },
+ {
+  "id": "rory_cretaceous",
+  "name": "Rival Rory",
+  "chapter": 2,
+  "character": "rory",
+  "boss": true,
+  "brings": [
+   "t_rex",
+   "hatzegopteryx",
+   "tylosaurus",
+   "triceratops",
+   "velociraptor",
+   "elasmosaurus"
+  ],
+  "alphas": [
+   "t_rex"
+  ],
+  "cap": 11,
+  "meteor": 0,
+  "temp": 0.12,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Rory found an Alpha T. rex in the Cretaceous. This is his best team yet."
+ },
+ {
+  "id": "rory_finale",
+  "name": "Rival Rory",
+  "chapter": 3,
+  "character": "rory",
+  "boss": true,
+  "brings": [
+   "torvosaurus",
+   "cymbospondylus",
+   "quetzalcoatlus",
+   "hatzegopteryx",
+   "raeticodactylus",
+   "eudimorphodon"
+  ],
+  "alphas": [
+   "torvosaurus",
+   "cymbospondylus"
+  ],
+  "cap": 11,
+  "meteor": 8,
+  "temp": 0.5,
+  "biases": {},
+  "habits": [],
+  "habit_strength": 1.0,
+  "learns": true,
+  "intro": "Extinction Day. Rory brings his best from every era, two Alphas included, and the meteor shower starts on turn 8."
+ }
+]

@@ -6,7 +6,7 @@
 [ext_resource type="Resource" path="res://data/dinos/eudimorphodon.tres" id="4_vootc"]
 [ext_resource type="Resource" path="res://data/dinos/icarosaurus.tres" id="5_oyheq"]
 [ext_resource type="Resource" path="res://data/dinos/mixosaurus.tres" id="6_1s29q"]
-[ext_resource type="Resource" path="res://data/dinos/plateosaurus.tres" id="7_vn0ig"]
+[ext_resource type="Resource" path="res://data/dinos/sharovipteryx.tres" id="7_vn0ig"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_gt57z"]
 
 [resource]
@@ -17,6 +17,6 @@ intro = "Rae just started collecting and Bites a lot. Brace to block it, then bi
 brings = Array[ExtResource("1_gt57z")]([ExtResource("2_r1t4a"), ExtResource("3_h0506"), ExtResource("4_vootc"), ExtResource("5_oyheq"), ExtResource("6_1s29q"), ExtResource("7_vn0ig")])
 chapter = 0
 character = &"rae"
-temperature = 0.25
+temperature = 0.3
 bite_bias = 0.45
 learns_habits = false

@@ -17,6 +17,8 @@ const MAX_HABIT_WEIGHT := 0.85
 ## Starting count for each action kind, so nothing is ruled out before the opponent has acted.
 const HABIT_PRIOR := 0.25
 const WIN_BONUS := 1.0
+## Party picks favor covering more types (per extra type), so one type-counter can't sweep a team.
+const TYPE_SPREAD_BONUS := 3.0
 
 ## Conditional habits: when the condition holds, that move gets HABIT_PULL added to its score.
 ##   brace_after_hit       Braces right after its active dino took damage
@@ -49,6 +51,8 @@ var _seen_kinds: Array[float] = [HABIT_PRIOR, HABIT_PRIOR, HABIT_PRIOR, HABIT_PR
 var _turns_seen := 0
 ## Conditional habits this AI has (ids from HABITS).
 var habits: Array[StringName] = []
+## Scales HABIT_PULL for this AI (RivalDef.habit_strength).
+var habit_strength := 1.0
 ## What happened last turn, for the conditional habits. -1 = nothing yet.
 var _my_last_kind := -1
 var _their_last_kind := -1
@@ -103,7 +107,7 @@ func choose_action(state: BattleState, me: int) -> BattleAction:
 		my_scores.append(value + biases[mine[a].kind])
 	var pulls := _habit_pulls(state, me)
 	for a in mine.size():
-		my_scores[a] += pulls[mine[a].kind]
+		my_scores[a] += pulls[mine[a].kind] * habit_strength
 	var chosen := mine[_sample(_softmax(my_scores, temperature, _even_weights(mine)))]
 	var side := state.side(me)
 	_my_last_kind = chosen.kind
@@ -199,7 +203,10 @@ func choose_party(brought: Array[DinoDef], cap: int = PartyRules.POINT_CAP,
 		var ids: Array = combo.map(func(dino: DinoDef) -> StringName: return dino.id)
 		if required.any(func(id: StringName) -> bool: return not id in ids):
 			continue
-		var score := party_strength(combo) + rng.randf() * 3.0
+		var types := {}
+		for dino in combo:
+			types[dino.dino_type] = true
+		var score := party_strength(combo) + (types.size() - 1) * TYPE_SPREAD_BONUS + rng.randf() * 3.0
 		if score > best_score:
 			best_score = score
 			best = combo

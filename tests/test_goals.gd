@@ -68,19 +68,24 @@ func test_quest_progress_claim_and_bonus() -> void:
 func test_collection_milestones_and_eras() -> void:
 	var p := PlayerProfile.new_game(13)
 	p.choose_partner(&"tanystropheus")
-	assert_true(Goals.milestone_ready(p, 0), "6 starters reach the 5-dino milestone")
+	assert_false(Goals.milestone_ready(p, 0), "6 starters aren't 10 dinos yet")
+	for dino in catalog.dinos.slice(0, 10):
+		p.owned[dino.id] = false
+	assert_true(Goals.milestone_ready(p, 0))
 	var amber := p.amber
+	var clutches_before := p.clutches
 	assert_true(Goals.claim_milestone(p, 0))
 	assert_eq(p.amber, amber + Goals.MILESTONES[0][1])
+	assert_eq(p.clutches, clutches_before, "milestones pay Amber only")
 	assert_false(Goals.claim_milestone(p, 0))
-	assert_false(Goals.milestone_ready(p, 1), "10 not reached yet")
+	assert_false(Goals.milestone_ready(p, 1), "20 not reached yet")
 	assert_false(Goals.era_ready(p, catalog, 0))
 	for dino in catalog.dinos:
 		if dino.era == 0:
 			p.owned[dino.id] = false
-	var clutches := p.clutches
+	amber = p.amber
 	assert_true(Goals.claim_era(p, catalog, 0))
-	assert_eq(p.clutches, clutches + Goals.ERA_CLUTCHES)
+	assert_eq(p.amber, amber + Goals.ERA_AMBER)
 	assert_false(Goals.claim_era(p, catalog, 0), "only once")
 
 

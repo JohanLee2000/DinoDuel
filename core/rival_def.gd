@@ -55,6 +55,8 @@ const ROSTER: Array[String] = [
 @export var swap_bias := 0.0
 ## Conditional habits, ids from BattleAI.HABITS (e.g. brace_after_hit).
 @export var habits: Array[StringName] = []
+## How strongly the habits pull (1 = BattleAI.HABIT_PULL). Lower = harder to read.
+@export_range(0.0, 2.0) var habit_strength := 1.0
 ## Adapts to the player's habits. Turned off for easy rivals.
 @export var learns_habits := true
 
@@ -71,6 +73,7 @@ func make_ai(seed_value: int) -> BattleAI:
 	ai.temperature = temperature
 	ai.biases = [bite_bias, charge_bias, brace_bias, swap_bias]
 	ai.habits = habits.duplicate()
+	ai.habit_strength = habit_strength
 	ai.learns_habits = learns_habits
 	return ai
 

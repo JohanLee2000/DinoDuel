@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://core/dino_def.gd" id="1_npeou"]
 [ext_resource type="Resource" path="res://data/dinos/stegosaurus.tres" id="2_ssqts"]
 [ext_resource type="Resource" path="res://data/dinos/kentrosaurus.tres" id="3_okdxl"]
-[ext_resource type="Resource" path="res://data/dinos/dilophosaurus.tres" id="4_h4p58"]
+[ext_resource type="Resource" path="res://data/dinos/raeticodactylus.tres" id="4_h4p58"]
 [ext_resource type="Resource" path="res://data/dinos/ceratosaurus.tres" id="5_x9f0t"]
-[ext_resource type="Resource" path="res://data/dinos/archaeopteryx.tres" id="6_49ph7"]
-[ext_resource type="Resource" path="res://data/dinos/plesiosaurus.tres" id="7_w6zkh"]
+[ext_resource type="Resource" path="res://data/dinos/yi_qi.tres" id="6_49ph7"]
+[ext_resource type="Resource" path="res://data/dinos/liopleurodon.tres" id="7_w6zkh"]
 [ext_resource type="Script" path="res://core/rival_def.gd" id="9_npeou"]
 
 [resource]
@@ -17,6 +17,6 @@ intro = "Hank never backs down: once his dino is hurt, all he wants to do is Bit
 brings = Array[ExtResource("1_npeou")]([ExtResource("2_ssqts"), ExtResource("3_okdxl"), ExtResource("4_h4p58"), ExtResource("5_x9f0t"), ExtResource("6_49ph7"), ExtResource("7_w6zkh")])
 chapter = 1
 character = &"hank"
-temperature = 0.1
+temperature = 0.05
 habits = Array[StringName]([&"bite_when_hurt"])
-learns_habits = false
+habit_strength = 0.25
