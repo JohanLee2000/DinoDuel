@@ -48,7 +48,7 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 |---|---|---|
 | App icon | `assets/branding/app_icon_512.png` | 512 x 512 PNG |
 | Feature graphic | `feature_graphic.png` (rendered by `tools/feature_graphic.tscn`) | 1024 x 500 PNG/JPEG, no alpha |
-| Phone screenshots | `screenshots/01..08_*.png` (1142 x 2280; Journey, Dex and Goals retaken 2026-10-15 for 0.6.0) | 2-8 images, 320-3840 px, at most 2:1 |
+| Phone screenshots | `screenshots/01..08_*.png` (1142 x 2280; 2026-10-15 for 0.6.0: battle, Journey map, Legendary hatch, Shiny T. rex, Rory, Dex, coached battle, Goals). More in `screenshots/extra/` for the website | 2-8 images, 320-3840 px, at most 2:1 |
 
 Screenshots come from the phone with the debug-only `--store-shots` showcase save (see `app/session.gd`), so the DEV button never appears. To retake, put the flags in `user://dev_args.txt` on the phone (adb push + `run-as ... cp`), relaunch, and `adb exec-out screencap -p`. Delete `dev_args.txt` afterwards or every launch uses it.
 
