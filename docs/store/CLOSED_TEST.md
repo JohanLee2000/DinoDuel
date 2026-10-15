@@ -42,6 +42,21 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.6.0 (version code 11)
+
+```
+<en-US>
+Dino Duel 0.6.0
+- New Journey: battle from the Triassic to the meteor on illustrated maps
+- 15 rivals with habits to read, and Rory as the boss of every era, with an Alpha
+- Earn stars for dinos left standing and open star chests
+- Extinction Day finale: the meteor shower starts on turn 8
+- Rewards rebalanced: duplicates give less Amber, milestones every 10 dinos
+Your wins against Rae, Fern, Cora and Dusty carry over.
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.5.2 (version code 10)
 
 ```
@@ -190,4 +205,5 @@ Google asks how testers were recruited, what feedback came in, and what changed 
 | 2026-10-09 | Jo playtest: worried about battery drain and heat, wanted a bigger roster, a way to start over, and a way for new players to see the tour again | 0.5.0: frame cap and idle throttle, 15 new dinos, Restart game and Professaur's tour in Settings |
 | 2026-10-09 | Jo playtest: text too small and gray text hard to read, switching tabs slow, Goals list jumped to the top on every claim, wanted daily login rewards, better eggs, set collections and punchier battles | 0.5.1: bigger and lighter text, thumbnails for fast tabs, Goals keeps its place, daily check-in streak, Rare clutch, sets, battle effects, results panel |
 | 2026-10-10 | Jo playtest: wanted a much bigger roster with more giants and non-dinosaur creatures and a better Quetzalcoatlus | 0.5.2: 23 new creatures (68), Quetzalcoatlus UR, milestones to 65, Long Necks set |
+| 2026-10-15 | Jo playtest: once the 5 rivals were beaten there was nothing to aim for; the ladder was too hard for new players; collecting went too fast (duplicate Amber paid for new clutches) | 0.6.0: the Journey (19 stages over 3 eras + finale, habits, stars, chests, Alphas), tuned with simulated players; lower duplicate Amber, milestones every 10, halved set and achievement Amber |
 | | | |

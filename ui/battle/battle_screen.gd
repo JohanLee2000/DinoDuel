@@ -193,7 +193,8 @@ func _rival_entrance() -> void:
 	tween.tween_property(layer, "color:a", 0.45, 0.15)
 	tween.parallel().tween_property(sprite, "position:x", view.x - 340, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(words, "position:x", 28.0, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_interval(0.5 if Session.autoplay else 1.3)
+	# Store screenshots need it on screen long enough to capture.
+	tween.tween_interval(3.0 if Session.store_shots else (0.5 if Session.autoplay else 1.3))
 	tween.tween_property(layer, "modulate:a", 0.0, 0.25)
 	var skipped := [false]
 	layer.gui_input.connect(func(event: InputEvent) -> void:
