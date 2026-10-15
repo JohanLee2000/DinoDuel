@@ -7,7 +7,7 @@ When you have them, paste them in chat in any order and say which is which; they
 | Art | Size | File | Status |
 |---|---|---|---|
 | Era maps (3) + finale | 1024 x 1536 portrait | `map_triassic`, `map_jurassic`, `map_cretaceous`, `map_finale` | Done (2026-10-15) |
-| Rival sprites (16) | 1024 x 1024 square, pixel art | `<rival id>` (e.g. `rae`, `rory`) | Waiting |
+| Rival sprites (16) | 1024 x 1024 square, pixel art | `<rival id>` (e.g. `rae`, `rory`) | Rory done; 15 waiting |
 | Professaur (optional) | 1024 x 1024 square, pixel art | `professaur` | Waiting |
 
 ---
@@ -85,7 +85,52 @@ Jo chose pixel-art trainer sprites (2026-10-15), like the battle sprites in clas
 
 The game shows the whole sprite in the rival's details and on the battle intro, and a crop of the head and shoulders in the round map markers. It snaps the art to a clean pixel grid and draws it with hard edges, so it stays crisp at any size.
 
-### Sprite master prompt
+### All at once: one sprite sheet
+
+The other 15 rivals plus the Professaur make exactly 16, so they fit one 4 x 4 sheet. **Attach the Rory sprite to the same message** so the style and scale match him. The game cuts the sheet into the 16 sprites (`tools/prepare_sprites.py`).
+
+If some characters come out muddled (16 in one image is a lot), ask ChatGPT to redo just those, or split it: the same prompt with "8 characters, a 4 x 2 grid, 1536 x 1024" and only rows 1-2, then rows 3-4.
+
+```
+Create ONE pixel-art SPRITE SHEET for the mobile game DINO DUEL: 16 different characters, rival dinosaur-card collectors the player battles.
+Square image, 1024 x 1024, divided into an invisible 4 x 4 grid of equal cells (4 columns, 4 rows).
+Exactly one character per cell, centered in it, never crossing into a neighbouring cell.
+
+STYLE (the same for all 16; match the attached Rory sprite's style and scale)
+- Retro handheld RPG "trainer" battle sprites, like mid-2000s 2D handheld monster-collecting games: crisp pixel art, a limited palette,
+  flat shading with 2-3 tones per color, a clean dark 1-pixel outline, hard edges. No blur, no gradients, no painterly texture, no 3D.
+- Full body, standing, facing the viewer at a slight three-quarter angle, each in a confident battle pose that shows their personality.
+- Every character at the same scale: head near the top of their cell, feet near the bottom, with a small empty margin inside the cell.
+
+BACKGROUND
+- Transparent. If transparency isn't possible, one flat pale grey (#E8E8E8) everywhere, with no grid lines, borders, floor or shadows.
+
+THE 16 CHARACTERS, left to right, top to bottom
+Row 1
+1. Rookie Rae: a cheerful girl of about 13 with freckles, a messy auburn ponytail under a too-big khaki explorer cap, an oversized backpack, a fossil-tooth necklace, shorts and sneakers. One fist pumped, big eager grin. Red and sand.
+2. Ranger Fern: a calm Black park ranger in her thirties, short natural hair under a ranger's hat, green uniform with a fern-leaf patch, hiking boots. Arms folded, patient half-smile. Forest green and tan.
+3. Captain Cora: a bold Latina sea captain in her forties, long dark braid, navy captain's coat and cap with gold buttons, tall boots. Pointing forward as if ordering a charge, fearless grin. Navy and gold.
+4. Glider Gus: a playful East Asian man in his early twenties, windswept hair, aviator goggles on his forehead, brown leather flight jacket, long flowing scarf, cargo pants. One arm raised mid-throw, mischievous smile. Brown and sky blue.
+Row 2
+5. Dusty Dunes: a rugged white desert prospector in his sixties, dusty wide-brimmed hat, red bandana, bushy grey mustache, worn vest, boots, a pickaxe on one shoulder. Hand on hip, squinting, unimpressed. Dusty red and brown.
+6. Pilot Pip: a small, energetic Pacific Islander pilot in their late teens, feathered aviator cap, bomber jacket covered in feather patches, flight boots. A cheeky salute, one eyebrow raised, copycat grin. Orange and teal.
+7. Marina Marsh: a Southeast Asian marine biologist in her late twenties, damp dark hair, black-and-teal wetsuit, dive mask pushed up on her head, swim fins on her belt. Calm stance, one hand raised, ready to strike. Teal and black.
+8. Hiker Hank: a burly white hiker in his fifties, big ginger beard, heavy padded hiking gear like armor, large backpack, walking staff. Wide stance, staff thumped down, stubborn frown. Olive and orange.
+Row 3
+9. Sage Sela: a wise Middle Eastern strategist in her sixties, silver hair in a loose bun, round glasses, layered scarves and a long coat, holding an open notebook. Pushing up her glasses, knowing smile. Plum and gold.
+10. Boulder Bo: a huge, gentle Black man in his thirties, shaved head, very broad shoulders, rock-climbing harness with a coiled rope, chalky hands. Arms crossed, towering and calm. Stone grey and rust orange.
+11. Tracker Tia: a sharp-eyed Indigenous South American tracker in her twenties, hooded cloak, striped face paint, claw-shaped earring, leather wraps and sandals. Crouched forward like a hunter about to pounce. Earthy brown and deep green.
+12. Storm Sully: a wild Irish storm chaser in his thirties, messy red hair, soaked yellow raincoat flapping, rubber boots, a handheld weather gauge. One arm thrown up, daredevil grin. Yellow and storm grey.
+Row 4
+13. Deep-Sea Della: a Black deep-sea diver in her forties, short grey-streaked hair, vintage brass-and-canvas diving suit, the round brass helmet under one arm. Calm, cool stance. Brass and deep blue.
+14. Vera Volcano: a fearless Latina volcanologist in her thirties, dark curls, reflective silver heat suit with the hood down, ash on her cheeks, heavy gloves. Fist raised, fierce confident smile. Silver and lava orange.
+15. Old Grit: a legendary East Asian collector in his seventies, weathered fedora, scarred face, long grey beard, long dusty coat, amber pendant, a cane. Leaning on the cane, calm and quietly dangerous. Dark brown and amber.
+16. The Professaur: an eccentric paleontology professor in his sixties, wild grey hair, safari hat, tweed jacket with elbow patches, dinosaur-patterned bow tie, khaki trousers, a magnifying glass. Wagging one finger mid-lecture, slightly smug. Tweed brown and green.
+
+DO NOT include: text, names, numbers, labels, grid lines, borders, frames, UI, ground shadows, creatures or scenery.
+```
+
+### One at a time: sprite master prompt
 
 ```
 Create a single pixel-art character sprite for the mobile game DINO DUEL: a rival dinosaur-card collector the player battles.
