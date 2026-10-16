@@ -1,11 +1,16 @@
 extends VBoxContainer
 ## Dino Dex: every dino by era. Owned ones show in full, ones you've battled show faded, and
-## the rest are "???". Tap any card to see it or craft it with Amber.
+## the rest are "???". Tap any card to see it or craft it with Amber. A search and filters
+## (CollectionFilter) narrow it down; they only hide cards, so changing them is instant.
 
 var _body: VBoxContainer
 var _summary: Label
 var _scroll: ScrollContainer
+var _filter: CollectionFilter
 var _era_titles: Array[Label] = []
+## Per era: its grid of cards.
+var _era_grids: Array[GridContainer] = []
+var _empty: Label
 
 
 func _ready() -> void:
@@ -22,6 +27,11 @@ func _ready() -> void:
 			Session.save()
 			_refresh())
 		add_child(unlock)
+	_filter = CollectionFilter.create("dex", true)
+	_filter.changed.connect(func() -> void:
+		_apply_filter()
+		_scroll.scroll_vertical = 0)
+	add_child(_filter)
 	_body = UiKit.vbox(18)
 	_scroll = UiKit.vscroll(_body)
 	add_child(_scroll)
@@ -38,6 +48,7 @@ func _refresh() -> void:
 	for child in _body.get_children():
 		child.queue_free()
 	_era_titles.clear()
+	_era_grids.clear()
 	var profile := Session.profile
 	var shinies := 0
 	for id in profile.owned:
@@ -67,7 +78,27 @@ func _refresh() -> void:
 			card.inspect_on_hold = false
 			card.pressed.connect(_open.bind(dino))
 			row.add_child(card)
+		_era_grids.append(row)
 		_body.add_child(row)
+	_empty = UiKit.label("No dinos match. Try another search, or clear the filters.", 29, Palette.TEXT,
+			HORIZONTAL_ALIGNMENT_CENTER)
+	_body.add_child(_empty)
+	_apply_filter()
+
+
+## Shows only the cards that pass the search and filters, and hides eras left empty.
+func _apply_filter() -> void:
+	var profile := Session.profile
+	var any := false
+	for era in _era_grids.size():
+		var shown := 0
+		for card in _era_grids[era].get_children():
+			card.visible = _filter.matches((card as DinoCard).def, profile)
+			shown += 1 if card.visible else 0
+		_era_titles[era].visible = shown > 0
+		_era_grids[era].visible = shown > 0
+		any = any or shown > 0
+	_empty.visible = not any
 
 
 ## Dev (--dex-era): scrolls so that era's heading is at the top, once the grid has been laid out.

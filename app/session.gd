@@ -47,6 +47,8 @@ var store_shots := false
 var dev_tutorial := false
 ## Dev: open a popup on launch for screenshots: `--open=settings` or `--open=help`.
 var dev_open := ""
+## Dev: how many dinos the pick screen picks for you (`--open=prebattle:<stage>:<n>`).
+var dev_prepick := 0
 ## Dev: scroll the Dex to this era on launch (0 Triassic, 1 Jurassic, 2 Cretaceous). `--dex-era=N`.
 var dev_dex_era := -1
 

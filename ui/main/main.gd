@@ -105,6 +105,9 @@ func _ready() -> void:
 			HelpView.open.call_deferred(int(Session.dev_open.get_slice(":", 1)) - 1)
 		_ when Session.dev_open.begins_with("rival:"):
 			RivalView.open.call_deferred(Journey.find(StringName(Session.dev_open.get_slice(":", 1))), true)
+		_ when Session.dev_open.begins_with("prebattle:"):
+			Session.dev_prepick = int(Session.dev_open.get_slice(":", 2))
+			Session.go_to_pre_battle.call_deferred(Journey.find(StringName(Session.dev_open.get_slice(":", 1))))
 		_ when Session.dev_open.begins_with("intro:"):
 			ProfessaurNote.chapter_intro.call_deferred(int(Session.dev_open.get_slice(":", 1)))
 	Session.dev_open = ""

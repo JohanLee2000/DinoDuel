@@ -10,6 +10,9 @@ const SAVE_VERSION := 1
 
 ## id -> true if the copy you own is Shiny.
 var owned: Dictionary = {}
+## Owned ids, oldest first, for the Party tab's "Recent" sort. Saves from before 2026-10-15 put
+## everything they already owned first, in catalog order.
+var collected_order: Array[StringName] = []
 ## Ids met in battle but not owned yet; the Dex shows these with their names.
 var seen: Dictionary = {}
 var amber := 0
@@ -62,6 +65,7 @@ static func new_game(seed_value: int) -> PlayerProfile:
 	profile._rng.seed = seed_value
 	for id in Economy.STARTER_BASICS:
 		profile.owned[id] = false
+	profile.collected_order.assign(Economy.STARTER_BASICS)
 	profile.lineup.assign(Economy.STARTER_BASICS)
 	profile.clutches = Economy.STARTER_CLUTCHES
 	profile.first_steps_active = true
@@ -88,6 +92,7 @@ func choose_partner(id: StringName) -> bool:
 		return false
 	if not owns(id):
 		owned[id] = false
+		collected_order.append(id)
 	seen.erase(id)
 	if not id in lineup and lineup.size() < PartyRules.BRING_SIZE:
 		lineup.append(id)
@@ -119,6 +124,7 @@ func add_dino(dino: DinoDef, shiny: bool) -> HatchResult:
 	if not owns(dino.id):
 		result.is_new = true
 		owned[dino.id] = shiny
+		collected_order.append(dino.id)
 		seen.erase(dino.id)
 	elif shiny and not is_shiny(dino.id):
 		result.upgraded_to_shiny = true
@@ -134,7 +140,13 @@ func unlock_all(catalog: DinoCatalog) -> void:
 	for dino in catalog.dinos:
 		if not owns(dino.id):
 			owned[dino.id] = false
+			collected_order.append(dino.id)
 		seen.erase(dino.id)
+
+
+## How recently a dino was collected: higher is newer, -1 if it isn't in collected_order.
+func collected_rank(id: StringName) -> int:
+	return collected_order.find(id)
 
 
 func can_craft(dino: DinoDef) -> bool:
@@ -368,6 +380,7 @@ func to_dict() -> Dictionary:
 	return {
 		"version": SAVE_VERSION,
 		"owned": owned.duplicate(),
+		"collected_order": collected_order.duplicate(),
 		"seen": seen.keys(),
 		"amber": amber,
 		"clutches": clutches,
@@ -409,6 +422,16 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 		var id := StringName(key)
 		if catalog.find(id):
 			profile.owned[id] = bool(owned_data[key])
+	# Collection order: anything owned but not in the saved order (older saves) counts as oldest.
+	var order: Array[StringName] = []
+	for key in data.get("collected_order", []):
+		var id := StringName(key)
+		if profile.owns(id) and not id in order:
+			order.append(id)
+	for dino in catalog.dinos:
+		if profile.owns(dino.id) and not dino.id in order:
+			profile.collected_order.append(dino.id)
+	profile.collected_order.append_array(order)
 	for key in data.get("seen", []):
 		var id := StringName(key)
 		if catalog.find(id) and not profile.owns(id):

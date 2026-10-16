@@ -245,6 +245,25 @@ func test_save_round_trip_keeps_everything_including_rng() -> void:
 	assert_eq(_ids(loaded.hatch_clutch(catalog)), _ids(p.hatch_clutch(catalog)), "RNG continues identically")
 
 
+func test_collection_order_is_saved_and_old_saves_count_as_oldest() -> void:
+	var p := PlayerProfile.new_game(1)
+	p.choose_partner(&"dilophosaurus")
+	p.add_dino(_dino(&"t_rex"), false)
+	p.add_dino(_dino(&"mosasaurus"), false)
+	p.add_dino(_dino(&"t_rex"), true)  # A Shiny duplicate doesn't make it newer.
+	assert_eq(p.collected_order.slice(-3), [&"dilophosaurus", &"t_rex", &"mosasaurus"] as Array[StringName])
+	assert_true(p.collected_rank(&"mosasaurus") > p.collected_rank(&"t_rex"))
+	var loaded := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(p.to_dict())), catalog)
+	assert_eq(loaded.collected_order, p.collected_order, "order survives a reload")
+	var data := p.to_dict()
+	data.erase("collected_order")
+	data["owned"]["pteranodon"] = false
+	var old := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(data)), catalog)
+	assert_eq(old.collected_order.size(), old.owned.size(), "old saves: every owned dino gets a place")
+	old.add_dino(_dino(&"triceratops"), false)
+	assert_eq(old.collected_order[-1], &"triceratops", "new ones go after everything already owned")
+
+
 func test_load_tolerates_bad_data() -> void:
 	var data := {"owned": {"coelophysis": false, "not_a_dino": true}, "lineup": ["coelophysis",
 			"not_a_dino", "t_rex"], "amber": -50}

@@ -1,9 +1,15 @@
 extends VBoxContainer
 ## Party tab: choose the 6 dinos you bring to battles. Before each battle you pick 3 of them.
+## A search, filters and sorting (CollectionFilter) help find dinos in a big collection.
 
 var _lineup_row: HBoxContainer
 var _grid: GridContainer
 var _status: Label
+var _filter: CollectionFilter
+var _scroll: ScrollContainer
+var _empty: Label
+## id -> its card in the grid.
+var _cards := {}
 
 
 func _ready() -> void:
@@ -15,18 +21,32 @@ func _ready() -> void:
 	add_child(_lineup_row)
 	_status = UiKit.label("", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
 	add_child(_status)
+	_filter = CollectionFilter.create("party", false, true)
+	_filter.changed.connect(func() -> void:
+		_apply_filter()
+		_scroll.scroll_vertical = 0)
+	add_child(_filter)
+	_empty = UiKit.label("No dinos match. Try another search, or clear the filters.", 29, Palette.TEXT,
+			HORIZONTAL_ALIGNMENT_CENTER)
+	add_child(_empty)
 	_grid = UiKit.grid(3)
 	_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var holder := CenterContainer.new()
 	holder.add_child(_grid)
-	add_child(UiKit.vscroll(holder))
+	_scroll = UiKit.vscroll(holder)
+	add_child(_scroll)
 	_refresh()
 
 
 func _refresh() -> void:
 	var profile := Session.profile
-	for child in _lineup_row.get_children() + _grid.get_children():
+	for child in _lineup_row.get_children():
 		child.queue_free()
+	# Removed right away (not just queued), so _apply_filter's ordering only sees the new cards.
+	for child in _grid.get_children():
+		_grid.remove_child(child)
+		child.queue_free()
+	_cards.clear()
 
 	for id in profile.lineup:
 		var mini := DinoCard.create(Session.catalog.find(id), DinoCard.Mode.MINI, null, profile.is_shiny(id))
@@ -35,13 +55,14 @@ func _refresh() -> void:
 	for i in PartyRules.BRING_SIZE - profile.lineup.size():
 		_lineup_row.add_child(_empty_slot())
 
-	var owned := _owned_sorted()
+	var owned := _owned()
 	_status.text = "%d/%d in your party · tap to add or remove · hold to zoom · %d collected" % [
 			profile.lineup.size(), PartyRules.BRING_SIZE, owned.size()]
 	_status.remove_theme_color_override("font_color")
 	var lineup := profile.lineup_defs(Session.catalog)
 	if lineup.size() == PartyRules.BRING_SIZE and not PartyRules.has_valid_pick(lineup):
-		_status.text = "Too expensive: your 3 cheapest cost more than %d Party Points, so you can't battle. Swap one for a cheaper dino." 				% PartyRules.POINT_CAP
+		_status.text = "Too expensive: your 3 cheapest cost more than %d Party Points, so you can't battle. Swap one for a cheaper dino." \
+				% PartyRules.POINT_CAP
 		_status.add_theme_color_override("font_color", Palette.HIGHLIGHT)
 	for dino in owned:
 		var card := DinoCard.create(dino, DinoCard.Mode.FULL, null, profile.is_shiny(dino.id))
@@ -51,6 +72,21 @@ func _refresh() -> void:
 		card.dimmed = not in_lineup and profile.lineup.size() >= PartyRules.BRING_SIZE
 		card.pressed.connect(_toggle.bind(dino.id))
 		_grid.add_child(card)
+		_cards[dino.id] = card
+	_apply_filter()
+
+
+## Puts the cards in the chosen order and hides the ones the search and filters leave out.
+func _apply_filter() -> void:
+	var profile := Session.profile
+	var order := _filter.sorted(_owned(), profile)
+	var shown := 0
+	for i in order.size():
+		var card: DinoCard = _cards[order[i].id]
+		_grid.move_child(card, i)
+		card.visible = _filter.matches(order[i], profile)
+		shown += 1 if card.visible else 0
+	_empty.visible = shown == 0
 
 
 func _toggle(id: StringName) -> void:
@@ -68,15 +104,11 @@ func _toggle(id: StringName) -> void:
 	_refresh()
 
 
-func _owned_sorted() -> Array[DinoDef]:
+func _owned() -> Array[DinoDef]:
 	var owned: Array[DinoDef] = []
 	for dino in Session.catalog.dinos:
 		if Session.profile.owns(dino.id):
 			owned.append(dino)
-	owned.sort_custom(func(a: DinoDef, b: DinoDef) -> bool:
-		if a.dino_type != b.dino_type:
-			return a.dino_type < b.dino_type
-		return a.rarity > b.rarity)
 	return owned
 
 
