@@ -1,7 +1,7 @@
 class_name SettingsView
 extends Control
 ## Settings popup from the gear in the top bar: sound effects and music volume, How to play,
-## the Professaur's tour again, Restart game (with a confirmation), and credits. Export / Import
+## the Professaur's tour again, Reset game (with a confirmation), and credits. Export / Import
 ## save is built but commented out until Jo decides about it.
 
 
@@ -48,7 +48,7 @@ func _ready() -> void:
 #		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 #		transfer.add_child(button)
 #	column.add_child(transfer)
-	var restart := UiKit.icon_button("Restart game", &"restart", UiKit.BUTTON_RED, 76, 28)
+	var restart := UiKit.icon_button("Reset game", &"restart", UiKit.BUTTON_RED, 76, 28)
 	restart.pressed.connect(_confirm_restart)
 	column.add_child(restart)
 	var done := UiKit.button("Done", UiKit.BUTTON_GREEN, 76, 28)
@@ -148,7 +148,7 @@ func _open_dialog(column: Control) -> ColorRect:
 
 ## "Are you sure?" before wiping the save.
 func _confirm_restart() -> void:
-	var column := _dialog_column("Restart the game?", Palette.DAMAGE)
+	var column := _dialog_column("Reset the game?", Palette.DAMAGE)
 	column.add_child(UiKit.label("This deletes all of your save data: every dino you've collected, your Amber and eggs, " \
 			+ "Goals progress and rival records.", 30, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(UiKit.label("You'll start again from the very beginning, with a new name and a new partner. " \
@@ -157,7 +157,7 @@ func _confirm_restart() -> void:
 	var keep := UiKit.button("Keep my progress", UiKit.BUTTON_GREEN, 84, 30)
 	keep.pressed.connect(dialog.queue_free)
 	column.add_child(keep)
-	var wipe := UiKit.button("Delete everything and restart", UiKit.BUTTON_RED, 76, 28)
+	var wipe := UiKit.button("Delete everything and reset", UiKit.BUTTON_RED, 76, 28)
 	wipe.pressed.connect(Session.restart_game)
 	column.add_child(wipe)
 

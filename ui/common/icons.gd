@@ -104,7 +104,7 @@ const SVG := {
 	# Import save: an arrow down into a tray.
 	&"import": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
 <path d="M10 38 L10 54 L54 54 L54 38"/><line x1="32" y1="8" x2="32" y2="40"/><path d="M19 27 L32 40 L45 27"/></g></svg>""",
-	# Restart game: an arrow going back around the circle.
+	# Reset game (and Rematch): an arrow going back around the circle.
 	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
 <path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",
 	# Tab bar: Party (a fan of cards), Eggs (an egg), Goals (a trophy). Battle uses "map", Dex "book".
@@ -119,10 +119,9 @@ const SVG := {
 <path d="M18 8 L46 8 L46 24 C46 34 40 40 32 40 C24 40 18 34 18 24 Z" fill="#ffffff" fill-opacity="0.25"/>
 <path d="M18 13 L9 13 C9 22 13 27 19 28"/><path d="M46 13 L55 13 C55 22 51 27 45 28"/>
 <line x1="32" y1="40" x2="32" y2="49"/><path d="M21 56 L43 56 L40 49 L24 49 Z"/></g></svg>""",
-	# Back to camp: a tent.
-	&"camp": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
-<path d="M6 54 L32 12 L58 54 Z" fill="#ffffff" fill-opacity="0.25"/><path d="M24 54 L32 38 L40 54"/>
-<line x1="27" y1="6" x2="32" y2="12"/><line x1="37" y1="6" x2="32" y2="12"/></g></svg>""",
+	# Back to journey: an arrow pointing left.
+	&"back": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+<line x1="54" y1="32" x2="12" y2="32"/><path d="M29 14 L11 32 L29 50"/></g></svg>""",
 	# A locked Journey stage.
 	&"lock": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M20 28 L20 20 A12 12 0 0 1 44 20 L44 28" fill="none" stroke="#dfe7f5" stroke-width="7" stroke-linecap="round"/>
 <rect x="12" y="27" width="40" height="31" rx="7" fill="#dfe7f5" stroke="#0b1220" stroke-width="3"/><circle cx="32" cy="41" r="5" fill="#0b1220"/><rect x="30" y="42" width="4" height="9" rx="2" fill="#0b1220"/></svg>""",

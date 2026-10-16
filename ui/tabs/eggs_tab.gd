@@ -1,6 +1,6 @@
 extends VBoxContainer
-## Eggs tab: one Hatch button (asks Clutch or Rare clutch when you have both), the shop (check-in,
-## clutch, Rare clutch) as three tiles, and the odds.
+## Eggs tab: one Hatch button (asks which when a Rare clutch is waiting), the shop (a clutch and a
+## Rare clutch) as two tiles, and the odds.
 
 var _body: VBoxContainer
 
@@ -23,38 +23,24 @@ func _refresh() -> void:
 	var banner := ClutchBanner.new()
 	banner.clutches = profile.clutches
 	banner.rare_clutches = profile.rare_clutches
-	banner.hatch_pressed.connect(_hatch_any)
 	_body.add_child(banner)
-	# One big Hatch button. With both kinds waiting, it asks which (_choose_clutch).
+	# One big Hatch button with the total waiting. With a Rare clutch among them it asks which
+	# (_choose_clutch).
 	var total := profile.clutches + profile.rare_clutches
-	var only_rare := profile.clutches == 0 and profile.rare_clutches > 0
-	var hatch_text := "Hatch a Rare clutch" if only_rare else "Hatch a clutch"
-	if total > 1:
-		hatch_text += "  (%d)" % total
-	var hatch := UiKit.let_scroll(UiKit.button(hatch_text, UiKit.BUTTON_RARE if only_rare else UiKit.BUTTON_GREEN, 110, 34))
+	var hatch := UiKit.let_scroll(UiKit.button("Hatch a clutch  (%d)" % total if total > 0 else "Hatch a clutch",
+			UiKit.BUTTON_GREEN, 110, 34))
 	hatch.disabled = total <= 0
 	hatch.pressed.connect(_hatch_any)
 	_body.add_child(hatch)
 
-	# The shop: check-in, a clutch and a Rare clutch as three tiles.
+	# The shop: a clutch and a Rare clutch. The daily check-in lives on the Goals tab.
 	var shop := UiKit.hbox(10)
-	var checked_in := not profile.can_claim_daily(SaveStore.today())
-	var bonus: Dictionary = Economy.CHECKIN_BONUSES[profile.checkin_day]
-	var bonus_short := "+%d Amber" % bonus.get("amber", 0)
-	if bonus.has("clutches"):
-		bonus_short = "+%d clutch" % bonus["clutches"]
-	elif bonus.has("rare_clutches"):
-		bonus_short = "+Rare clutch"
-	var checkin := _tile("Check-in", "Done today ✔" if checked_in else "Day %d: %s" % [profile.checkin_day + 1, bonus_short],
-			&"egg", Palette.PANEL if checked_in else UiKit.BUTTON_GREEN)
-	checkin.pressed.connect(func() -> void: CheckInView.open().closed.connect(_refresh))
-	shop.add_child(checkin)
 	for offer in [[false, Economy.CLUTCH_PRICE], [true, Economy.RARE_CLUTCH_PRICE]]:
 		var rare: bool = offer[0]
 		var price: int = offer[1]
 		var short := price - profile.amber
-		var buy := _tile("Rare clutch" if rare else "Clutch", "%d Amber" % price if short <= 0 else "Need %d more" % short,
-				&"egg", UiKit.BUTTON_RARE if rare else UiKit.BUTTON_AMBER)
+		var buy := _tile("Buy a Rare clutch" if rare else "Buy a clutch", "%d Amber" % price if short <= 0 else "Need %d more" % short,
+				&"egg", UiKit.BUTTON_RARE if rare else UiKit.BUTTON_AMBER, 26)
 		buy.disabled = short > 0
 		buy.pressed.connect(func() -> void:
 			if profile.buy_rare_clutch() if rare else profile.buy_clutch():
@@ -89,7 +75,7 @@ func _odds_box() -> VBoxContainer:
 	var left := Economy.PITY_CLUTCHES - Session.profile.clutches_without_epic
 	box.add_child(UiKit.label("Shiny: 1 in %d eggs (same stats, special look)." % roundi(1.0 / Economy.SHINY_ODDS),
 			28, Palette.TEXT_DIM))
-	box.add_child(UiKit.label("Guaranteed Epic or better at least every %d clutches. Yours: within the next %d." \
+	box.add_child(UiKit.label("Guaranteed SSR (Epic) or better at least every %d clutches. Yours: within the next %d." \
 			% [Economy.PITY_CLUTCHES, left], 28, Palette.TEXT_DIM))
 	return box
 
@@ -111,13 +97,14 @@ func _tile(title: String, detail: String, icon_name: StringName, color: Color, f
 	return tile
 
 
-## Hatches a clutch; if there are both normal and Rare clutches, asks which first.
+## Hatches a clutch. With a Rare clutch waiting it asks first: a normal or a Rare one (whichever
+## you have), or not now.
 func _hatch_any() -> void:
 	var profile := Session.profile
-	if profile.clutches > 0 and profile.rare_clutches > 0:
+	if profile.rare_clutches > 0:
 		_choose_clutch()
-	else:
-		_hatch(profile.rare_clutches > 0)
+	elif profile.clutches > 0:
+		_hatch(false)
 
 
 func _choose_clutch() -> void:
@@ -132,15 +119,16 @@ func _choose_clutch() -> void:
 	var column := UiKit.vbox(16)
 	column.custom_minimum_size.x = 560
 	column.add_child(UiKit.title("Which clutch?", 38, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
-	column.add_child(UiKit.label("Rare clutches have better odds: %d%% Epic and %d%% Legendary per egg." \
+	column.add_child(UiKit.label("Rare clutches have better odds: %d%% SSR (Epic) and %d%% UR (Legendary) per egg." \
 			% [roundi(Economy.RARE_CLUTCH_ODDS[DinoDef.Rarity.EPIC] * 100), roundi(Economy.RARE_CLUTCH_ODDS[DinoDef.Rarity.LEGENDARY] * 100)],
 			26, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
 	var row := UiKit.hbox(12)
 	for rare in [false, true]:
 		var count: int = profile.rare_clutches if rare else profile.clutches
-		var pick := _tile("Rare clutch" if rare else "Clutch", "%d waiting" % count, &"egg",
-				UiKit.BUTTON_RARE if rare else UiKit.BUTTON_GREEN, 28)
+		var pick := _tile("Rare clutch" if rare else "Clutch", "%d waiting" % count if count > 0 else "None waiting",
+				&"egg", UiKit.BUTTON_RARE if rare else UiKit.BUTTON_GREEN, 28)
 		pick.custom_minimum_size.y = 190
+		pick.disabled = count <= 0
 		pick.pressed.connect(func() -> void:
 			dialog.queue_free()
 			_hatch(rare))

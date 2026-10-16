@@ -126,7 +126,7 @@ func _ready() -> void:
 	UiKit.style_button(%RematchButton, UiKit.BUTTON_RED)
 	UiKit.add_icon(%RematchButton, "Rematch", &"restart", UiKit.BUTTON_RED, 32)
 	UiKit.style_button(%BackButton, UiKit.BUTTON_GREEN)
-	UiKit.add_icon(%BackButton, "Back to camp", &"camp", UiKit.BUTTON_GREEN, 32)
+	UiKit.add_icon(%BackButton, "Back to journey", &"back", UiKit.BUTTON_GREEN, 32)
 	%HatchButton.pressed.connect(Session.go_to_main.bind(Session.Tab.EGGS))
 	%RematchButton.pressed.connect(Session.go_to_pre_battle)
 	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))

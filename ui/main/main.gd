@@ -182,10 +182,10 @@ func _style_tabs() -> void:
 func _update_bar() -> void:
 	var profile := Session.profile
 	_amber_label.text = str(profile.amber)
-	_clutch_label.text = str(profile.clutches)
-	var eggs_waiting := profile.clutches > 0 or profile.rare_clutches > 0 or profile.can_claim_daily(SaveStore.today())
-	_dots[Session.Tab.EGGS].visible = eggs_waiting
-	_dots[Session.Tab.GOALS].visible = Goals.anything_to_claim(profile, Session.catalog)
+	_clutch_label.text = str(profile.clutches + profile.rare_clutches)
+	_dots[Session.Tab.EGGS].visible = profile.clutches > 0 or profile.rare_clutches > 0
+	_dots[Session.Tab.GOALS].visible = profile.can_claim_daily(SaveStore.today()) \
+			or Goals.anything_to_claim(profile, Session.catalog)
 	_dots[Session.Tab.BATTLE].visible = Journey.any_chest_ready(profile)
 	_first_steps.refresh()
 	_glow_tab(_first_steps.next_tab())

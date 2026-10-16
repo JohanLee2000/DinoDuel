@@ -83,12 +83,16 @@ func _open(dino: DinoDef) -> void:
 	var known := owned or profile.seen.has(dino.id)
 	var extras: Array[Control] = []
 	if not owned:
-		var hint := "You've battled this one but don't own it yet." if known 				else "Not discovered yet. Hatch eggs to find it, or craft it now."
+		var hint := "You've battled this one but don't own it yet." if known \
+				else "Not discovered yet. Hatch eggs to find it, or craft it now."
 		extras.append(UiKit.label(hint, 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
-		var craft := UiKit.button("Craft for %d Amber (you have %d)" % [Economy.CRAFT_COST[dino.rarity],
-				profile.amber], UiKit.BUTTON_AMBER)
+		var cost: int = Economy.CRAFT_COST[dino.rarity]
+		var craft := UiKit.button("Craft  ·  %d Amber" % cost, UiKit.BUTTON_AMBER)
 		craft.disabled = not profile.can_craft(dino)
 		extras.append(craft)
+		if profile.amber < cost:
+			extras.append(UiKit.label("Need %d more" % (cost - profile.amber), 29, Palette.TEXT,
+					HORIZONTAL_ALIGNMENT_CENTER))
 		var viewer := CardViewer.open(dino, false, known, extras)
 		craft.pressed.connect(_craft.bind(dino, viewer))
 		viewer.closed.connect(_refresh)

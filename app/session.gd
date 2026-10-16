@@ -142,7 +142,7 @@ func save() -> void:
 	profile_changed.emit()
 
 
-## Settings > Restart game (after the player confirms): deletes the save and starts a brand-new
+## Settings > Reset game (after the player confirms): deletes the save and starts a brand-new
 ## game from the name entry. Sound settings are kept; they're device preferences, not progress.
 func restart_game() -> void:
 	SaveStore.delete_all()

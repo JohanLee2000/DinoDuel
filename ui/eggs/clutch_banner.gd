@@ -1,10 +1,8 @@
 class_name ClutchBanner
 extends Control
 ## The picture at the top of the Eggs tab: Jo's clutch painting with how many clutches are waiting.
-## With clutches it glows, embers drift up from the amber, and tapping it hatches one; without any
-## it dims and says how to get more.
-
-signal hatch_pressed
+## With clutches it glows and embers drift up from the amber; without any it dims and says how to
+## get more. Tapping it does nothing: the Hatch button under it hatches.
 
 const ART := "res://assets/eggs/clutch_banner.webp"
 const HEIGHT := 300.0
@@ -18,13 +16,11 @@ var clutches := 0
 var rare_clutches := 0
 var _image: TextureRect
 var _glow: TextureRect
-var _press_position := Vector2.INF
 
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(0, HEIGHT)
-	# PASS so a drag that starts here still scrolls the tab.
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Rounded corners: the panel's shape masks everything inside it.
 	var frame := Panel.new()
 	var shape := StyleBoxFlat.new()
@@ -103,7 +99,13 @@ func _ready() -> void:
 	words.add_child(headline)
 	var hint := "Win a battle or check in daily for a free clutch."
 	if has_clutches:
-		hint = "Tap to hatch" if rare_clutches == 0 else "Tap to hatch  ·  %d Rare" % rare_clutches
+		var below := "Hatch it below." if total == 1 else "Hatch them below."
+		if rare_clutches == 0:
+			hint = below
+		elif rare_clutches == total:
+			hint = ("It's a Rare one! " if total == 1 else "All Rare! ") + below
+		else:
+			hint = "%d of them Rare. %s" % [rare_clutches, below]
 	words.add_child(UiKit.label(hint, 29, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
 	frame.add_child(words)
 
@@ -149,23 +151,3 @@ func _embers() -> CPUParticles2D:
 	resized.connect(func() -> void: embers.position = size * NEST + Vector2(0, size.y * 0.12))
 	return embers
 
-
-## A tap (not a scroll) hatches a clutch.
-func _gui_input(event: InputEvent) -> void:
-	if clutches + rare_clutches <= 0:
-		return
-	if event is InputEventMouseMotion and _press_position != Vector2.INF:
-		if _press_position.distance_to(event.global_position) > DinoCard.TAP_SLOP:
-			_press_position = Vector2.INF
-		return
-	if not (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT):
-		return
-	if event.pressed:
-		_press_position = event.global_position
-	elif _press_position != Vector2.INF:
-		_press_position = Vector2.INF
-		pivot_offset = size / 2
-		var press := create_tween()
-		press.tween_property(self, "scale", Vector2(0.97, 0.97), 0.06)
-		press.tween_property(self, "scale", Vector2.ONE, 0.1)
-		press.tween_callback(hatch_pressed.emit)
