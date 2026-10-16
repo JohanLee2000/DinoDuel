@@ -89,6 +89,30 @@ func test_collection_milestones_and_eras() -> void:
 	assert_false(Goals.claim_era(p, catalog, 0), "only once")
 
 
+func test_claim_all_takes_every_ready_reward_and_counts_by_section() -> void:
+	var p := PlayerProfile.new_game(15)
+	p.choose_partner(&"tanystropheus")
+	var today := 900
+	Goals.refresh_quests(p, today)
+	for quest in p.quests:
+		quest["progress"] = Goals.quest_target(quest)
+	for dino in catalog.dinos:
+		if dino.era == 0:
+			p.owned[dino.id] = false
+	var today_ready := Goals.ready_in(Goals.Section.TODAY, p, catalog, today)
+	assert_eq(today_ready, 1 + Goals.QUESTS_PER_DAY + 1, "check-in, 3 quests and the day's bonus")
+	assert_true(Goals.ready_in(Goals.Section.COLLECTION, p, catalog, today) >= 3, "milestones 10 and 20 and the Triassic")
+	var total := Goals.ready_total(p, catalog, today)
+	var amber := p.amber
+	var result := Goals.claim_all(p, catalog, today)
+	assert_true(result["count"] >= total, "everything ready, plus anything the claims unlocked")
+	assert_eq(result["amber"], p.amber - amber)
+	assert_true(result["clutches"] >= Economy.DAILY_CLUTCHES + Goals.QUEST_BONUS_CLUTCHES, "check-in and quest bonus clutches")
+	assert_eq(Goals.ready_total(p, catalog, today), 0, "nothing left to claim")
+	assert_false(Goals.anything_to_claim(p, catalog))
+	assert_eq(Goals.claim_all(p, catalog, today)["count"], 0, "a second go claims nothing")
+
+
 func test_achievements_track_battles_hatches_and_crafts() -> void:
 	var p := PlayerProfile.new_game(14)
 	var perfect := _party([&"coelophysis", &"eudimorphodon", &"tanystropheus"])

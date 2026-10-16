@@ -346,6 +346,65 @@ static func anything_to_claim(profile: PlayerProfile, catalog: DinoCatalog) -> b
 	return false
 
 
+## The Goals tab's three sections (Jo, 2026-10-15).
+enum Section { TODAY, COLLECTION, ACHIEVEMENTS }
+
+
+## How many rewards are ready to claim in one section. Today counts the daily check-in too.
+static func ready_in(section: int, profile: PlayerProfile, catalog: DinoCatalog, today: int) -> int:
+	var count := 0
+	match section:
+		Section.TODAY:
+			count += 1 if profile.can_claim_daily(today) else 0
+			for quest in profile.quests:
+				count += 1 if quest_done(quest) and not quest["claimed"] else 0
+			count += 1 if quest_bonus_ready(profile) else 0
+		Section.COLLECTION:
+			for i in MILESTONES.size():
+				count += 1 if milestone_ready(profile, i) else 0
+			for era in DinoDef.ERA_NAMES.size():
+				count += 1 if era_ready(profile, catalog, era) else 0
+			count += DinoSets.ids().filter(func(id: StringName) -> bool: return DinoSets.ready(profile, id)).size()
+		Section.ACHIEVEMENTS:
+			for id in ACHIEVEMENTS:
+				count += 1 if not achievement_claimed(profile, id) and achievement_unlocked(profile, catalog, id) else 0
+	return count
+
+
+static func ready_total(profile: PlayerProfile, catalog: DinoCatalog, today: int) -> int:
+	var total := 0
+	for section in Section.values():
+		total += ready_in(section, profile, catalog, today)
+	return total
+
+
+## Claims everything that's ready, the check-in included ("Claim all ready rewards"). Goes round
+## until nothing's left, since one claim can unlock another (Amber for an Amber achievement).
+## Returns what it gave: {count, amber, clutches, rare_clutches}.
+static func claim_all(profile: PlayerProfile, catalog: DinoCatalog, today: int) -> Dictionary:
+	var before := [profile.amber, profile.clutches, profile.rare_clutches]
+	var count := 1 if profile.claim_daily(today) else 0
+	var claimed_some := true
+	while claimed_some:
+		var claims: Array[bool] = []
+		for i in profile.quests.size():
+			claims.append(claim_quest(profile, i))
+		claims.append(claim_quest_bonus(profile))
+		for i in MILESTONES.size():
+			claims.append(claim_milestone(profile, i))
+		for era in DinoDef.ERA_NAMES.size():
+			claims.append(claim_era(profile, catalog, era))
+		for id in DinoSets.ids():
+			claims.append(DinoSets.claim(profile, id))
+		for id in ACHIEVEMENTS:
+			claims.append(claim_achievement(profile, catalog, id))
+		_track_amber(profile)
+		count += claims.count(true)
+		claimed_some = claims.has(true)
+	return {"count": count, "amber": profile.amber - before[0], "clutches": profile.clutches - before[1],
+			"rare_clutches": profile.rare_clutches - before[2]}
+
+
 static func _claimed(profile: PlayerProfile, key: String) -> bool:
 	return profile.claimed_goals.get(key, false)
 

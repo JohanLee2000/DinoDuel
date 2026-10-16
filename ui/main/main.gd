@@ -10,7 +10,7 @@ const TABS := [
 	{"name": "Dex", "icon": &"book", "script": "res://ui/tabs/dex_tab.gd"},
 	{"name": "Goals", "icon": &"trophy", "script": "res://ui/tabs/goals_tab.gd"},
 ]
-const TAB_ICON_SIZE := 36
+const TAB_ICON_SIZE := 30
 
 var _buttons: Array[Button] = []
 ## Per tab: the red dot that means something's waiting there.
@@ -51,7 +51,7 @@ func _ready() -> void:
 	Sound.music(&"main")
 	for i in TABS.size():
 		# Icon above the name; the active tab is gold (see _style_tabs).
-		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 100, 21)
+		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 82, 20)
 		button.icon = Icons.texture(TABS[i]["icon"], TAB_ICON_SIZE)
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP

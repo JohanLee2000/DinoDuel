@@ -108,49 +108,6 @@ func _scroll_to_era(era: int) -> void:
 	_scroll.scroll_vertical = int(_era_titles[era].position.y)
 
 
+## Tapping a card opens its Dex entry (DexEntry: Share, or Craft if it's missing).
 func _open(dino: DinoDef) -> void:
-	var profile := Session.profile
-	var owned := profile.owns(dino.id)
-	var known := owned or profile.seen.has(dino.id)
-	var extras: Array[Control] = []
-	if not owned:
-		var hint := "You've battled this one but don't own it yet." if known \
-				else "Not discovered yet. Hatch eggs to find it, or craft it now."
-		extras.append(UiKit.label(hint, 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
-		var cost: int = Economy.CRAFT_COST[dino.rarity]
-		var craft := UiKit.button("Craft  ·  %d Amber" % cost, UiKit.BUTTON_AMBER)
-		craft.disabled = not profile.can_craft(dino)
-		extras.append(craft)
-		if profile.amber < cost:
-			extras.append(UiKit.label("Need %d more" % (cost - profile.amber), 29, Palette.TEXT,
-					HORIZONTAL_ALIGNMENT_CENTER))
-		var viewer := CardViewer.open(dino, false, known, extras)
-		craft.pressed.connect(_craft.bind(dino, viewer))
-		viewer.closed.connect(_refresh)
-	else:
-		var share := UiKit.pill_button("Share", &"share")
-		share.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		share.custom_minimum_size.x = 340
-		share.pressed.connect(func() -> void:
-			share.disabled = true
-			await ShareCard.share_dino(dino, profile.is_shiny(dino.id), false)
-			if is_instance_valid(share):
-				share.disabled = false)
-		var owned_extras: Array[Control] = [share]
-		CardViewer.open(dino, profile.is_shiny(dino.id), true, owned_extras)
-		if not profile.opened_dex_card:
-			profile.opened_dex_card = true
-			Session.save()
-
-
-func _craft(dino: DinoDef, viewer: CardViewer) -> void:
-	var result := Session.profile.craft(dino)
-	if result == null:
-		return
-	Sound.play(&"amber")
-	Session.save()
-	viewer.close()
-	var results: Array[HatchResult] = [result]
-	var view := HatchView.create(results, "Crafted from a fossil!")
-	view.finished.connect(_refresh)
-	get_tree().current_scene.add_child(view)
+	DexEntry.open(dino, _refresh)

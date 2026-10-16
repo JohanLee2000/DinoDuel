@@ -73,18 +73,15 @@ func test_sorts() -> void:
 		if p.owns(dino.id):
 			owned.append(dino)
 	var filter := CollectionFilter.create("test_sort")
-	filter.sort = CollectionFilter.Sort.RECENT
-	assert_eq(filter.sorted(owned, p)[0].id, &"mosasaurus", "Recent: newest first")
-	filter.sort = CollectionFilter.Sort.ATTACK
-	var by_attack := filter.sorted(owned, p)
-	for i in by_attack.size() - 1:
-		assert_true(by_attack[i].attack >= by_attack[i + 1].attack)
-	filter.sort = CollectionFilter.Sort.POINTS
-	var by_points := filter.sorted(owned, p)
-	for i in by_points.size() - 1:
-		assert_true(by_points[i].rarity >= by_points[i + 1].rarity)
-	filter.sort = CollectionFilter.Sort.TYPE
-	var by_type := filter.sorted(owned, p)
-	for i in by_type.size() - 1:
-		assert_true(by_type[i].dino_type <= by_type[i + 1].dino_type, "Type: Land, Sky, Sea")
+	for sort in [CollectionFilter.Sort.ATTACK, CollectionFilter.Sort.DEFENSE, CollectionFilter.Sort.SPEED]:
+		filter.sort = sort
+		var stat := func(d: DinoDef) -> int:
+			return d.attack if sort == CollectionFilter.Sort.ATTACK else (d.defense if sort == CollectionFilter.Sort.DEFENSE else d.speed)
+		var by_stat := filter.sorted(owned)
+		for i in by_stat.size() - 1:
+			assert_true(stat.call(by_stat[i]) >= stat.call(by_stat[i + 1]), "highest first")
+	filter.sort = CollectionFilter.Sort.USUAL
+	var usual := filter.sorted(owned)
+	for i in usual.size() - 1:
+		assert_true(usual[i].dino_type <= usual[i + 1].dino_type, "usual order: Land, Sky, Sea")
 	filter.free()

@@ -79,7 +79,7 @@ func _refresh() -> void:
 ## Puts the cards in the chosen order and hides the ones the search and filters leave out.
 func _apply_filter() -> void:
 	var profile := Session.profile
-	var order := _filter.sorted(_owned(), profile)
+	var order := _filter.sorted(_owned())
 	var shown := 0
 	for i in order.size():
 		var card: DinoCard = _cards[order[i].id]

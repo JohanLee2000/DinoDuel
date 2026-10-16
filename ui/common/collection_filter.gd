@@ -2,17 +2,18 @@ class_name CollectionFilter
 extends VBoxContainer
 ## Search and filters for the Dex and Party tabs (2026-10-15): a name search and a Filters button
 ## that opens chips for type, tier and era, plus a row of Show chips (Dex: All / Owned / Missing /
-## Can craft) or Sort chips (Party: Type / Points / ATK / SPD / Recent). Within a group, chips
-## add up (Land + Sea shows both); groups narrow each other. Choices last while the app is open,
-## one set per tab, but aren't saved.
+## Can craft) or Sort chips (Party: ATK / DEF / SPD, highest first; none on = the usual order).
+## Within a group, chips add up (Land + Sea shows both); groups narrow each other. Choices last
+## while the app is open, one set per tab, but aren't saved.
 
 signal changed
 
 enum Show { ALL, OWNED, MISSING, CAN_CRAFT }
-enum Sort { TYPE, POINTS, ATTACK, SPEED, RECENT }
+enum Sort { USUAL, ATTACK, DEFENSE, SPEED }
 
 const SHOW_NAMES: Array[String] = ["All", "Owned", "Missing", "Can craft"]
-const SORT_NAMES: Array[String] = ["Type", "Points", "ATK", "SPD", "Recent"]
+## Sort chips, in Sort order after USUAL.
+const SORT_NAMES: Array[String] = ["ATK", "DEF", "SPD"]
 const TIER_NAMES: Array[String] = ["N", "R", "SR", "SSR", "UR"]
 const TYPE_ICONS: Array[StringName] = [&"type_land", &"type_sky", &"type_sea"]
 const CHIP_HEIGHT := 58
@@ -26,7 +27,7 @@ var types := {}
 var tiers := {}
 var eras := {}
 var showing := Show.ALL
-var sort := Sort.TYPE
+var sort := Sort.USUAL
 
 var _key: String
 var _with_show := false
@@ -48,7 +49,7 @@ static func create(key: String, with_show := false, with_sort := false) -> Colle
 	filter.tiers = saved.get("tiers", {}).duplicate()
 	filter.eras = saved.get("eras", {}).duplicate()
 	filter.showing = saved.get("show", Show.ALL)
-	filter.sort = saved.get("sort", Sort.TYPE)
+	filter.sort = saved.get("sort", Sort.USUAL)
 	return filter
 
 
@@ -97,8 +98,7 @@ func _ready() -> void:
 		add_child(_chip_row("", SHOW_NAMES, func(i: int) -> bool: return showing == i,
 				func(i: int) -> void: showing = i as Show))
 	if _with_sort:
-		add_child(_chip_row("Sort", SORT_NAMES, func(i: int) -> bool: return sort == i,
-				func(i: int) -> void: sort = i as Sort))
+		add_child(_sort_row())
 
 	var groups := UiKit.vbox(8)
 	groups.add_child(_toggle_row("Type", DinoDef.TYPE_NAMES, types, TYPE_ICONS))
@@ -150,12 +150,12 @@ func matches(dino: DinoDef, profile: PlayerProfile) -> bool:
 	return true
 
 
-## `dinos` in the chosen Sort order (best or newest first; Type: Land, Sky, Sea, rarest first).
-func sorted(dinos: Array[DinoDef], profile: PlayerProfile) -> Array[DinoDef]:
+## `dinos` in the chosen Sort order: highest first, or the usual Land, Sky, Sea, rarest first.
+func sorted(dinos: Array[DinoDef]) -> Array[DinoDef]:
 	var result := dinos.duplicate()
 	result.sort_custom(func(a: DinoDef, b: DinoDef) -> bool:
-		var keys_a := _sort_keys(a, profile)
-		var keys_b := _sort_keys(b, profile)
+		var keys_a := _sort_keys(a)
+		var keys_b := _sort_keys(b)
 		for i in keys_a.size():
 			if keys_a[i] != keys_b[i]:
 				return keys_a[i] > keys_b[i]
@@ -172,16 +172,14 @@ func is_narrowed() -> bool:
 	return query != "" or showing != Show.ALL or active_filters() > 0
 
 
-func _sort_keys(dino: DinoDef, profile: PlayerProfile) -> Array:
+func _sort_keys(dino: DinoDef) -> Array:
 	match sort:
-		Sort.POINTS:
-			return [PartyRules.points_of(dino), dino.attack]
 		Sort.ATTACK:
 			return [dino.attack, dino.speed]
+		Sort.DEFENSE:
+			return [dino.defense, dino.health]
 		Sort.SPEED:
 			return [dino.speed, dino.attack]
-		Sort.RECENT:
-			return [profile.collected_rank(dino.id)]
 	return [-int(dino.dino_type), int(dino.rarity)]
 
 
@@ -213,6 +211,24 @@ func _chip_row(heading: String, names: Array[String], is_on: Callable, choose: C
 			for other in row.get_children():
 				if other is Button:
 					_style_chip(other, other == chip)
+			_changed())
+		row.add_child(chip)
+	return row
+
+
+## Sort chips: at most one on. Tapping the one that's on turns it off (the usual order again).
+func _sort_row() -> Control:
+	var row := UiKit.hbox(6)
+	row.add_child(_heading("Sort"))
+	for i in SORT_NAMES.size():
+		var value := (i + 1) as Sort
+		var chip := _chip(SORT_NAMES[i], sort == value)
+		chip.pressed.connect(func() -> void:
+			Sound.play(&"tap")
+			sort = Sort.USUAL if sort == value else value
+			for other in row.get_children():
+				if other is Button:
+					_style_chip(other, other == chip and sort == value)
 			_changed())
 		row.add_child(chip)
 	return row
