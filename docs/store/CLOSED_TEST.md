@@ -42,6 +42,19 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.6.2 (version code 13)
+
+The first update 0.6.1 players should be offered in the game (in-app update test).
+
+```
+<en-US>
+Dino Duel 0.6.2
+- New: Hatch history on the Eggs tab. See your last 50 clutches, what each egg gave, and tap any dino for its Dex entry
+- The game now offers new versions from Google Play as soon as they're out
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.6.1 (version code 12)
 
 First build with the in-app update prompt (docs/IN_APP_UPDATES.md); it shows from the next update on.
