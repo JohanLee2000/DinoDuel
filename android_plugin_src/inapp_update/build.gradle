@@ -1,0 +1,53 @@
+// Google Play in-app updates for Dino Duel: the Android side of addons/inapp_update.
+// From InappUpdate by icecube092 (MIT, see LICENSE), rebuilt against Godot 4.7.2 (2026-10-16).
+// Build with Godot's own Gradle wrapper (see docs/IN_APP_UPDATES.md), then copy the two AARs
+// from build/outputs/aar/ into addons/inapp_update/bin/debug and bin/release.
+plugins {
+	// Same versions as Godot 4.7.2's Android build template (android/build/config.gradle).
+	id 'com.android.library' version '8.6.1'
+	id 'org.jetbrains.kotlin.android' version '2.1.21'
+}
+
+// Keep in sync with the Godot editor you export with.
+ext.godotVersion = "4.7.2.stable"
+
+android {
+	namespace "com.aintdevs.inappupdate"
+	compileSdk 35
+
+	defaultConfig {
+		minSdk 24
+		targetSdk 35
+
+		// Ships R8/ProGuard keep rules inside the AAR so the consuming app does
+		// not strip/rename the plugin's @UsedByGodot methods in release builds.
+		consumerProguardFiles "consumer-rules.pro"
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
+	}
+	kotlinOptions {
+		jvmTarget = "17"
+	}
+
+	// Output AARs as InappUpdatePlugin-debug.aar / InappUpdatePlugin-release.aar
+	// so they map onto _get_android_libraries() in InappUpdatePlugin.gd.
+	libraryVariants.all { variant ->
+		variant.outputs.all { output ->
+			output.outputFileName = "InappUpdatePlugin-${variant.name}.aar"
+		}
+	}
+}
+
+dependencies {
+	// Godot engine classes (GodotPlugin, SignalInfo, @UsedByGodot). Not bundled
+	// into the AAR — the engine provides them at runtime.
+	compileOnly "org.godotengine:godot:$godotVersion"
+
+	// Play In-App Update. Also declared in InappUpdatePlugin.gd's
+	// _get_android_dependencies so they land in the final app build.
+	implementation "com.google.android.play:app-update:2.1.0"
+	implementation "com.google.android.play:app-update-ktx:2.1.0"
+}

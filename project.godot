@@ -36,6 +36,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/inapp_update/plugin.cfg")
+
 [gui]
 
 theme/custom="res://ui/theme/main_theme.tres"

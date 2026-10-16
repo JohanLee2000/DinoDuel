@@ -80,6 +80,10 @@ func _ready() -> void:
 	var column := _content.get_parent()
 	column.add_child(_first_steps)
 	column.move_child(_first_steps, _content.get_index())
+	# Experiment (2026-10-16): Google Play's in-app update offer; see docs/IN_APP_UPDATES.md.
+	var update_banner := UpdateBanner.new()
+	column.add_child(update_banner)
+	column.move_child(update_banner, _first_steps.get_index())
 	Session.profile_changed.connect(_update_bar)
 	_show_tab(Session.current_tab)
 	if Session.dev_open_card != "":
