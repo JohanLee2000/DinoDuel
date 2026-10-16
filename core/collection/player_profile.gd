@@ -8,6 +8,9 @@ extends RefCounted
 
 const SAVE_VERSION := 1
 const HATCH_HISTORY_SIZE := 50
+## Saved party slots (Jo, 2026-10-16): Party 1 / 2 / 3, each a lineup of 6 with a name.
+const PARTY_SLOTS := 3
+const PARTY_NAME_MAX_LENGTH := 16
 
 ## id -> true if the copy you own is Shiny.
 var owned: Dictionary = {}
@@ -17,8 +20,16 @@ var amber := 0
 var clutches := 0
 ## Rare clutches (Economy.RARE_CLUTCH_ODDS), hatched the same way as normal ones.
 var rare_clutches := 0
-## The 6 dinos you bring to battles.
+## The 6 dinos you bring to battles: the open party slot's lineup.
 var lineup: Array[StringName] = []
+## The party slots: {name, lineup}. The open one's lineup is `lineup` (written back on a switch and
+## when saving), so everything else can keep using `lineup`.
+var parties: Array[Dictionary] = []
+var party_slot := 0
+## Dinos collected but not looked at yet (a small dot on their cards in the Dex and Party tabs).
+var new_dinos: Dictionary = {}
+## Dino mastery (Mastery): id -> {battles, wins, counters, bosses}.
+var mastery: Dictionary = {}
 var clutches_without_epic := 0
 var last_daily_day := -1
 ## Daily check-in streak: which of the 7 days (0-6) the next check-in is.
@@ -123,6 +134,7 @@ func add_dino(dino: DinoDef, shiny: bool) -> HatchResult:
 	if not owns(dino.id):
 		result.is_new = true
 		owned[dino.id] = shiny
+		new_dinos[dino.id] = true
 		seen.erase(dino.id)
 	elif shiny and not is_shiny(dino.id):
 		result.upgraded_to_shiny = true
@@ -264,6 +276,54 @@ func set_lineup(ids: Array[StringName]) -> String:
 	return ""
 
 
+## Switches to another party slot (the current lineup is kept in its slot).
+func select_party(slot: int) -> void:
+	if slot < 0 or slot >= PARTY_SLOTS:
+		return
+	_ensure_parties()
+	parties[party_slot]["lineup"] = lineup.duplicate()
+	party_slot = slot
+	lineup.assign((parties[slot]["lineup"] as Array).filter(func(id: StringName) -> bool: return owns(id)))
+
+
+## Renames a party slot: trimmed, at most PARTY_NAME_MAX_LENGTH characters. False if empty.
+func rename_party(slot: int, text: String) -> bool:
+	var clean := text.strip_edges().left(PARTY_NAME_MAX_LENGTH).strip_edges()
+	if clean.is_empty() or slot < 0 or slot >= PARTY_SLOTS:
+		return false
+	_ensure_parties()
+	parties[slot]["name"] = clean
+	return true
+
+
+func party_name(slot: int) -> String:
+	_ensure_parties()
+	return parties[slot]["name"]
+
+
+## A slot's lineup (the open one's is `lineup`).
+func party_lineup(slot: int) -> Array[StringName]:
+	_ensure_parties()
+	var ids: Array[StringName] = []
+	ids.assign(lineup if slot == party_slot else parties[slot]["lineup"])
+	return ids
+
+
+## Fills in missing slots: new ones start as a copy of the current lineup.
+func _ensure_parties() -> void:
+	while parties.size() < PARTY_SLOTS:
+		parties.append({"name": "Party %d" % (parties.size() + 1), "lineup": lineup.duplicate()})
+
+
+func is_new(id: StringName) -> bool:
+	return new_dinos.has(id)
+
+
+## Clears a dino's "new" dot once the player has looked at it. True if it had one.
+func mark_viewed(id: StringName) -> bool:
+	return new_dinos.erase(id)
+
+
 func lineup_defs(catalog: DinoCatalog) -> Array[DinoDef]:
 	var defs: Array[DinoDef] = []
 	for id in lineup:
@@ -389,6 +449,10 @@ func to_dict() -> Dictionary:
 		"clutches": clutches,
 		"rare_clutches": rare_clutches,
 		"lineup": lineup.duplicate(),
+		"parties": _saved_parties(),
+		"party_slot": party_slot,
+		"new_dinos": new_dinos.keys(),
+		"mastery": mastery.duplicate(true),
 		"clutches_without_epic": clutches_without_epic,
 		"last_daily_day": last_daily_day,
 		"checkin_day": checkin_day,
@@ -417,6 +481,14 @@ func to_dict() -> Dictionary:
 	}
 
 
+func _saved_parties() -> Array:
+	_ensure_parties()
+	var saved: Array = []
+	for slot in PARTY_SLOTS:
+		saved.append({"name": parties[slot]["name"], "lineup": party_lineup(slot).duplicate()})
+	return saved
+
+
 ## Rebuilds a profile from saved data. Unknown dino ids (e.g. removed from the game) are dropped
 ## and missing fields fall back to defaults, so old or hand-edited saves still load.
 static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
@@ -439,6 +511,29 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 		if profile.owns(id) and not id in lineup_ids:
 			lineup_ids.append(id)
 	profile.lineup.assign(lineup_ids.slice(0, PartyRules.BRING_SIZE))
+	# Party slots (saves from before them: the lineup becomes Party 1, and 2 and 3 copy it).
+	for entry in data.get("parties", []):
+		if not entry is Dictionary or profile.parties.size() >= PARTY_SLOTS:
+			continue
+		var ids: Array[StringName] = []
+		for key in entry.get("lineup", []):
+			var id := StringName(key)
+			if profile.owns(id) and not id in ids and ids.size() < PartyRules.BRING_SIZE:
+				ids.append(id)
+		var name := String(entry.get("name", "")).strip_edges().left(PARTY_NAME_MAX_LENGTH)
+		profile.parties.append({"name": name if name != "" else "Party %d" % (profile.parties.size() + 1), "lineup": ids})
+	profile.party_slot = clampi(int(data.get("party_slot", 0)), 0, PARTY_SLOTS - 1)
+	profile._ensure_parties()
+	for key in data.get("new_dinos", []):
+		if profile.owns(StringName(key)):
+			profile.new_dinos[StringName(key)] = true
+	var saved_mastery: Dictionary = data.get("mastery", {})
+	for key in saved_mastery:
+		if catalog.find(StringName(key)) and saved_mastery[key] is Dictionary:
+			var stats := {}
+			for stat in Mastery.STATS:
+				stats[stat] = maxi(0, int(saved_mastery[key].get(stat, 0)))
+			profile.mastery[String(key)] = stats
 	profile.clutches_without_epic = int(data.get("clutches_without_epic", 0))
 	profile.last_daily_day = int(data.get("last_daily_day", -1))
 	profile.checkin_day = posmod(int(data.get("checkin_day", 0)), Economy.CHECKIN_BONUSES.size())

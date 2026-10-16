@@ -70,13 +70,15 @@ func _refresh() -> void:
 			var card: DinoCard
 			if profile.owns(dino.id):
 				card = DinoCard.create(dino, DinoCard.Mode.FULL, null, profile.is_shiny(dino.id))
+				card.is_new = profile.is_new(dino.id)
+				card.mastery_rank = Mastery.rank_of(profile, dino.id)
 			elif profile.seen.has(dino.id):
 				card = DinoCard.create(dino, DinoCard.Mode.FULL)
 				card.modulate = Color(1, 1, 1, 0.45)
 			else:
 				card = DinoCard.create_unknown(dino, DinoCard.Mode.FULL)
 			card.inspect_on_hold = false
-			card.pressed.connect(_open.bind(dino))
+			card.pressed.connect(_open.bind(dino, card))
 			row.add_child(card)
 		_era_grids.append(row)
 		_body.add_child(row)
@@ -109,5 +111,7 @@ func _scroll_to_era(era: int) -> void:
 
 
 ## Tapping a card opens its Dex entry (DexEntry: Share, or Craft if it's missing).
-func _open(dino: DinoDef) -> void:
+func _open(dino: DinoDef, card: DinoCard = null) -> void:
 	DexEntry.open(dino, _refresh)
+	if card:
+		card.is_new = false

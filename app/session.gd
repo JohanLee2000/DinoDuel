@@ -135,6 +135,12 @@ func _showcase_profile() -> PlayerProfile:
 	showcase.first_steps_active = false
 	showcase.clutches = 1
 	showcase.eggs_hatched = 57
+	# Mastery ribbons and "new" dots for screenshots.
+	for entry in [[&"t_rex", 31, 27, 30, 4], [&"pteranodon", 14, 11, 9, 3], [&"mosasaurus", 12, 10, 12, 1],
+			[&"velociraptor", 5, 3, 4, 0], [&"triceratops", 2, 1, 1, 0]]:
+		showcase.mastery[String(entry[0])] = {"battles": entry[1], "wins": entry[2], "counters": entry[3], "bosses": entry[4]}
+	for id in [&"quetzalcoatlus", &"velociraptor", &"coelophysis"]:
+		showcase.new_dinos[id] = true
 	# A few recent clutches for the Hatch history (newest first): [rare, hours ago, eggs].
 	var now := int(Time.get_unix_time_from_system())
 	for clutch in [[true, 1, [[&"quetzalcoatlus", false, true], [&"triceratops", false, false], [&"pteranodon", true, false]]],
@@ -301,8 +307,12 @@ func refresh_quests() -> void:
 ## stars a win earns; `turns` and `dinos_left` also feed daily quests and achievements.
 func finish_battle(won: bool, turns := 0, dinos_left := 0) -> Dictionary:
 	refresh_quests()
+	# Mastery: count the battle for each dino in the party, with its counters from the moves played.
+	var events: Array = profile.battle.get("events", [])
+	var counters := Mastery.counters_in(rival.start_battle(player_party, rival_party), events)
 	profile.battle = {}
 	var reward := profile.record_battle(won, rival, dinos_left)
+	reward["mastery"] = Mastery.record_battle(profile, player_party, won, rival.is_boss, counters)
 	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "party": player_party, "turns": turns,
 			"dinos_left": dinos_left, "first_clear": reward["first_clear"],
 			"meteor_turn": rival.meteor_turn if rival.meteor_turn > 0 else BattleEngine.METEOR_START_TURN})

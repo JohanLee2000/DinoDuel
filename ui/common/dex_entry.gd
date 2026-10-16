@@ -8,6 +8,8 @@ extends RefCounted
 static func open(dino: DinoDef, crafted: Callable = Callable()) -> void:
 	var profile := Session.profile
 	var owned := profile.owns(dino.id)
+	if profile.mark_viewed(dino.id):
+		Session.save()
 	if owned:
 		var share := UiKit.pill_button("Share", &"share")
 		share.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -17,7 +19,7 @@ static func open(dino: DinoDef, crafted: Callable = Callable()) -> void:
 			await ShareCard.share_dino(dino, profile.is_shiny(dino.id), false)
 			if is_instance_valid(share):
 				share.disabled = false)
-		var owned_extras: Array[Control] = [share]
+		var owned_extras: Array[Control] = [_mastery_panel(profile, dino), share]
 		CardViewer.open(dino, profile.is_shiny(dino.id), true, owned_extras)
 		# First steps: "Meet your dinos".
 		if not profile.opened_dex_card:
@@ -39,6 +41,27 @@ static func open(dino: DinoDef, crafted: Callable = Callable()) -> void:
 				HORIZONTAL_ALIGNMENT_CENTER))
 	var viewer := CardViewer.open(dino, false, known, extras)
 	craft.pressed.connect(func() -> void: _craft(dino, viewer, crafted))
+
+
+## Its mastery: the title it has earned (with what earned it), its numbers, and the next rank.
+static func _mastery_panel(profile: PlayerProfile, dino: DinoDef) -> Control:
+	var rank := Mastery.rank_of(profile, dino.id)
+	var stats := Mastery.stats_of(profile, dino.id)
+	var box := UiKit.vbox(4)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var color: Color = DinoCard.RIBBON_COLORS.get(rank, Palette.TEXT)
+	var earned := Mastery.description_of(rank).trim_suffix(".")
+	var headline := "%s: %s" % [Mastery.title_of(rank), earned.left(1).to_lower() + earned.substr(1)] 			if rank > 0 else "No mastery yet: take it into battle to start its story"
+	box.add_child(UiKit.label(headline, 26, color, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(UiKit.label("%d battles  ·  %d wins  ·  %d counters  ·  %d bosses" % [stats["battles"], stats["wins"],
+			stats["counters"], stats["bosses"]], 23, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	var next := Mastery.next_text(profile, dino.id)
+	if next != "":
+		box.add_child(UiKit.label(next, 23, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	var panel := UiKit.panel(box, Palette.PANEL, 12)
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.custom_minimum_size.x = CardViewer.CARD_WIDTH
+	return panel
 
 
 static func _craft(dino: DinoDef, viewer: CardViewer, crafted: Callable) -> void:

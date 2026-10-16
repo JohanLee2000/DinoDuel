@@ -76,6 +76,18 @@ var stamp_scale := 1.0:
 var shiny := false
 ## Undiscovered dinos show the card back (used by the Dex).
 var unknown := false
+## Collected but not looked at yet: a small red dot in the corner (Dex and Party, 2026-10-16).
+var is_new := false:
+	set(value):
+		is_new = value
+		if _overlay:
+			_overlay.queue_redraw()
+## Its mastery rank (Mastery); from Fighter (2) up, a ribbon under the tier crest.
+var mastery_rank := 0:
+	set(value):
+		mastery_rank = value
+		if _overlay:
+			_overlay.queue_redraw()
 ## Health drawn on the HP bar; tweened by the battle screen.
 var shown_health := 0.0:
 	set(value):
@@ -405,6 +417,10 @@ func _draw_overlay() -> void:
 		_draw_tier_crest()
 	if _badge_text != "":
 		_draw_badge()
+	if mastery_rank >= 2 and not unknown:
+		_draw_mastery_ribbon()
+	if is_new:
+		_draw_new_dot()
 	if combatant:
 		_draw_health_bar()
 	if knocked_out:
@@ -469,6 +485,40 @@ func _draw_tier_crest() -> void:
 		_draw_panel(pill, tier, pill.size.y / 2)
 		_text_centered(Fonts.display(), "%d PT%s" % [pts, "" if pts == 1 else "S"], pill.get_center(),
 				int(pill.size.y * 0.72), Color.WHITE, false)
+
+
+## Ribbon colors per mastery rank: Fighter bronze, Veteran silver, Trusted Partner gold, Legend
+## the UR magenta.
+const RIBBON_COLORS := {2: Color("cd8a4b"), 3: Color("c9d3e3"), 4: Color("ffc83d"), 5: Color("ff5ad1")}
+
+
+## A small rosette under the tier crest (and its Party Points pill), with two tails.
+func _draw_mastery_ribbon() -> void:
+	var w := width
+	var small := _small()
+	var cw := w * (0.3 if small else 0.25)
+	var top := w * 0.035 + cw * 0.78 + (w * 0.02 if small else w * 0.09)
+	var radius := w * (0.07 if small else 0.055)
+	var center := Vector2(w * 0.035 + cw * 0.5, top + radius)
+	var color: Color = RIBBON_COLORS[mini(mastery_rank, 5)]
+	for side in [-1.0, 1.0]:
+		var tail := PackedVector2Array([center + Vector2(side * radius * 0.2, 0),
+				center + Vector2(side * radius * 0.95, radius * 0.4), center + Vector2(side * radius * 0.85, radius * 1.9),
+				center + Vector2(side * radius * 0.45, radius * 1.55), center + Vector2(side * radius * 0.05, radius * 1.9)])
+		_overlay.draw_colored_polygon(tail, color.darkened(0.3))
+	_overlay.draw_circle(center, radius * 1.08, Palette.OUTLINE)
+	_overlay.draw_circle(center, radius, color)
+	_overlay.draw_circle(center, radius * 0.55, color.lightened(0.35))
+	_overlay.draw_circle(center, radius * 0.55, color.darkened(0.25), false, maxf(1.0, w * 0.006), true)
+
+
+## A small red dot with a white rim in the top-right corner: "new, not looked at yet".
+func _draw_new_dot() -> void:
+	var w := width
+	var radius := w * (0.075 if _small() else 0.05)
+	var center := Vector2(w - radius * 0.9, radius * 0.9)
+	_overlay.draw_circle(center, radius + maxf(1.5, w * 0.01), Color.WHITE)
+	_overlay.draw_circle(center, radius, Color("ff3b4e"))
 
 
 func _draw_type_medallion() -> void:

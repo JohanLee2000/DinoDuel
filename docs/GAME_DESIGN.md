@@ -202,6 +202,25 @@ Tuned 2026-10-15 (48 simulated players): Triassic 94 (Rae, coached anyway) / 72 
 
 **Build order:** (1) rules: conditional AI habits, Alphas, per-battle meteor turn, Journey progress in the save, stars and rewards, with tests; (2) content: the 19 stage teams, the simulated-player tool, tuning; (3) screens: Journey map, pre-battle and results, chapter intros, Goals / How to play / First steps.
 
+## Saved parties, "new" dots and dino mastery (Jo, 2026-10-16)
+- **Saved parties:** three party slots, **Party 1 / 2 / 3**, as buttons on the Party tab (with a pencil to rename the open one, up to 16 characters) and on the pick screen before a battle (switch only; picks still in the new party stay picked). Each slot is a full lineup of 6; editing saves automatically. A new slot starts as a copy of the current lineup (saves from before slots: all three start as the old lineup). A slot with fewer than 3 dinos says so on the pick screen. `PlayerProfile.parties` / `party_slot`; the open slot's lineup is `lineup`, so the rest of the game didn't change. Shared UI: `ui/common/party_slots.gd`.
+- **"New" dots:** a dino collected for the first time (hatched or crafted, not the starters or partner) gets a small red dot in its card's top-right corner in the Dex and Party tabs, until you open its Dex entry or tap it on the Party tab (`PlayerProfile.new_dinos`).
+- **Dino mastery** (first version; rewards are cosmetic only). Every dino you own counts its own battles, wins, counters (turns where its move beat the rival's: Bite over Charge, Charge over Brace, Brace over Bite, worked out from the battle's recorded moves, so resumed battles count too) and Journey bosses it helped defeat (wins against Rory's stages, replays included). Ranks are earned in order (`core/collection/mastery.gd`):
+
+  | Rank | Earned by | Ribbon |
+  |---|---|---|
+  | Recruit | Fought its first battle | none |
+  | Fighter | Won 3 battles | bronze |
+  | Veteran | Won 10 battles | silver |
+  | Trusted Partner | Helped defeat 3 Journey bosses | gold |
+  | Legend | Won 25 battles and countered 25 moves | UR magenta |
+
+  The ribbon (a small rosette under the tier crest) shows on your own cards in the Party tab, the pick screen and the Dex. The Dex entry shows "Trusted Partner: helped defeat 3 Journey bosses", its numbers and the next rank ("Next: Legend: win 25 battles (9/25) and counter 25 moves (14/25)"). The results screen announces new ranks from Fighter up ("Dilophosaurus is now a Veteran!"). Later: cosmetic rewards for ranks (display frames, profile emblems, an alternate card presentation).
+
+## Future plans (Jo, 2026-10-16; not for the current release)
+- **Post-game after Extinction Day:** beating the finale unlocks post-game content: the journey continues into the **Ice Age** and beyond (new eras, new creatures, new rivals).
+- **Expedition mode** (a small roguelike on the same battle engine). First version: draft 3 dinos from a **loaned** selection (so players try creatures they haven't collected), fight 3 encounters, choose a recovery or temporary benefit between battles (e.g. **Rest**: heal your team; **Recruit**: swap one dino for a new candidate), then face a final rival; the reward depends on how far you got. Later: branching paths and temporary effects.
+
 ## Monetization (decided)
 Free to play. IAP sells era expansions (new chapter plus its cards in eggs) and cosmetics. No paid randomized packs, nothing that buys power.
 

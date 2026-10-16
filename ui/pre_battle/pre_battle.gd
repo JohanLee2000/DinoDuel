@@ -68,11 +68,15 @@ func _ready() -> void:
 	_rival_label.get_parent().get_parent().add_child(UiKit.label(notes, 24, Palette.TEXT_DIM))
 
 	var profile := Session.profile
-	for dino in profile.lineup_defs(Session.catalog):
-		var card := DinoCard.create(dino, DinoCard.Mode.FULL, null, profile.is_shiny(dino.id))
-		card.pressed.connect(_toggle.bind(dino))
-		_grid.add_child(card)
-		_cards.append(card)
+	# Saved parties: switching shows that party's 6 (picks still in it stay picked).
+	var slots := PartySlots.new()
+	slots.with_rename = false
+	slots.switched.connect(func() -> void:
+		_picked.assign(_picked.filter(func(dino: DinoDef) -> bool: return dino.id in profile.lineup))
+		_build_cards()
+		_refresh())
+	_hint.add_sibling(slots)
+	_build_cards()
 	# Keep last battle's pick if those dinos are still in the lineup.
 	for dino in Session.player_party:
 		if dino.id in profile.lineup and _picked.size() < PartyRules.PARTY_SIZE:
@@ -93,6 +97,21 @@ func _ready() -> void:
 		_refresh()
 		await get_tree().create_timer(1.0).timeout
 		Session.start_battle(_picked)
+
+
+## Your 6 (the open party slot's lineup) as cards, with their mastery ribbons.
+func _build_cards() -> void:
+	for card in _cards:
+		_grid.remove_child(card)
+		card.queue_free()
+	_cards.clear()
+	var profile := Session.profile
+	for dino in profile.lineup_defs(Session.catalog):
+		var card := DinoCard.create(dino, DinoCard.Mode.FULL, null, profile.is_shiny(dino.id))
+		card.mastery_rank = Mastery.rank_of(profile, dino.id)
+		card.pressed.connect(_toggle.bind(dino))
+		_grid.add_child(card)
+		_cards.append(card)
 
 
 func _toggle(dino: DinoDef) -> void:
@@ -152,6 +171,9 @@ func _guide_text(points: int) -> String:
 	var room := PartyRules.POINT_CAP - points
 	if left == 0:
 		return "Ready! Tap a picked dino to swap it out."
+	if _cards.size() < PartyRules.PARTY_SIZE:
+		return "%s has only %d dino%s. Add more on the Party tab." % [Session.profile.party_name(Session.profile.party_slot),
+				_cards.size(), "" if _cards.size() == 1 else "s"]
 	if _picked.is_empty():
 		return "Choose %d dinos costing %d points or less in total." % [PartyRules.PARTY_SIZE, PartyRules.POINT_CAP]
 	var fits := _cards.any(func(card: DinoCard) -> bool:

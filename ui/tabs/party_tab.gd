@@ -1,7 +1,9 @@
 extends VBoxContainer
 ## Party tab: choose the 6 dinos you bring to battles. Before each battle you pick 3 of them.
-## A search, filters and sorting (CollectionFilter) help find dinos in a big collection.
+## Three saved parties (PartySlots) to switch between and name. A search, filters and sorting
+## (CollectionFilter) help find dinos in a big collection. New dinos have a dot until tapped.
 
+var _slots: PartySlots
 var _lineup_row: HBoxContainer
 var _grid: GridContainer
 var _status: Label
@@ -17,6 +19,9 @@ func _ready() -> void:
 	add_child(UiKit.title("Your party"))
 	add_child(UiKit.label("Bring %d dinos. Before each battle you see your rival's 6 and pick 3." \
 			% PartyRules.BRING_SIZE, 29, Palette.TEXT_DIM))
+	_slots = PartySlots.new()
+	_slots.switched.connect(_refresh)
+	add_child(_slots)
 	_lineup_row = UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	add_child(_lineup_row)
 	_status = UiKit.label("", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
@@ -50,6 +55,7 @@ func _refresh() -> void:
 
 	for id in profile.lineup:
 		var mini := DinoCard.create(Session.catalog.find(id), DinoCard.Mode.MINI, null, profile.is_shiny(id))
+		mini.mastery_rank = Mastery.rank_of(profile, id)
 		mini.pressed.connect(_toggle.bind(id))
 		_lineup_row.add_child(mini)
 	for i in PartyRules.BRING_SIZE - profile.lineup.size():
@@ -70,6 +76,8 @@ func _refresh() -> void:
 		card.selected = in_lineup
 		card.set_badge("IN PARTY" if in_lineup else "")
 		card.dimmed = not in_lineup and profile.lineup.size() >= PartyRules.BRING_SIZE
+		card.is_new = profile.is_new(dino.id)
+		card.mastery_rank = Mastery.rank_of(profile, dino.id)
 		card.pressed.connect(_toggle.bind(dino.id))
 		_grid.add_child(card)
 		_cards[dino.id] = card
@@ -91,6 +99,7 @@ func _apply_filter() -> void:
 
 func _toggle(id: StringName) -> void:
 	Sound.play(&"card_pick")
+	Session.profile.mark_viewed(id)
 	var lineup := Session.profile.lineup.duplicate()
 	if id in lineup:
 		lineup.erase(id)
@@ -98,6 +107,9 @@ func _toggle(id: StringName) -> void:
 		lineup.append(id)
 	else:
 		_status.text = "Your party is full. Tap one above to take it out first."
+		if _cards.has(id):
+			_cards[id].is_new = false
+		Session.save()
 		return
 	Session.profile.set_lineup(lineup)
 	Session.save()

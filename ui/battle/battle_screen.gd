@@ -829,6 +829,15 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 		row.add_child(_reward_item(&"egg", "+%d Rare" % reward["rare_clutches"]))
 	row.add_child(_reward_item(&"amber", "+%d Amber" % reward["amber"]))
 	rewards.add_child(row)
+	# Mastery ranks earned in this battle, e.g. "Dilophosaurus is now a Veteran!" (from Fighter up:
+	# every dino becomes a Recruit in its first battle).
+	for earned in reward.get("mastery", []):
+		var dino := Session.catalog.find(earned["id"])
+		var rank: int = earned["rank"]
+		if rank < 2:
+			continue
+		rewards.add_child(UiKit.label("★ %s is now %s %s!" % [dino.display_name, "an" if "AEIOU".contains(Mastery.title_of(rank)[0]) else "a",
+				Mastery.title_of(rank)], 27, DinoCard.RIBBON_COLORS.get(rank, Palette.TEXT), HORIZONTAL_ALIGNMENT_CENTER))
 	column.add_child(_result_well(rewards))
 	return UiKit.panel(column, Palette.PANEL, 22)
 

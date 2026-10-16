@@ -52,6 +52,8 @@ func _ready() -> void:
 
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Too tall for the screen: grow up and down evenly, so the scale below keeps it centered.
+	center.grow_vertical = Control.GROW_DIRECTION_BOTH
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
 	var column := UiKit.vbox(18)
@@ -93,6 +95,15 @@ func _ready() -> void:
 	for extra in _extras:
 		column.add_child(extra)
 	column.add_child(_centered_label("Tap anywhere to close", 26, Palette.TEXT_DIM))
+	# On shorter screens a long entry (e.g. with its mastery panel) scales down to fit. Wrapped
+	# text settles its height over two layout passes, so measure after those.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	# (The whole centered layer scales: a container would undo a scale set on its child.)
+	var room := get_viewport_rect().size.y - 40.0
+	if is_inside_tree() and column.size.y > room:
+		center.pivot_offset = center.size / 2
+		center.scale = Vector2.ONE * (room / column.size.y)
 
 
 func _centered_label(text: String, font_size: int, color: Color, as_title := false) -> Label:
