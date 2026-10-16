@@ -2,6 +2,8 @@
 
 Closed testers weren't getting new versions on their own (Play's auto-update is slow and only runs on Play's schedule), so Jo is trying **Google Play's in-app update prompt**. It's an experiment: it may be removed again (see the end of this page).
 
+**Tested 2026-10-16:** Jo's phone had 0.6.1 (code 12) from Play; once 0.6.2 (code 13) was live on closed testing, the update strip appeared on launch.
+
 ## What players see
 - Once per launch, when the main screen opens, the game asks the Play Store whether a newer version is out.
 - If one is, a gold-edged strip appears under the top bar: **"A new version of Dino Duel is out!"** with **Later** and **Update**.
