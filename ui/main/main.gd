@@ -4,14 +4,17 @@ extends Control
 ## New players go through the name entry, story, partner pick and the Professaur's tour here.
 
 const TABS := [
-	{"name": "Battle", "script": "res://ui/tabs/battle_tab.gd"},
-	{"name": "Party", "script": "res://ui/tabs/party_tab.gd"},
-	{"name": "Eggs", "script": "res://ui/tabs/eggs_tab.gd"},
-	{"name": "Dex", "script": "res://ui/tabs/dex_tab.gd"},
-	{"name": "Goals", "script": "res://ui/tabs/goals_tab.gd"},
+	{"name": "Battle", "icon": &"map", "script": "res://ui/tabs/battle_tab.gd"},
+	{"name": "Party", "icon": &"cards", "script": "res://ui/tabs/party_tab.gd"},
+	{"name": "Eggs", "icon": &"egg_outline", "script": "res://ui/tabs/eggs_tab.gd"},
+	{"name": "Dex", "icon": &"book", "script": "res://ui/tabs/dex_tab.gd"},
+	{"name": "Goals", "icon": &"trophy", "script": "res://ui/tabs/goals_tab.gd"},
 ]
+const TAB_ICON_SIZE := 36
 
 var _buttons: Array[Button] = []
+## Per tab: the red dot that means something's waiting there.
+var _dots: Array[Control] = []
 var _current: Control
 var _first_steps: FirstStepsBar
 var _tab_glow: Tween
@@ -47,11 +50,31 @@ func _ready() -> void:
 	_clutch_label.get_parent().add_child(_gear)
 	Sound.music(&"main")
 	for i in TABS.size():
-		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 88, 27)
+		# Icon above the name; the active tab is gold (see _style_tabs).
+		var button := UiKit.button(TABS[i]["name"], Palette.PANEL, 100, 21)
+		button.icon = Icons.texture(TABS[i]["icon"], TAB_ICON_SIZE)
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.pressed.connect(_show_tab.bind(i))
 		_nav_bar.add_child(button)
 		_buttons.append(button)
+		var dot := Panel.new()
+		var red := StyleBoxFlat.new()
+		red.bg_color = Color("ff3b4e")
+		red.border_color = Color.WHITE
+		red.set_border_width_all(2)
+		red.set_corner_radius_all(10)
+		dot.add_theme_stylebox_override("panel", red)
+		dot.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+		dot.offset_left = -26
+		dot.offset_right = -8
+		dot.offset_top = 6
+		dot.offset_bottom = 24
+		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		dot.visible = false
+		button.add_child(dot)
+		_dots.append(dot)
 	_first_steps = FirstStepsBar.new()
 	_first_steps.go_to_tab.connect(_show_tab)
 	var column := _content.get_parent()
@@ -142,9 +165,18 @@ func _show_tab(index: int) -> void:
 		_current.queue_free()
 	_current = load(TABS[index]["script"]).new()
 	_content.add_child(_current)
-	for i in _buttons.size():
-		UiKit.style_button(_buttons[i], UiKit.BUTTON_GREEN if i == index else Palette.PANEL)
+	_style_tabs()
 	_update_bar()
+
+
+## The open tab is gold; the others are dark with dim labels.
+func _style_tabs() -> void:
+	for i in _buttons.size():
+		var active := i == Session.current_tab
+		UiKit.style_button(_buttons[i], UiKit.BUTTON_GREEN if active else Palette.PANEL)
+		if not active:
+			for color_name in ["font_color", "icon_normal_color"]:
+				_buttons[i].add_theme_color_override(color_name, Palette.TEXT_DIM)
 
 
 func _update_bar() -> void:
@@ -152,8 +184,9 @@ func _update_bar() -> void:
 	_amber_label.text = str(profile.amber)
 	_clutch_label.text = str(profile.clutches)
 	var eggs_waiting := profile.clutches > 0 or profile.rare_clutches > 0 or profile.can_claim_daily(SaveStore.today())
-	_buttons[Session.Tab.EGGS].text = "Eggs (!)" if eggs_waiting else "Eggs"
-	_buttons[Session.Tab.GOALS].text = "Goals (!)" if Goals.anything_to_claim(profile, Session.catalog) else "Goals"
+	_dots[Session.Tab.EGGS].visible = eggs_waiting
+	_dots[Session.Tab.GOALS].visible = Goals.anything_to_claim(profile, Session.catalog)
+	_dots[Session.Tab.BATTLE].visible = Journey.any_chest_ready(profile)
 	_first_steps.refresh()
 	_glow_tab(_first_steps.next_tab())
 
@@ -165,15 +198,12 @@ func _glow_tab(index: int) -> void:
 		_tab_glow = null
 	for i in _buttons.size():
 		_buttons[i].modulate = Color.WHITE
-		UiKit.style_button(_buttons[i], UiKit.BUTTON_GREEN if i == Session.current_tab else Palette.PANEL)
+	_style_tabs()
 	if index < 0 or index == Session.current_tab:
 		return
 	var button := _buttons[index]
-	for state in ["normal", "hover", "pressed", "focus"]:
-		var outlined := (button.get_theme_stylebox(state) as StyleBoxFlat).duplicate() as StyleBoxFlat
-		outlined.border_color = Palette.HIGHLIGHT
-		outlined.set_border_width_all(3)
-		button.add_theme_stylebox_override(state, outlined)
+	for color_name in ["font_color", "icon_normal_color"]:
+		button.add_theme_color_override(color_name, Palette.HIGHLIGHT)
 	_tab_glow = button.create_tween().set_loops()
 	_tab_glow.tween_property(button, "modulate", Color(1.6, 1.4, 0.7), 0.5).set_trans(Tween.TRANS_SINE)
 	_tab_glow.tween_property(button, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_SINE)

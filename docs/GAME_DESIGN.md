@@ -101,6 +101,13 @@ The look follows Jo's ChatGPT concept sheet, saved at `docs/concept/card_concept
 ### Battle backgrounds (decided 2026-10-08)
 One painted scene per type in `assets/battle/` (Land: volcanic wasteland, Sea: stormy ocean, Sky: sunset clouds). In battle the rival's active dino's scene fills the top and the player's fills the bottom, blended across the middle band, dimmed with soft shadows behind the active cards and the log, and drifting slowly (top half less, for parallax). A swap or replacement crossfades that half to the new type (`ui/battle/battle_backdrop.gd` + `.gdshader`).
 
+## UI polish (Jo, 2026-10-15)
+- **Buttons** are glossy like the card frames: a soft gradient, a light top edge, a darker bottom lip that flattens when pressed, and a faint glow in the button's color (`UiKit.style_button`: one generated shading texture per state, tinted per color).
+- **Tab bar:** an icon above each name (map, cards, egg, book, trophy); the open tab is gold; a red dot replaces "(!)" (Eggs: clutches or check-in waiting; Goals: something to claim; Battle: a star chest to open).
+- **Eggs tab:** one big Hatch button (Rare clutches first) and the shop as three tiles: check-in, clutch, Rare clutch.
+- **Battle text box:** the turn's key moment in a pill at the top (gold for who beat what, red for a knockout, blue for a swap, orange for the meteor), the latest two lines faded under it; tap it for the full battle log.
+- **Paintings** are imported at most 768 px wide (the full card view shows ~700 px on a 1080p phone): ~10 MB smaller download and install.
+
 ## App layout (decided)
 Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 

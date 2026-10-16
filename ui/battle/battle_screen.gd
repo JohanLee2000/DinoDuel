@@ -52,7 +52,13 @@ var _active_cards: Array[DinoCard] = [null, null]
 var _bench_cards: Array[Dictionary] = [{}, {}]
 ## Per side: the HP currently on screen for each party member.
 var _shown_health: Array = [[], []]
+## Every line of the battle log (the full log opens with a tap on the text box).
 var _log_lines: Array[String] = []
+## The text box (2026-10-15): the turn's key moment in a pill, the latest lines faded under it.
+var _headline_pill: PanelContainer
+var _headline_label: Label
+var _recent_lines: Array[String] = []
+var _full_log: Control
 var _card_scale := 1.0
 var _coaching := false
 var _backdrop: BattleBackdrop
@@ -100,15 +106,9 @@ func _ready() -> void:
 	if Session.autoplay:
 		_autopilot = BattleAI.new(Session.battle_seed + 1)
 
-	var log_style := StyleBoxFlat.new()
-	log_style.bg_color = Color(Palette.PANEL, 0.92)
-	log_style.border_color = Palette.PANEL_BORDER
-	log_style.set_border_width_all(1)
-	log_style.set_corner_radius_all(8)
-	log_style.set_content_margin_all(10)
+	_build_log_box()
 	_rival_name.add_theme_font_override("font", Fonts.title())
 	_turn_label.add_theme_font_override("font", Fonts.condensed_bold())
-	%LogPanel.add_theme_stylebox_override("panel", log_style)
 	for i in _buttons.size():
 		UiKit.style_button(_buttons[i], BUTTON_COLORS[i])
 		_buttons[i].icon = Icons.texture(Icons.MOVES[i], MOVE_ICON_SIZE)
@@ -140,11 +140,10 @@ func _ready() -> void:
 		_snapshot_health(side)
 		_rebuild_side(side)
 	if resumed:
-		_say("[b]Battle resumed.[/b] Turn %d against %s." % [_state.turn, Session.rival.display_name])
+		_headline("Battle resumed: turn %d" % _state.turn, Palette.TEXT)
 		_after_turn()
 		return
-	_say("[b]%s[/b] sends out [b]%s[/b]. Go, [b]%s[/b]!" % [Session.rival.display_name,
-			_name(RIVAL), _name(PLAYER)])
+	_headline("%s sends out %s. Go, %s!" % [Session.rival.display_name, _name(RIVAL), _name(PLAYER)], Palette.TEXT)
 	var bonuses: Array[String] = []
 	if _state.side(PLAYER).era_bond:
 		bonuses.append("Era bond")
@@ -332,11 +331,14 @@ func _play(events: Array[Dictionary]) -> void:
 		match event["type"]:
 			"turn_start":
 				var kinds: Array = event["actions"]
-				_say("You: [b]%s[/b]   %s: [b]%s[/b]" % [BattleAction.KIND_NAMES[kinds[0]],
-						Session.rival.display_name, BattleAction.KIND_NAMES[kinds[1]]])
+				var moves := "You: %s · %s: %s" % [BattleAction.KIND_NAMES[kinds[0]], Session.rival.display_name,
+						BattleAction.KIND_NAMES[kinds[1]]]
 				var key := "%d-%d" % [kinds[0], kinds[1]]
 				if MATCHUP_TEXT.has(key):
-					_say("[color=#ffd166]%s[/color]" % MATCHUP_TEXT[key])
+					_say(moves)
+					_headline(MATCHUP_TEXT[key], Palette.HIGHLIGHT)
+				else:
+					_headline(moves, Palette.TEXT)
 				await _pause()
 			"swap", "replace":
 				var side: int = event["side"]
@@ -346,7 +348,7 @@ func _play(events: Array[Dictionary]) -> void:
 				var verb := "swap" if event["type"] == "swap" else "send"
 				if side == RIVAL:
 					verb += "s"
-				_say("%s %s in [b]%s[/b]." % [_who(side), verb, _name(side)])
+				_headline("%s %s in %s" % [_who(side), verb, _name(side)], Palette.ACCENT.lightened(0.3))
 				await _pause()
 			"brace":
 				Sound.play(&"brace")
@@ -375,11 +377,12 @@ func _play(events: Array[Dictionary]) -> void:
 				_screen_shake(14.0)
 				_damage_number(struck, event["damage"], "METEOR", METEOR_COLOR, true)
 				struck.tween_health(event["health_after"])
-				_say("Meteor shower hits %s for %d!" % [_name(target), event["damage"]])
+				_headline("Meteor shower!", METEOR_COLOR)
+				_say("Meteor shower hits %s for %d." % [_name(target), event["damage"]])
 				await _pause(0.4)
 			"ko":
 				Sound.play(&"ko")
-				_say("[color=#ff6b5e]%s is knocked out![/color]" % _state.side(event["side"]).party[event["index"]].def.display_name)
+				_headline("%s is knocked out!" % _state.side(event["side"]).party[event["index"]].def.display_name, Palette.DAMAGE)
 				await _pause()
 			"heal":
 				var side: int = event["side"]
@@ -757,6 +760,9 @@ func _notification(what: int) -> void:
 		# A help page or card view on top handles back itself.
 		if get_children().any(func(child: Node) -> bool: return child is HelpView or child is CardViewer):
 			return
+		if is_instance_valid(_full_log):
+			_full_log.queue_free()
+			return
 		_confirm_leave()
 
 
@@ -932,11 +938,107 @@ func _skip_coach() -> void:
 
 # --- Text helpers ---------------------------------------------------------------------------
 
+## Adds a line to the log; the latest two show faded under the headline.
 func _say(line: String) -> void:
 	_log_lines.append(line)
-	while _log_lines.size() > 3:
-		_log_lines.pop_front()
-	_log.text = "\n".join(_log_lines)
+	_recent_lines.append(line)
+	while _recent_lines.size() > 2:
+		_recent_lines.pop_front()
+	var shown: Array[String] = []
+	for i in _recent_lines.size():
+		var newest := i == _recent_lines.size() - 1
+		shown.append("[font_size=%d][color=#%s]%s[/color][/font_size]" % [27 if newest else 24,
+				Color(Palette.TEXT, 0.9 if newest else 0.5).to_html(), _recent_lines[i]])
+	_log.text = "\n".join(shown)
+
+
+## The turn's key moment (who beat what, a knockout, a swap) in the pill at the top of the text box.
+func _headline(text: String, color: Color) -> void:
+	_log_lines.append("[b][color=#%s]%s[/color][/b]" % [color.to_html(), text])
+	_headline_label.text = text
+	_headline_label.add_theme_color_override("font_color", color)
+	var style := _headline_pill.get_theme_stylebox("panel") as StyleBoxFlat
+	style.border_color = Color(color, 0.85)
+	style.shadow_color = Color(color, 0.3)
+	_headline_pill.visible = true
+	_headline_pill.pivot_offset = _headline_pill.size / 2
+	_headline_pill.scale = Vector2(1.08, 1.08)
+	_headline_pill.create_tween().tween_property(_headline_pill, "scale", Vector2.ONE, 0.18) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## The text box: a glassy panel with the headline pill above the latest lines. Tap it for the
+## whole log.
+func _build_log_box() -> void:
+	var panel: PanelContainer = %LogPanel
+	var glass := StyleBoxFlat.new()
+	glass.bg_color = Color(0.02, 0.04, 0.09, 0.78)
+	glass.border_color = Color(Palette.ACCENT, 0.35)
+	glass.set_border_width_all(1)
+	glass.set_corner_radius_all(16)
+	glass.set_content_margin_all(10)
+	panel.add_theme_stylebox_override("panel", glass)
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			_open_full_log())
+	var column := UiKit.vbox(6)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_headline_pill = PanelContainer.new()
+	var pill := StyleBoxFlat.new()
+	pill.bg_color = Color(0.05, 0.08, 0.15, 0.95)
+	pill.set_border_width_all(2)
+	pill.set_corner_radius_all(24)
+	pill.content_margin_left = 18
+	pill.content_margin_right = 18
+	pill.content_margin_top = 5
+	pill.content_margin_bottom = 7
+	pill.shadow_size = 10
+	_headline_pill.add_theme_stylebox_override("panel", pill)
+	_headline_pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_headline_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_headline_pill.visible = false
+	_headline_label = UiKit.label("", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	_headline_label.add_theme_font_override("font", Fonts.bold())
+	_headline_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_headline_pill.add_child(_headline_label)
+	column.add_child(_headline_pill)
+	_log.reparent(column)
+	_log.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_log.add_theme_font_size_override("normal_font_size", 26)
+	_log.add_theme_font_size_override("bold_font_size", 26)
+	panel.add_child(column)
+	var hint := UiKit.label("Tap for the full log", 19, Color(Palette.TEXT_DIM, 0.7), HORIZONTAL_ALIGNMENT_RIGHT, false)
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(hint)
+
+
+func _open_full_log() -> void:
+	var dialog := UiKit.modal_layer(0.8)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var column := UiKit.vbox(14)
+	column.custom_minimum_size = Vector2(620, 0)
+	column.add_child(UiKit.title("Battle log", 36, Palette.HIGHLIGHT))
+	var text := RichTextLabel.new()
+	text.bbcode_enabled = true
+	text.fit_content = true
+	text.scroll_active = false
+	text.add_theme_font_size_override("normal_font_size", 25)
+	text.add_theme_font_size_override("bold_font_size", 25)
+	text.add_theme_font_override("bold_font", Fonts.bold())
+	text.text = "\n".join(_log_lines)
+	var scroll := UiKit.vscroll(text)
+	scroll.custom_minimum_size = Vector2(0, minf(900.0, get_viewport_rect().size.y * 0.6))
+	column.add_child(scroll)
+	var close := UiKit.button("Close", UiKit.BUTTON_GRAY, 72, 28)
+	close.pressed.connect(dialog.queue_free)
+	column.add_child(close)
+	center.add_child(UiKit.panel(column, Palette.PANEL, 22))
+	dialog.add_child(center)
+	add_child(dialog)
+	_full_log = dialog
+	scroll.scroll_vertical = 1 << 20
 
 
 func _name(side: int) -> String:

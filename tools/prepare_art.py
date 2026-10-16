@@ -3,6 +3,7 @@
 Usage:
     python tools/prepare_art.py "C:/path/to/downloads"
     python tools/prepare_art.py --thumbs        (rebuild every thumbnail from assets/dinos/)
+    python tools/prepare_art.py --fix-imports   (after Godot's --import: game-size paintings, mipmapped thumbnails)
 
 Looks for files named like the dino ids (see docs/ART_BRIEF.md):
     t_rex.png, t_rex_shiny.png, velociraptor.png, ...
@@ -10,10 +11,15 @@ Any of .png, .jpg, .jpeg or .webp works. Paintings are 2:3 portraits; they're re
 1000 px wide, which is sharper than any phone shows them, and saved as quality-88 WebP to keep
 the app download small. Requires Pillow (pip install pillow).
 
+In the game the paintings are imported at most PAINTING_LIMIT px wide (Godot's process/size_limit,
+set by --fix-imports): the full-screen card shows them about 700 px wide on a 1080p phone, so the
+1000 px originals only made the download bigger (2026-10-15: about 7-10 MB).
+
 Each painting also gets a 360 px thumbnail in assets/dinos/thumbs/, which every card smaller than
 the full-screen view uses (ui/common/dino_art.gd): it loads about 8x faster, so tabs full of
 cards open quickly.
 """
+import re
 import sys
 from pathlib import Path
 
@@ -23,6 +29,7 @@ PROJECT = Path(__file__).resolve().parent.parent
 OUT = PROJECT / "assets" / "dinos"
 THUMBS = OUT / "thumbs"
 THUMB_WIDTH = 360
+PAINTING_LIMIT = 768
 # Every dino in the game has a data file named after its id.
 IDS = sorted(p.stem for p in (PROJECT / "data" / "dinos").glob("*.tres"))
 SUFFIXES = ["", "_shiny"]
@@ -44,9 +51,27 @@ def rebuild_thumbs() -> None:
     print(f"{done} thumbnail(s) written to {THUMBS.relative_to(PROJECT)}")
 
 
+def fix_imports() -> None:
+    """Sets the game's import options in the .import files Godot wrote. Run Godot's --import again after."""
+    changed = 0
+    for imp in sorted(OUT.glob("*.webp.import")) + sorted(THUMBS.glob("*.webp.import")):
+        text = imp.read_text(encoding="utf-8")
+        if imp.parent == THUMBS:
+            new = text.replace("mipmaps/generate=false", "mipmaps/generate=true")
+        else:
+            new = re.sub(r"^process/size_limit=\d+$", f"process/size_limit={PAINTING_LIMIT}", text, flags=re.M)
+        if new != text:
+            imp.write_text(new, encoding="utf-8")
+            changed += 1
+    print(f"{changed} import file(s) updated. Now run Godot's --import again.")
+
+
 def main() -> None:
     if len(sys.argv) == 2 and sys.argv[1] == "--thumbs":
         rebuild_thumbs()
+        return
+    if len(sys.argv) == 2 and sys.argv[1] == "--fix-imports":
+        fix_imports()
         return
     if len(sys.argv) != 2:
         sys.exit(__doc__)

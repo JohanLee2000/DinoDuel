@@ -130,41 +130,84 @@ static func text_color_on(color: Color) -> Color:
 	return Palette.INK if color.get_luminance() > 0.45 else Palette.TEXT
 
 
+## Glossy buttons (2026-10-15, matching the card frames): a soft top-to-bottom gradient, a light
+## rim, a darker bottom lip that flattens when pressed, and a faint glow in the button's color.
+## One neutral shading texture per state is generated once and tinted with the button's color
+## (StyleBoxTexture.modulate_color), drawn as a 9-slice so it fits any button size.
 static func style_button(b: Button, color: Color) -> void:
 	var text_color := text_color_on(color)
-	for state_name in ["normal", "hover", "pressed", "disabled", "focus"]:
-		var style := StyleBoxFlat.new()
-		style.set_corner_radius_all(10)
-		style.set_content_margin_all(8)
-		style.bg_color = color
-		style.border_color = color.lightened(0.35)
-		style.set_border_width_all(2)
-		style.border_width_bottom = 5
-		style.shadow_color = Color(color, 0.35)
-		style.shadow_size = 8
-		match state_name:
-			"normal":
-				style.border_color = color.lightened(0.35)
-			"hover":
-				style.bg_color = color.lightened(0.08)
-			"pressed":
-				style.bg_color = color.darkened(0.12)
-				style.border_width_bottom = 2
-				style.content_margin_top = 11
-			"disabled":
-				style.bg_color = color.darkened(0.6)
-				style.border_color = color.darkened(0.4)
-				style.shadow_size = 0
-			"focus":
-				style.draw_center = false
-				style.border_color = Color.WHITE
-				style.set_border_width_all(2)
-				style.shadow_size = 0
+	var tints := {"normal": color.lightened(0.22), "hover": color.lightened(0.3), "pressed": color.lightened(0.12),
+			"disabled": color.darkened(0.5)}
+	for state_name in tints:
+		var kind: String = "flat" if state_name == "disabled" else ("pressed" if state_name == "pressed" else "normal")
+		var style := StyleBoxTexture.new()
+		style.texture = _gloss_texture(kind)
+		style.modulate_color = tints[state_name]
+		style.set_texture_margin_all(GLOSS_GLOW + GLOSS_RADIUS)
+		style.set_expand_margin_all(GLOSS_GLOW)
+		style.content_margin_left = 10
+		style.content_margin_right = 10
+		# Pressed: the lip flattens and the text sinks 3 units (same total height).
+		var pressed: bool = state_name == "pressed"
+		style.content_margin_top = 9 if pressed else 6
+		style.content_margin_bottom = 6 + (GLOSS_LIP_PRESSED if pressed else GLOSS_LIP)
 		b.add_theme_stylebox_override(state_name, style)
+	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	b.add_theme_font_override("font", Fonts.display())
-	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+	for color_name in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color",
+			"icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color"]:
 		b.add_theme_color_override(color_name, text_color)
 	b.add_theme_color_override("font_disabled_color", Color(text_color, 0.45))
+	b.add_theme_color_override("icon_disabled_color", Color(text_color, 0.45))
+
+
+const GLOSS_SIZE := 64
+const GLOSS_GLOW := 8
+const GLOSS_RADIUS := 12
+const GLOSS_LIP := 5
+const GLOSS_LIP_PRESSED := 2
+static var _gloss := {}
+
+
+## The neutral shading for a button state ("normal", "pressed", "flat" = disabled, no glow):
+## white-to-grey values that the style multiplies by the button's color.
+static func _gloss_texture(kind: String) -> Texture2D:
+	if _gloss.has(kind):
+		return _gloss[kind]
+	var n := GLOSS_SIZE
+	var glow := float(GLOSS_GLOW)
+	var image := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var body := Rect2(glow, glow, n - 2 * glow, n - 2 * glow)
+	var lip := GLOSS_LIP_PRESSED if kind == "pressed" else GLOSS_LIP
+	var top := 0.86 if kind == "pressed" else 0.95
+	var bottom := 0.66 if kind == "pressed" else 0.72
+	for y in n:
+		for x in n:
+			var p := Vector2(x + 0.5, y + 0.5)
+			var d := _rounded_rect_distance(p, body, GLOSS_RADIUS)
+			if d > 0.0:
+				var a := 0.0 if kind == "flat" or d >= glow else 0.42 * exp(-d / (glow * 0.33))
+				image.set_pixel(x, y, Color(0.9, 0.9, 0.9, a))
+				continue
+			var t := (p.y - body.position.y) / body.size.y
+			var v := lerpf(top, bottom, t)
+			if p.y - body.position.y < 4.0 and kind != "flat":
+				v = 1.0  # shine line along the top
+			if body.end.y - p.y < lip:
+				v = 0.48  # bottom lip
+			if d > -2.0:
+				v = maxf(v, 1.0 if p.y < body.get_center().y else 0.82)  # light rim
+			var edge := clampf(0.5 - d, 0.0, 1.0)
+			image.set_pixel(x, y, Color(v, v, v, edge))
+	var texture := ImageTexture.create_from_image(image)
+	_gloss[kind] = texture
+	return texture
+
+
+## Signed distance from `p` to a rounded rectangle (negative inside).
+static func _rounded_rect_distance(p: Vector2, rect: Rect2, radius: float) -> float:
+	var q := (p - rect.get_center()).abs() - (rect.size / 2.0 - Vector2(radius, radius))
+	return Vector2(maxf(q.x, 0.0), maxf(q.y, 0.0)).length() + minf(maxf(q.x, q.y), 0.0) - radius
 
 
 static func panel(content: Control, color := Palette.PANEL, margin := 14) -> PanelContainer:
