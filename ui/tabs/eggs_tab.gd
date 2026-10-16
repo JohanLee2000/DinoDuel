@@ -1,6 +1,6 @@
 extends VBoxContainer
-## Eggs tab: one Hatch button (Rare clutches first), the shop (check-in, clutch, Rare clutch) as
-## three tiles, and the odds.
+## Eggs tab: one Hatch button (asks Clutch or Rare clutch when you have both), the shop (check-in,
+## clutch, Rare clutch) as three tiles, and the odds.
 
 var _body: VBoxContainer
 
@@ -23,17 +23,17 @@ func _refresh() -> void:
 	var banner := ClutchBanner.new()
 	banner.clutches = profile.clutches
 	banner.rare_clutches = profile.rare_clutches
-	banner.hatch_pressed.connect(func() -> void: _hatch(profile.clutches <= 0))
+	banner.hatch_pressed.connect(_hatch_any)
 	_body.add_child(banner)
-	# One big Hatch button. Rare clutches go first: there's no reason to save them.
-	var rare_first := profile.rare_clutches > 0
-	var waiting := profile.rare_clutches if rare_first else profile.clutches
-	var hatch_text := "Hatch a Rare clutch" if rare_first else "Hatch a clutch"
-	if waiting > 1:
-		hatch_text += "  (%d)" % waiting
-	var hatch := UiKit.let_scroll(UiKit.button(hatch_text, UiKit.BUTTON_RARE if rare_first else UiKit.BUTTON_GREEN, 110, 34))
-	hatch.disabled = waiting <= 0
-	hatch.pressed.connect(_hatch.bind(rare_first))
+	# One big Hatch button. With both kinds waiting, it asks which (_choose_clutch).
+	var total := profile.clutches + profile.rare_clutches
+	var only_rare := profile.clutches == 0 and profile.rare_clutches > 0
+	var hatch_text := "Hatch a Rare clutch" if only_rare else "Hatch a clutch"
+	if total > 1:
+		hatch_text += "  (%d)" % total
+	var hatch := UiKit.let_scroll(UiKit.button(hatch_text, UiKit.BUTTON_RARE if only_rare else UiKit.BUTTON_GREEN, 110, 34))
+	hatch.disabled = total <= 0
+	hatch.pressed.connect(_hatch_any)
 	_body.add_child(hatch)
 
 	# The shop: check-in, a clutch and a Rare clutch as three tiles.
@@ -95,9 +95,9 @@ func _odds_box() -> VBoxContainer:
 
 
 ## A shop tile: an egg on top, a name and a price or status under it.
-func _tile(title: String, detail: String, icon_name: StringName, color: Color) -> Button:
-	var tile := UiKit.let_scroll(UiKit.button("%s\n%s" % [title, detail], color, 150, 22))
-	tile.icon = Icons.texture(icon_name, 44)
+func _tile(title: String, detail: String, icon_name: StringName, color: Color, font_size := 22) -> Button:
+	var tile := UiKit.let_scroll(UiKit.button("%s\n%s" % [title, detail], color, 150, font_size))
+	tile.icon = Icons.texture(icon_name, font_size * 2)
 	tile.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tile.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -109,6 +109,52 @@ func _tile(title: String, detail: String, icon_name: StringName, color: Color) -
 		tile.add_theme_color_override(color_name, egg)
 	tile.add_theme_color_override("icon_disabled_color", Color(egg, 0.45))
 	return tile
+
+
+## Hatches a clutch; if there are both normal and Rare clutches, asks which first.
+func _hatch_any() -> void:
+	var profile := Session.profile
+	if profile.clutches > 0 and profile.rare_clutches > 0:
+		_choose_clutch()
+	else:
+		_hatch(profile.rare_clutches > 0)
+
+
+func _choose_clutch() -> void:
+	var profile := Session.profile
+	var dialog := UiKit.modal_layer(0.8)
+	dialog.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed:
+			dialog.queue_free())
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var column := UiKit.vbox(16)
+	column.custom_minimum_size.x = 560
+	column.add_child(UiKit.title("Which clutch?", 38, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER))
+	column.add_child(UiKit.label("Rare clutches have better odds: %d%% Epic and %d%% Legendary per egg." \
+			% [roundi(Economy.RARE_CLUTCH_ODDS[DinoDef.Rarity.EPIC] * 100), roundi(Economy.RARE_CLUTCH_ODDS[DinoDef.Rarity.LEGENDARY] * 100)],
+			26, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	var row := UiKit.hbox(12)
+	for rare in [false, true]:
+		var count: int = profile.rare_clutches if rare else profile.clutches
+		var pick := _tile("Rare clutch" if rare else "Clutch", "%d waiting" % count, &"egg",
+				UiKit.BUTTON_RARE if rare else UiKit.BUTTON_GREEN, 28)
+		pick.custom_minimum_size.y = 190
+		pick.pressed.connect(func() -> void:
+			dialog.queue_free()
+			_hatch(rare))
+		row.add_child(pick)
+	column.add_child(row)
+	var cancel := UiKit.button("Not now", UiKit.BUTTON_GRAY, 68, 26)
+	cancel.pressed.connect(dialog.queue_free)
+	column.add_child(cancel)
+	var panel := UiKit.panel(column, Palette.PANEL, 24)
+	# Taps on the panel stay here; only taps outside it close the popup.
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	center.add_child(panel)
+	dialog.add_child(center)
+	get_tree().current_scene.add_child(dialog)
 
 
 func _hatch(rare := false) -> void:

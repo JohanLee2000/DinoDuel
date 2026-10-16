@@ -4,7 +4,7 @@ extends Control
 ## New players go through the name entry, story, partner pick and the Professaur's tour here.
 
 const TABS := [
-	{"name": "Battle", "icon": &"map", "script": "res://ui/tabs/battle_tab.gd"},
+	{"name": "Journey", "icon": &"map", "script": "res://ui/tabs/battle_tab.gd"},
 	{"name": "Party", "icon": &"cards", "script": "res://ui/tabs/party_tab.gd"},
 	{"name": "Eggs", "icon": &"egg_outline", "script": "res://ui/tabs/eggs_tab.gd"},
 	{"name": "Dex", "icon": &"book", "script": "res://ui/tabs/dex_tab.gd"},
@@ -222,7 +222,7 @@ func _add_icon_before(label: Label, icon_name: StringName) -> Control:
 	return icon
 
 
-## Android back button: go to the Battle tab first, then leave the app. Coming back to the game
+## Android back button: go to the Journey tab first, then leave the app. Coming back to the game
 ## on a new day (Android often keeps it in the background overnight) opens the check-in.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_RESUMED:

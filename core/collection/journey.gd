@@ -13,7 +13,7 @@ const MAX_STARS := 3
 const STAR_CHESTS := [[6, 100, 0, 0], [12, 0, 1, 0], [18, 0, 0, 1]]
 
 static var _stages: Array[RivalDef] = []
-## Development only: every stage counts as unlocked for this run (the DEV button on the Battle tab).
+## Development only: every stage counts as unlocked for this run (the DEV button on the Journey tab).
 ## Doesn't touch the save. TODO(release): delete with the button (docs/RELEASE_CHECKLIST.md).
 static var dev_unlock_all := false
 

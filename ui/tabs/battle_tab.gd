@@ -1,5 +1,5 @@
 extends VBoxContainer
-## Battle tab: the Journey (docs/GAME_DESIGN.md). Era tabs, a chapter banner with your stars and
+## Journey tab (Session.Tab.BATTLE): the Journey (docs/GAME_DESIGN.md). Era tabs, a chapter banner with your stars and
 ## the star chests, and Jo's illustrated trail map for the era with a marker on every stage. Tap a
 ## marker to see the rival and challenge them. The Professaur introduces each chapter when it opens.
 

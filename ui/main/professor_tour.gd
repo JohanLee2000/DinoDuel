@@ -82,7 +82,7 @@ func _script() -> Array[Dictionary]:
 				"tab": Session.Tab.BATTLE},
 		{"text": "Let's get started. Up here are your [b]Amber[/b] and your [b]egg clutches[/b]. You earn Amber from battles and duplicate dinos, and spend it on eggs and crafting.",
 				"target": _main.stats_rect},
-		{"text": "[b]Battle[/b]: the Journey through time. Beat rival collectors one by one, from the Triassic all the way to the meteor. Each turn you both secretly pick Bite, Charge, Brace or Swap, and every win earns a clutch of %d eggs!" % Economy.EGGS_PER_CLUTCH,
+		{"text": "[b]Journey[/b]: travel through time and beat rival collectors one by one, from the Triassic all the way to the meteor. Each turn you both secretly pick Bite, Charge, Brace or Swap, and every win earns a clutch of %d eggs!" % Economy.EGGS_PER_CLUTCH,
 				"tab": Session.Tab.BATTLE, "target": _main.tab_rect.bind(Session.Tab.BATTLE)},
 		{"text": "[b]Party[/b]: the %d dinos you bring. Before each battle you see your rival's %d and pick %d, up to %d Party Points." \
 				% [PartyRules.BRING_SIZE, PartyRules.BRING_SIZE, PartyRules.PARTY_SIZE, PartyRules.POINT_CAP],

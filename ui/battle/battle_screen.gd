@@ -39,6 +39,7 @@ const COACH_SCRIPT_TIPS: Array[String] = [
 ## Room kept free for the coach's tip box when sizing the cards.
 const COACH_PANEL_HEIGHT := 175.0
 const PICKER_CARD_WIDTH := 200.0
+const HEADLINE_FONT_SIZE := 29
 const HIT_COLOR := Color("ff6b5e")
 const METEOR_COLOR := Color("ff8a3d")
 
@@ -57,8 +58,10 @@ var _log_lines: Array[String] = []
 ## The text box (2026-10-15): the turn's key moment in a pill, the latest lines faded under it.
 var _headline_pill: PanelContainer
 var _headline_label: Label
-var _recent_lines: Array[String] = []
 var _full_log: Control
+## The text box's top row: both moves this turn (centre) and the turn number (right).
+var _moves_label: Label
+var _box_turn_label: Label
 var _card_scale := 1.0
 var _coaching := false
 var _backdrop: BattleBackdrop
@@ -119,8 +122,11 @@ func _ready() -> void:
 	_buttons[2].pressed.connect(func() -> void: _submit(BattleAction.brace()))
 	_buttons[3].pressed.connect(_on_swap_pressed)
 	UiKit.style_button(%HatchButton, UiKit.BUTTON_AMBER)
-	UiKit.style_button(%RematchButton, UiKit.BUTTON_GREEN)
-	UiKit.style_button(%BackButton, UiKit.BUTTON_GRAY)
+	UiKit.add_icon(%HatchButton, "Hatch your eggs", &"egg", UiKit.BUTTON_AMBER, 32, Color.WHITE)
+	UiKit.style_button(%RematchButton, UiKit.BUTTON_RED)
+	UiKit.add_icon(%RematchButton, "Rematch", &"restart", UiKit.BUTTON_RED, 32)
+	UiKit.style_button(%BackButton, UiKit.BUTTON_GREEN)
+	UiKit.add_icon(%BackButton, "Back to camp", &"camp", UiKit.BUTTON_GREEN, 32)
 	%HatchButton.pressed.connect(Session.go_to_main.bind(Session.Tab.EGGS))
 	%RematchButton.pressed.connect(Session.go_to_pre_battle)
 	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
@@ -140,9 +146,11 @@ func _ready() -> void:
 		_snapshot_health(side)
 		_rebuild_side(side)
 	if resumed:
+		_log_lines.append(_log_header("Battle resumed"))
 		_headline("Battle resumed: turn %d" % _state.turn, Palette.TEXT)
 		_after_turn()
 		return
+	_log_lines.append(_log_header("Battle start"))
 	_headline("%s sends out %s. Go, %s!" % [Session.rival.display_name, _name(RIVAL), _name(PLAYER)], Palette.TEXT)
 	var bonuses: Array[String] = []
 	if _state.side(PLAYER).era_bond:
@@ -210,6 +218,7 @@ func _begin_choice() -> void:
 	_hide_picker()
 	_phase = Phase.CHOOSE_ACTION
 	_turn_label.text = "Turn %d" % _state.turn
+	_box_turn_label.text = "Turn %d" % _state.turn
 	_hint.text = "Choose your move. %s picks at the same time." % Session.rival.display_name
 	_set_bench_highlight(false)
 	_update_buttons()
@@ -333,12 +342,16 @@ func _play(events: Array[Dictionary]) -> void:
 				var kinds: Array = event["actions"]
 				var moves := "You: %s · %s: %s" % [BattleAction.KIND_NAMES[kinds[0]], Session.rival.display_name,
 						BattleAction.KIND_NAMES[kinds[1]]]
+				_log_lines.append(_log_header("Turn %d" % (_state.turn - 1)))
+				_log_lines.append(moves)
+				_moves_label.text = moves
 				var key := "%d-%d" % [kinds[0], kinds[1]]
 				if MATCHUP_TEXT.has(key):
-					_say(moves)
 					_headline(MATCHUP_TEXT[key], Palette.HIGHLIGHT)
+				elif kinds[0] == kinds[1]:
+					_headline("Both %s!" % BattleAction.KIND_NAMES[kinds[0]], Palette.TEXT)
 				else:
-					_headline(moves, Palette.TEXT)
+					_headline("Swap goes first", Palette.TEXT)
 				await _pause()
 			"swap", "replace":
 				var side: int = event["side"]
@@ -938,25 +951,34 @@ func _skip_coach() -> void:
 
 # --- Text helpers ---------------------------------------------------------------------------
 
-## Adds a line to the log; the latest two show faded under the headline.
+## Adds a line to the log; the latest one shows faded under the headline.
 func _say(line: String) -> void:
 	_log_lines.append(line)
-	_recent_lines.append(line)
-	while _recent_lines.size() > 2:
-		_recent_lines.pop_front()
-	var shown: Array[String] = []
-	for i in _recent_lines.size():
-		var newest := i == _recent_lines.size() - 1
-		shown.append("[font_size=%d][color=#%s]%s[/color][/font_size]" % [27 if newest else 24,
-				Color(Palette.TEXT, 0.9 if newest else 0.5).to_html(), _recent_lines[i]])
-	_log.text = "\n".join(shown)
+	_log.text = "[color=#%s]%s[/color]" % [Color(Palette.TEXT, 0.75).to_html(), line]
 
 
-## The turn's key moment (who beat what, a knockout, a swap) in the pill at the top of the text box.
+## A centred "Turn 3" heading for the full log, with a little space above it.
+static func _log_header(text: String) -> String:
+	return "[font_size=10] [/font_size]
+[center][b][color=#%s]%s[/color][/b][/center]" % [Palette.HIGHLIGHT.to_html(), text]
+
+
+## The turn's key moment (who beat what, a knockout, a swap) in the pill under the top row.
 func _headline(text: String, color: Color) -> void:
 	_log_lines.append("[b][color=#%s]%s[/color][/b]" % [color.to_html(), text])
 	_headline_label.text = text
 	_headline_label.add_theme_color_override("font_color", color)
+	# A long headline wraps instead of stretching the screen wider than the phone.
+	var room := (%LogPanel as Control).size.x - 80.0
+	if room <= 0.0:
+		room = get_viewport_rect().size.x - 120.0
+	var width := Fonts.bold().get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, HEADLINE_FONT_SIZE).x
+	if width > room:
+		_headline_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_headline_label.custom_minimum_size.x = room
+	else:
+		_headline_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		_headline_label.custom_minimum_size.x = 0
 	var style := _headline_pill.get_theme_stylebox("panel") as StyleBoxFlat
 	style.border_color = Color(color, 0.85)
 	style.shadow_color = Color(color, 0.3)
@@ -967,8 +989,8 @@ func _headline(text: String, color: Color) -> void:
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## The text box: a glassy panel with the headline pill above the latest lines. Tap it for the
-## whole log.
+## The text box: a glassy panel. Top row: "Log" (tap the box for the whole log), both moves this
+## turn, and the turn number. Under it the key moment in a pill, then the latest line, faded.
 func _build_log_box() -> void:
 	var panel: PanelContainer = %LogPanel
 	var glass := StyleBoxFlat.new()
@@ -976,14 +998,34 @@ func _build_log_box() -> void:
 	glass.border_color = Color(Palette.ACCENT, 0.35)
 	glass.set_border_width_all(1)
 	glass.set_corner_radius_all(16)
-	glass.set_content_margin_all(10)
+	glass.content_margin_left = 12
+	glass.content_margin_right = 12
+	glass.content_margin_top = 6
+	glass.content_margin_bottom = 8
 	panel.add_theme_stylebox_override("panel", glass)
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			_open_full_log())
-	var column := UiKit.vbox(6)
+	var column := UiKit.vbox(4)
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var top := UiKit.hbox(8)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var log_hint := UiKit.label("≡ Log", 21, Color(Palette.TEXT_DIM, 0.8), HORIZONTAL_ALIGNMENT_LEFT, false)
+	log_hint.custom_minimum_size.x = 90
+	_moves_label = UiKit.label("", 23, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	_moves_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_moves_label.clip_text = true
+	_moves_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_box_turn_label = UiKit.label("Turn %d" % _state.turn, 23, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_RIGHT, false)
+	_box_turn_label.add_theme_font_override("font", Fonts.condensed_bold())
+	_box_turn_label.custom_minimum_size.x = 90
+	for label in [log_hint, _moves_label, _box_turn_label]:
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top.add_child(label)
+	column.add_child(top)
+
 	_headline_pill = PanelContainer.new()
 	var pill := StyleBoxFlat.new()
 	pill.bg_color = Color(0.05, 0.08, 0.15, 0.95)
@@ -991,26 +1033,26 @@ func _build_log_box() -> void:
 	pill.set_corner_radius_all(24)
 	pill.content_margin_left = 18
 	pill.content_margin_right = 18
-	pill.content_margin_top = 5
-	pill.content_margin_bottom = 7
+	pill.content_margin_top = 4
+	pill.content_margin_bottom = 6
 	pill.shadow_size = 10
 	_headline_pill.add_theme_stylebox_override("panel", pill)
 	_headline_pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_headline_pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_headline_pill.visible = false
-	_headline_label = UiKit.label("", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	_headline_label = UiKit.label("", HEADLINE_FONT_SIZE, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false)
 	_headline_label.add_theme_font_override("font", Fonts.bold())
 	_headline_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_headline_pill.add_child(_headline_label)
 	column.add_child(_headline_pill)
+
 	_log.reparent(column)
 	_log.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_log.add_theme_font_size_override("normal_font_size", 26)
-	_log.add_theme_font_size_override("bold_font_size", 26)
+	_log.add_theme_font_size_override("normal_font_size", 25)
+	_log.add_theme_font_size_override("bold_font_size", 25)
 	panel.add_child(column)
-	var hint := UiKit.label("Tap for the full log", 19, Color(Palette.TEXT_DIM, 0.7), HORIZONTAL_ALIGNMENT_RIGHT, false)
-	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(hint)
+	# The turn number lives in the text box now, not next to the ? button.
+	_turn_label.visible = false
 
 
 func _open_full_log() -> void:

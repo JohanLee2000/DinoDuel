@@ -53,7 +53,7 @@ Type triangle: **Land beats Sky, Sky beats Sea, Sea beats Land.** Land pounces o
 ### Battle screen
 Move buttons carry icons (jaws Bite, arrow Charge, shield Brace, arrows Swap; also on the How to play page) and show **+50%** when the player has the type edge (shorter than "(type edge)", so the icon fits). Each side's benched dinos sit under a **BENCH** label, and knocked-out dinos get a red **K.O.** stamp over a darkened card (2026-10-09).
 **Battle effects (2026-10-09):** the attacker winds up (longer for a Charge) and strikes toward the other card; the hit lands with a white flash, an impact burst (gold for a type edge), and a big damage number that pops out with its caption (CHARGE, COUNTER, TYPE EDGE). Big hits (Charge, type edge, knockout) add a short hit-stop and shake the board; a knockout slams the K.O. stamp down. Blocks flash blue, the meteor hits orange, and a dino coming in pops into place. Cosmetic only (`ui/battle/battle_screen.gd`, `ui/battle/hit_burst.gd`).
-**Results (2026-10-09):** a big outlined VICTORY / DEFEAT / DRAW, "against <rival>", two stat tiles (turns, dinos standing x / 3) and a Rewards panel with the egg and Amber icons, then Hatch your eggs / Rematch / Back to camp.
+**Results (2026-10-09):** a big outlined VICTORY / DEFEAT / DRAW, "against <rival>", two stat tiles (turns, dinos standing x / 3) and a Rewards panel with the egg and Amber icons, then Hatch your eggs (amber, egg icon) / Rematch (red, restart arrow) / Back to camp (gold, tent; Jo, 2026-10-15).
 
 ### AI rivals
 The AI simulates every (its move, your move) pair one turn ahead, guesses your move from both reasoning and **your habits so far** (it learns if you always Bite), then picks with some randomness. `temperature` is the difficulty knob per rival; `*_bias` values give a rival a learnable personality. Balance sim (600 battles): the AI beats always-Bite 91%, always-Charge 100%, always-Brace 87%.
@@ -103,13 +103,13 @@ One painted scene per type in `assets/battle/` (Land: volcanic wasteland, Sea: s
 
 ## UI polish (Jo, 2026-10-15)
 - **Buttons** are glossy like the card frames: a soft gradient, a light top edge, a darker bottom lip that flattens when pressed, and a faint glow in the button's color (`UiKit.style_button`: one generated shading texture per state, tinted per color).
-- **Tab bar:** an icon above each name (map, cards, egg, book, trophy); the open tab is gold; a red dot replaces "(!)" (Eggs: clutches or check-in waiting; Goals: something to claim; Battle: a star chest to open).
-- **Eggs tab:** one big Hatch button (Rare clutches first) and the shop as three tiles: check-in, clutch, Rare clutch.
-- **Battle text box:** the turn's key moment in a pill at the top (gold for who beat what, red for a knockout, blue for a swap, orange for the meteor), the latest two lines faded under it; tap it for the full battle log.
+- **Tab bar:** an icon above each name (map, cards, egg, book, trophy); the open tab is gold; a red dot replaces "(!)" (Eggs: clutches or check-in waiting; Goals: something to claim; Journey: a star chest to open). The first tab is named **Journey** (was Battle; Jo, 2026-10-15).
+- **Eggs tab:** one big Hatch button and the shop as three tiles: check-in, clutch, Rare clutch. With both kinds waiting, Hatch asks **which clutch** in a popup (Clutch / Rare clutch / Not now); with one kind it hatches that.
+- **Battle text box:** a top row with "Log" on the left, both moves this turn in the centre and **Turn N** on the right (it moved there from next to the ? button). Under it the turn's key moment in a pill (gold for who beat what, red for a knockout, blue for a swap, orange for the meteor; long ones wrap so the screen never stretches wider than the phone), then the latest line, faded. Tap it for the full battle log, with a centred **Turn N** heading before each turn's moves.
 - **Paintings** are imported at most 768 px wide (the full card view shows ~700 px on a 1080p phone): ~10 MB smaller download and install.
 
 ## App layout (decided)
-Bottom tabs: **Battle** (rivals), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
+Bottom tabs: **Journey** (rivals; was Battle), **Party** (pick your 6), **Eggs** (hatch, daily, buy, odds), **Dex** (collection, crafting). Top bar shows Amber and clutches.
 
 ## New-player intro (decided 2026-10-08)
 - **Name** first (decided later the same day): "What should we call you?" (max 16 characters), saved as `player_name` for the Professaur and the story.

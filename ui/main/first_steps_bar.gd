@@ -13,7 +13,7 @@ const STEPS := {
 	&"hatch": ["Hatch your eggs", "Open the Eggs tab and tap Hatch a clutch.", 2],
 	&"dex": ["Meet your dinos", "Open the Dex tab and tap any dino you own.", 3],
 	&"party": ["Build your party", "In the Party tab, swap a starter for a dino you hatched.", 1],
-	&"battle": ["Win your first battle", "Challenge Rookie Rae on the Battle tab.", 0],
+	&"battle": ["Win your first battle", "Challenge Rookie Rae on the Journey tab.", 0],
 }
 
 var _expanded := false

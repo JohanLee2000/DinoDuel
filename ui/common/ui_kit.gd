@@ -50,6 +50,15 @@ static func button(text: String, color: Color, height := 84, font_size := 30) ->
 static func icon_button(text: String, icon_name: StringName, color: Color, height := 84,
 		font_size := 30, icon_tint := Color(0, 0, 0, 0)) -> Button:
 	var b := button("", color, height, font_size)
+	add_icon(b, text, icon_name, color, font_size, icon_tint)
+	return b
+
+
+## Puts an icon in front of a button's text, the two centered together (the button's own text is
+## cleared and drawn by a label instead). `color` is the button's color, for the text color.
+static func add_icon(b: Button, text: String, icon_name: StringName, color: Color, font_size := 30,
+		icon_tint := Color(0, 0, 0, 0)) -> void:
+	b.text = ""
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -77,7 +86,6 @@ static func icon_button(text: String, icon_name: StringName, color: Color, heigh
 	# Sink with the button when it's pressed, like a plain button's text does.
 	b.button_down.connect(func() -> void: center.offset_top = 3)
 	b.button_up.connect(func() -> void: center.offset_top = 0)
-	return b
 
 
 ## A glossy, glowing button: lighter top border, darker bottom edge, a soft glow in its own
