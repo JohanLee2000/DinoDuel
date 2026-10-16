@@ -26,7 +26,7 @@ const PAGES := [
 			["type_land", "[b]Land beats Sky[/b]: it pounces on pterosaurs on the ground."],
 			["type_sky", "[b]Sky beats Sea[/b]: it dives on marine reptiles."],
 			["type_sea", "[b]Sea beats Land[/b]: it ambushes at the water's edge."],
-			["", "Hitting a type you beat does [b]+50% damage[/b]. The move buttons show [b]+50%[/b] when you have it."],
+			["", "Hitting a type you beat does [b]+50% damage[/b]. The damage on the move buttons already includes it, with a gold [b]Type advantage[/b] tag above them."],
 		],
 	},
 	{

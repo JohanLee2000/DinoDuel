@@ -75,6 +75,10 @@ var _coach_pulse: Tween
 var _coach_tips_given := {}
 var _last_player_kind := -1
 var _screen_shake_tween: Tween
+## Top bar: per side, a dot for each dino in the party, lit while it's still standing.
+var _score_dots: Array = [[], []]
+## "Type advantage · bonus included", over the move buttons while the player has the type edge.
+var _edge_tag: PanelContainer
 
 @onready var _slots: Array[Control] = [%PlayerSlot, %EnemySlot]
 @onready var _benches: Array[VBoxContainer] = [%PlayerBench, %EnemyBench]
@@ -132,6 +136,8 @@ func _ready() -> void:
 	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
 
 	_rival_name.text = Session.rival.display_name
+	_build_top_bar()
+	_build_edge_tag()
 	var help := UiKit.button("?", UiKit.BUTTON_GRAY, 52, 28)
 	help.custom_minimum_size.x = 64
 	help.pressed.connect(func() -> void: HelpView.open())
@@ -145,6 +151,7 @@ func _ready() -> void:
 	for side in 2:
 		_snapshot_health(side)
 		_rebuild_side(side)
+	_update_score()
 	if resumed:
 		_log_lines.append(_log_header("Battle resumed"))
 		_headline("Battle resumed: turn %d" % _state.turn, Palette.TEXT)
@@ -235,14 +242,20 @@ func _begin_choice() -> void:
 func _update_buttons() -> void:
 	var me := _state.side(PLAYER).active_dino()
 	var them := _state.side(RIVAL).active_dino()
-	var edge := " +50%" if BattleEngine.has_advantage(me, them) else ""
-	_buttons[0].text = "Bite: %d dmg%s\nbeats Charge" % [BattleEngine.damage(me, them, false), edge]
-	_buttons[1].text = "Charge: %d dmg%s\nbeats Brace, acts last" % [BattleEngine.damage(me, them, true), edge]
+	_buttons[0].text = "Bite · %d damage\nBeats Charge" % BattleEngine.damage(me, them, false)
+	_buttons[1].text = "Charge · %d damage\nBeats Brace, acts last" % BattleEngine.damage(me, them, true)
 	var can_brace := BattleEngine.is_legal(_state, PLAYER, BattleAction.brace())
-	_buttons[2].text = "Brace\nbeats Bite" if can_brace else "Brace\nresting this turn"
+	_buttons[2].text = "Brace\nBeats Bite" if can_brace else "Brace\nReady next turn"
 	var can_swap := not _state.side(PLAYER).bench().is_empty()
-	_buttons[3].text = "Cancel swap" if _phase == Phase.CHOOSE_SWAP else "Swap\ngoes first"
+	if _phase == Phase.CHOOSE_SWAP:
+		_buttons[3].text = "Cancel swap"
+	else:
+		_buttons[3].text = "Swap Dino\nGoes first" if can_swap else "Swap Dino\nNo dinos available"
 	var choosing := _phase == Phase.CHOOSE_ACTION or _phase == Phase.CHOOSE_SWAP
+	_edge_tag.visible = _phase == Phase.CHOOSE_ACTION and BattleEngine.has_advantage(me, them)
+	if _edge_tag.visible:
+		# The tag takes the hint line's place (a space keeps the line's height).
+		_hint.text = " "
 	for i in 3:
 		_buttons[i].disabled = not choosing or _phase == Phase.CHOOSE_SWAP
 	_buttons[2].disabled = _buttons[2].disabled or not can_brace
@@ -584,6 +597,120 @@ func _rebuild_side(side: int) -> void:
 		_bench_cards[side][i] = mini
 
 
+## The top bar: the rival's round face, their name, and a dot per dino on each side (lit while
+## it's standing), so the score shows at a glance.
+func _build_top_bar() -> void:
+	var bar := _rival_name.get_parent()
+	var face := _round_face(RivalArt.head(Session.rival.character), 60)
+	bar.add_child(face)
+	bar.move_child(face, 0)
+	var name_box := UiKit.vbox(2)
+	name_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	bar.add_child(name_box)
+	bar.move_child(name_box, 1)
+	_rival_name.reparent(name_box)
+	_rival_name.size_flags_horizontal = Control.SIZE_FILL
+	name_box.add_child(_dots_row(RIVAL))
+	var you := UiKit.vbox(2)
+	you.alignment = BoxContainer.ALIGNMENT_CENTER
+	var you_label := UiKit.label("YOU", 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	you_label.add_theme_font_override("font", Fonts.title())
+	you.add_child(you_label)
+	you.add_child(_dots_row(PLAYER))
+	bar.add_child(you)
+	bar.move_child(you, name_box.get_index() + 1)
+	bar.add_theme_constant_override("separation", 12)
+
+
+func _round_face(texture: Texture2D, diameter: float) -> Control:
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2.ONE * diameter
+	holder.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var frame := Panel.new()
+	var disc := StyleBoxFlat.new()
+	disc.bg_color = Color("1b2a47")
+	disc.set_corner_radius_all(int(diameter / 2))
+	frame.add_theme_stylebox_override("panel", disc)
+	frame.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
+	frame.size = holder.custom_minimum_size
+	var face := TextureRect.new()
+	face.texture = texture
+	face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	face.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	face.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	frame.add_child(face)
+	holder.add_child(frame)
+	var rim := Panel.new()
+	var ring := StyleBoxFlat.new()
+	ring.draw_center = false
+	ring.border_color = Palette.HIGHLIGHT if Session.rival.is_boss else Palette.ACCENT
+	ring.set_border_width_all(3)
+	ring.set_corner_radius_all(int(diameter / 2))
+	rim.add_theme_stylebox_override("panel", ring)
+	rim.size = holder.custom_minimum_size
+	holder.add_child(rim)
+	for node in [holder, frame, face, rim]:
+		node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return holder
+
+
+func _dots_row(side: int) -> HBoxContainer:
+	var row := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER if side == PLAYER else BoxContainer.ALIGNMENT_BEGIN)
+	_score_dots[side] = []
+	for i in _state.side(side).party.size():
+		var dot := Panel.new()
+		dot.custom_minimum_size = Vector2(16, 16)
+		var style := StyleBoxFlat.new()
+		style.set_corner_radius_all(8)
+		style.set_border_width_all(2)
+		dot.add_theme_stylebox_override("panel", style)
+		row.add_child(dot)
+		_score_dots[side].append(dot)
+	return row
+
+
+## Lights a dot per dino still standing (as shown on screen), the rest hollow.
+func _update_score() -> void:
+	for side in 2:
+		var standing := 0
+		for health in _shown_health[side]:
+			standing += 1 if health > 0 else 0
+		var color := Palette.HEAL if side == PLAYER else Palette.DAMAGE
+		for i in _score_dots[side].size():
+			var style := (_score_dots[side][i] as Panel).get_theme_stylebox("panel") as StyleBoxFlat
+			var lit: bool = i < standing
+			style.bg_color = color if lit else Color(0, 0, 0, 0.35)
+			style.border_color = color.lightened(0.3) if lit else Color(1, 1, 1, 0.3)
+
+
+## A small gold tag in the hint line's place, shown while the player has the type edge: the
+## damage on the buttons already includes the bonus. Drawn over the line rather than laid out, so
+## showing it never moves anything.
+func _build_edge_tag() -> void:
+	_edge_tag = PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.08, 0.15, 0.92)
+	style.border_color = Palette.HIGHLIGHT
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(18)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 3
+	style.content_margin_bottom = 5
+	_edge_tag.add_theme_stylebox_override("panel", style)
+	var text := UiKit.label("Type advantage · bonus included", 23, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	text.add_theme_font_override("font", Fonts.bold())
+	_edge_tag.add_child(text)
+	_edge_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_edge_tag.set_anchors_preset(Control.PRESET_CENTER)
+	_edge_tag.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_edge_tag.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_edge_tag.visible = false
+	_hint.add_child(_edge_tag)
+
+
 func _update_backdrop_focus() -> void:
 	if _active_cards[RIVAL] and _active_cards[PLAYER]:
 		_backdrop.set_focus(_slots[RIVAL].get_global_rect(), _slots[PLAYER].get_global_rect())
@@ -607,6 +734,7 @@ func _snapshot_health(side: int) -> void:
 
 func _set_shown_health(side: int, index: int, health: int) -> void:
 	_shown_health[side][index] = health
+	_update_score()
 
 
 func _show_result() -> void:
@@ -899,7 +1027,7 @@ func _coach_turn() -> void:
 		_coach_show("That's the whole triangle! From now on %s picks freely, so watch for habits." % rival_name)
 		return
 	if BattleEngine.has_advantage(me, them) and _coach_once(&"edge",
-			"Your type beats theirs: [b]+50% damage[/b]. That's the [b]+50%[/b] on the move buttons. Land beats Sky, Sky beats Sea, Sea beats Land."):
+			"Your type beats theirs: [b]+50% damage[/b]. It's already in the damage on your move buttons (look for the gold [b]Type advantage[/b] tag). Land beats Sky, Sky beats Sea, Sea beats Land."):
 		return
 	if can_swap and BattleEngine.has_advantage(them, me) and _coach_once(&"bad_edge",
 			"Careful: their type beats yours. [b]Swap[/b] to a different type to dodge the extra damage."):

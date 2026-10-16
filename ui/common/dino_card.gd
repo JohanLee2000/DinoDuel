@@ -518,6 +518,10 @@ func _draw_stats() -> void:
 		_draw_panel(box, tier, w * 0.025)
 		var boosted: bool = values[i] > base[i]
 		var value_color := Color("8dffa0") if boosted else Color.WHITE
+		if i == 3 and combatant:
+			# In battle the HP box shows the HP left (colored like the bar), not the card's max, so
+			# it's never mistaken for the health remaining (2026-10-15).
+			value_color = Palette.health_color(clampf(shown_health / combatant.max_health, 0.0, 1.0))
 		if small:
 			_text_centered(Fonts.display(), str(values[i]), box.get_center(), int(box_h * 0.62), value_color, true)
 			continue
@@ -581,9 +585,10 @@ func _draw_panel(rect: Rect2, accent: Color, radius: float) -> void:
 	_overlay.draw_style_box(box, rect)
 
 
+## ATK, DEF, SPD and HP; in battle, HP is the HP left.
 func _stat_values() -> Array:
 	var source: Variant = combatant if combatant else def
-	return [source.attack, source.defense, source.speed, combatant.max_health if combatant else def.health]
+	return [source.attack, source.defense, source.speed, roundi(shown_health) if combatant else def.health]
 
 
 # --- Text helpers ---------------------------------------------------------------------------
