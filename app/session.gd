@@ -134,6 +134,18 @@ func _showcase_profile() -> PlayerProfile:
 	showcase.tour_done = true
 	showcase.first_steps_active = false
 	showcase.clutches = 1
+	showcase.eggs_hatched = 57
+	# A few recent clutches for the Hatch history (newest first): [rare, hours ago, eggs].
+	var now := int(Time.get_unix_time_from_system())
+	for clutch in [[true, 1, [[&"quetzalcoatlus", false, true], [&"triceratops", false, false], [&"pteranodon", true, false]]],
+			[false, 5, [[&"velociraptor", false, true], [&"coelophysis", false, false], [&"mosasaurus", false, true]]],
+			[false, 26, [[&"t_rex", false, true], [&"eudimorphodon", false, false], [&"hesperornis", false, false]]]]:
+		var eggs: Array = []
+		for egg in clutch[2]:
+			var dino := catalog.find(egg[0])
+			eggs.append({"id": String(egg[0]), "shiny": egg[1], "new": egg[2], "upgraded": egg[1] and not egg[2],
+					"amber": 0 if egg[2] or egg[1] else Economy.MELT_VALUE[dino.rarity]})
+		showcase.hatch_history.append({"time": now - clutch[1] * 3600, "rare": clutch[0], "eggs": eggs})
 	return showcase
 
 

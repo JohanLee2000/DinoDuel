@@ -107,6 +107,10 @@ const SVG := {
 	# Reset game (and Rematch): an arrow going back around the circle.
 	&"restart": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
 <path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/></svg>""",
+	# Hatch history: the restart arrow around a clock's hands.
+	&"history": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M13 43 A22 22 0 1 0 13 21" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+<path d="M8 30 L22.6 24.3 L5.3 14.3 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+<path d="M33 20 L33 33 L42 39" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>""",
 	# Tab bar: Party (a fan of cards), Eggs (an egg), Goals (a trophy). Battle uses "map", Dex "book".
 	&"cards": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <g fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linejoin="round">

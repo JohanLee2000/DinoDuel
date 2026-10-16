@@ -245,6 +245,29 @@ func test_save_round_trip_keeps_everything_including_rng() -> void:
 	assert_eq(_ids(loaded.hatch_clutch(catalog)), _ids(p.hatch_clutch(catalog)), "RNG continues identically")
 
 
+func test_hatch_history_keeps_the_last_clutches_newest_first() -> void:
+	var p := PlayerProfile.new_game(21)
+	p.clutches = PlayerProfile.HATCH_HISTORY_SIZE + 5
+	p.rare_clutches = 1
+	var first := p.hatch_clutch(catalog, false, 1000)
+	assert_eq(p.hatch_history.size(), 1)
+	var entry: Dictionary = p.hatch_history[0]
+	assert_eq(entry["time"], 1000)
+	assert_false(entry["rare"])
+	assert_eq(entry["eggs"].size(), Economy.EGGS_PER_CLUTCH)
+	for i in first.size():
+		assert_eq(entry["eggs"][i]["id"], String(first[i].dino.id))
+		assert_eq(entry["eggs"][i]["new"], first[i].is_new)
+		assert_eq(entry["eggs"][i]["amber"], first[i].amber)
+	p.hatch_clutch(catalog, true, 2000)
+	assert_true(p.hatch_history[0]["rare"], "newest first")
+	while p.clutches > 0:
+		p.hatch_clutch(catalog)
+	assert_eq(p.hatch_history.size(), PlayerProfile.HATCH_HISTORY_SIZE, "only the last ones are kept")
+	var loaded := PlayerProfile.from_dict(JSON.parse_string(JSON.stringify(p.to_dict())), catalog)
+	assert_eq(JSON.stringify(loaded.hatch_history), JSON.stringify(p.hatch_history), "history survives a reload")
+
+
 func test_load_tolerates_bad_data() -> void:
 	var data := {"owned": {"coelophysis": false, "not_a_dino": true}, "lineup": ["coelophysis",
 			"not_a_dino", "t_rex"], "amber": -50}

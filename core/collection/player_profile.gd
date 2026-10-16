@@ -7,6 +7,7 @@ extends RefCounted
 ## reopening it can't reroll a clutch.
 
 const SAVE_VERSION := 1
+const HATCH_HISTORY_SIZE := 50
 
 ## id -> true if the copy you own is Shiny.
 var owned: Dictionary = {}
@@ -29,6 +30,9 @@ var rival_record: Dictionary = {}
 ## The Journey: stage id (String) -> best stars (1-3). A stage is cleared once it's in here.
 var journey_stars: Dictionary = {}
 var eggs_hatched := 0
+## The last HATCH_HISTORY_SIZE clutches hatched, newest first (Eggs tab > Hatch history, 2026-10-16):
+## {time (Unix seconds, 0 if unknown), rare, eggs: [{id, shiny, new, upgraded, amber}]}.
+var hatch_history: Array[Dictionary] = []
 ## The first battle comes with a coach (see BattleScreen); this flips once it's been played.
 var tutorial_done := false
 ## New games start by picking a partner (Economy.STARTER_PARTNERS); saves from before that have
@@ -152,7 +156,8 @@ func craft(dino: DinoDef) -> HatchResult:
 # --- Eggs -----------------------------------------------------------------------------------
 
 ## Opens one clutch (a rare one if `rare`). Returns an empty array if there's none to open.
-func hatch_clutch(catalog: DinoCatalog, rare := false) -> Array[HatchResult]:
+## Hatches one clutch (a Rare one if `rare`). `time` (Unix seconds) goes in the hatch history.
+func hatch_clutch(catalog: DinoCatalog, rare := false, time := 0) -> Array[HatchResult]:
 	var results: Array[HatchResult] = []
 	if (rare_clutches if rare else clutches) <= 0:
 		return results
@@ -174,7 +179,18 @@ func hatch_clutch(catalog: DinoCatalog, rare := false) -> Array[HatchResult]:
 		results.append(add_dino(dino, _rng.randf() < Economy.SHINY_ODDS))
 		eggs_hatched += 1
 	Goals.on_hatch(self, results)
+	_log_hatch(results, rare, time)
 	return results
+
+
+func _log_hatch(results: Array[HatchResult], rare: bool, time: int) -> void:
+	var eggs: Array = []
+	for result in results:
+		eggs.append({"id": String(result.dino.id), "shiny": result.shiny, "new": result.is_new,
+				"upgraded": result.upgraded_to_shiny, "amber": result.amber})
+	hatch_history.push_front({"time": time, "rare": rare, "eggs": eggs})
+	if hatch_history.size() > HATCH_HISTORY_SIZE:
+		hatch_history.resize(HATCH_HISTORY_SIZE)
 
 
 func buy_clutch() -> bool:
@@ -381,6 +397,7 @@ func to_dict() -> Dictionary:
 		"rival_record": rival_record.duplicate(true),
 		"journey_stars": journey_stars.duplicate(),
 		"eggs_hatched": eggs_hatched,
+		"hatch_history": hatch_history.duplicate(true),
 		"tutorial_done": tutorial_done,
 		"partner_chosen": partner_chosen,
 		"partner": String(partner),
@@ -444,6 +461,16 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 			if profile.record_against(stage.id)[0] > 0:
 				profile.journey_stars[String(stage.id)] = 1
 	profile.eggs_hatched = int(data.get("eggs_hatched", 0))
+	# Numbers come back from JSON as floats; ids no longer in the game are dropped.
+	for entry in data.get("hatch_history", []):
+		if not entry is Dictionary or profile.hatch_history.size() >= HATCH_HISTORY_SIZE:
+			continue
+		var eggs: Array = []
+		for egg in entry.get("eggs", []):
+			if egg is Dictionary and catalog.find(StringName(egg.get("id", ""))):
+				eggs.append({"id": String(egg["id"]), "shiny": bool(egg.get("shiny", false)), "new": bool(egg.get("new", false)),
+						"upgraded": bool(egg.get("upgraded", false)), "amber": int(egg.get("amber", 0))})
+		profile.hatch_history.append({"time": int(entry.get("time", 0)), "rare": bool(entry.get("rare", false)), "eggs": eggs})
 	# Saves from before the tutorial existed: anyone who has battled already knows the moves.
 	profile.tutorial_done = bool(data.get("tutorial_done", profile.wins + profile.losses > 0))
 	profile.partner_chosen = bool(data.get("partner_chosen", true))

@@ -1,6 +1,6 @@
 extends VBoxContainer
 ## Eggs tab: one Hatch button (asks which when a Rare clutch is waiting), the shop (a clutch and a
-## Rare clutch) as two tiles, and the odds.
+## Rare clutch) as two tiles, Hatch history, and the odds.
 
 var _body: VBoxContainer
 
@@ -49,6 +49,11 @@ func _refresh() -> void:
 				_refresh())
 		shop.add_child(buy)
 	_body.add_child(shop)
+	var history := UiKit.let_scroll(UiKit.icon_button("Hatch history", &"history", UiKit.BUTTON_GRAY, 72, 27))
+	history.pressed.connect(func() -> void:
+		Sound.play(&"tap")
+		HatchHistoryView.open())
+	_body.add_child(history)
 
 	_body.add_child(UiKit.panel(_odds_box()))
 
@@ -146,7 +151,7 @@ func _choose_clutch() -> void:
 
 
 func _hatch(rare := false) -> void:
-	var results := Session.profile.hatch_clutch(Session.catalog, rare)
+	var results := Session.profile.hatch_clutch(Session.catalog, rare, int(Time.get_unix_time_from_system()))
 	if results.is_empty():
 		return
 	Sound.play(&"clutch_open")

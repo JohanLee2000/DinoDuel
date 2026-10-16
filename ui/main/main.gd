@@ -101,6 +101,8 @@ func _ready() -> void:
 	match Session.dev_open:
 		"settings":
 			SettingsView.open.call_deferred()
+		"history":
+			HatchHistoryView.open.call_deferred()
 		"checkin":
 			_open_checkin.call_deferred()
 		"help":
