@@ -42,6 +42,24 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.6.1 (version code 12)
+
+First build with the in-app update prompt (docs/IN_APP_UPDATES.md); it shows from the next update on.
+
+```
+<en-US>
+Dino Duel 0.6.1
+- Goals in three sections (Today, Collection, Achievements) with Claim all
+- Tap a set to see its cards and open their Dex entries
+- Search and filters in the Dex and Party, and sort by ATK, DEF or SPD
+- Clearer battles: HP left on the card, damage with the type bonus included, score dots
+- The pick screen shows points left and your party bonuses
+- Choose Clutch or Rare clutch when hatching
+- New: the game tells you when an update is ready
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.6.0 (version code 11)
 
 ```
