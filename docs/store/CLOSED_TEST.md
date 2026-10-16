@@ -49,7 +49,10 @@ The first update 0.6.1 players should be offered in the game (in-app update test
 ```
 <en-US>
 Dino Duel 0.6.2
-- New: Hatch history on the Eggs tab. See your last 50 clutches, what each egg gave, and tap any dino for its Dex entry
+- Save 3 parties, name them, and switch between them before a battle
+- Dino mastery: your dinos earn ranks and ribbons as they battle with you
+- New dinos get a dot until you check them out
+- Hatch history on the Eggs tab: your last 50 clutches and what each egg gave
 - The game now offers new versions from Google Play as soon as they're out
 Feedback: dinoduelstudios@gmail.com
 </en-US>
