@@ -140,7 +140,7 @@ func _ready() -> void:
 	_build_edge_tag()
 	var help := UiKit.button("?", UiKit.BUTTON_GRAY, 52, 28)
 	help.custom_minimum_size.x = 64
-	help.pressed.connect(func() -> void: HelpView.open())
+	help.pressed.connect(func() -> void: HelpView.open(0))
 	_turn_label.get_parent().add_child(help)
 	_leave_button = UiKit.button("Leave", UiKit.BUTTON_RED, 52, 27)
 	_leave_button.custom_minimum_size.x = 110
@@ -168,7 +168,7 @@ func _ready() -> void:
 		_say("Your party bonuses: %s." % ", ".join(bonuses))
 	await _rival_entrance()
 	if _coaching:
-		await HelpView.open(0, true).closed
+		await HelpView.open(0, 0, true).closed
 	_begin_choice()
 
 

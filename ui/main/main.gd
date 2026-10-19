@@ -108,7 +108,9 @@ func _ready() -> void:
 		"help":
 			HelpView.open.call_deferred()
 		_ when Session.dev_open.begins_with("help:"):
-			HelpView.open.call_deferred(int(Session.dev_open.get_slice(":", 1)) - 1)
+			# help:T opens topic T, help:T:P its page P (both counted from 1).
+			var parts := Session.dev_open.split(":")
+			HelpView.open.call_deferred(int(parts[1]) - 1, int(parts[2]) - 1 if parts.size() > 2 else 0)
 		_ when Session.dev_open.begins_with("rival:"):
 			RivalView.open.call_deferred(Journey.find(StringName(Session.dev_open.get_slice(":", 1))), true)
 		_ when Session.dev_open.begins_with("prebattle:"):
