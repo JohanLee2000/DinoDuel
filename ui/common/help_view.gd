@@ -126,7 +126,6 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "Clutches and eggs",
-				"picture": "_pic_eggs",
 				"rows": [
 					["egg", "A clutch holds [b]{eggs} eggs[/b], and each hatches one dino. Win battles and check in daily for free clutches."],
 					["egg", "Buy a clutch for {clutch_price} Amber, or a [b]Rare clutch[/b] (better odds) for {rare_price}. With both kinds waiting, Hatch asks which one."],
@@ -668,41 +667,6 @@ func _icon(icon_name: StringName, icon_size: int) -> TextureRect:
 	return icon
 
 
-## Cracked eggs glow in their rarity's color.
-func _pic_eggs() -> Control:
-	var row := UiKit.hbox(22, BoxContainer.ALIGNMENT_CENTER)
-	var egg_art: Texture2D = load("res://assets/eggs/egg_whole.webp")
-	for rarity in [DinoDef.Rarity.RARE, DinoDef.Rarity.SUPER_RARE, DinoDef.Rarity.LEGENDARY]:
-		var holder := Control.new()
-		holder.custom_minimum_size = Vector2(130, 150)
-		var glow := TextureRect.new()
-		var radial := GradientTexture2D.new()
-		var fade := Gradient.new()
-		fade.set_color(0, Color(Palette.RARITY_COLORS[rarity], 0.85))
-		fade.set_color(1, Color(Palette.RARITY_COLORS[rarity], 0.0))
-		radial.gradient = fade
-		radial.fill = GradientTexture2D.FILL_RADIAL
-		radial.fill_from = Vector2(0.5, 0.5)
-		radial.fill_to = Vector2(0.5, 0.0)
-		glow.texture = radial
-		glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		glow.stretch_mode = TextureRect.STRETCH_SCALE
-		holder.add_child(glow)
-		var egg := TextureRect.new()
-		egg.texture = egg_art
-		egg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		egg.offset_left = 22
-		egg.offset_right = -22
-		egg.offset_top = 14
-		egg.offset_bottom = -10
-		egg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		egg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		holder.add_child(egg)
-		row.add_child(_captioned(holder, DinoDef.RARITY_NAMES[rarity], Palette.RARITY_COLORS[rarity]))
-	return row
-
-
 ## A missing dino in the Dex, with its Craft button.
 func _pic_craft() -> Control:
 	var row := UiKit.hbox(20, BoxContainer.ALIGNMENT_CENTER)
@@ -742,21 +706,63 @@ func _pic_dex() -> Control:
 	return row
 
 
-## A card with its mastery ribbon circled.
+## Where mastery shows: the ribbon on the card (circled), and the mastery panel in its Dex entry
+## (a small copy of the card's details, the panel outlined), for a Legend T. rex.
 func _pic_mastery() -> Control:
 	var row := UiKit.hbox(18, BoxContainer.ALIGNMENT_CENTER)
-	var card := _card(&"t_rex", 200)
+	var card := _card(&"t_rex", 170)
 	card.mastery_rank = Mastery.RANKS.size()
-	var ring := RibbonRing.make(card)
-	card.add_child(ring)
-	row.add_child(card)
-	var words := UiKit.vbox(4)
-	words.alignment = BoxContainer.ALIGNMENT_CENTER
-	words.add_child(UiKit.title(Mastery.title_of(Mastery.RANKS.size()), 30, DinoCard.RIBBON_COLORS[Mastery.RANKS.size()],
-			HORIZONTAL_ALIGNMENT_LEFT, false))
-	words.add_child(UiKit.label("Its ribbon, under\nthe tier badge", 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
-	row.add_child(words)
+	card.add_child(RibbonRing.make(card))
+	row.add_child(_captioned(card, "Its ribbon on the card"))
+	row.add_child(_captioned(_mini_dex_entry(), "Its Dex entry\n(tap it in the Dex)"))
 	return row
+
+
+## A small copy of a Dex entry: the card, its tier line, and the mastery panel (outlined in gold).
+func _mini_dex_entry() -> Control:
+	var sample := PlayerProfile.new()
+	sample.mastery["t_rex"] = {"battles": 31, "wins": 27, "counters": 30, "bosses": 4}
+	var rank := Mastery.rank_of(sample, &"t_rex")
+	var stats := Mastery.stats_of(sample, &"t_rex")
+	var dino := Session.catalog.find(&"t_rex")
+
+	var column := UiKit.vbox(6)
+	column.custom_minimum_size.x = 250
+	var card := _card(&"t_rex", 104)
+	card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	column.add_child(card)
+	column.add_child(UiKit.label("%s %s  ·  %s" % [dino.rarity_code(), dino.rarity_name(), Palette.TYPE_LABELS[dino.dino_type]],
+			17, Palette.RARITY_COLORS[dino.rarity], HORIZONTAL_ALIGNMENT_CENTER, false))
+	var info := UiKit.vbox(2)
+	var earned := Mastery.description_of(rank).trim_suffix(".")
+	info.add_child(UiKit.label("%s: %s" % [Mastery.title_of(rank), earned.left(1).to_lower() + earned.substr(1)], 17,
+			DinoCard.RIBBON_COLORS[rank], HORIZONTAL_ALIGNMENT_CENTER))
+	info.add_child(UiKit.label("%d battles · %d wins · %d counters · %d bosses" % [stats["battles"], stats["wins"],
+			stats["counters"], stats["bosses"]], 15, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
+	var mastery := PanelContainer.new()
+	var outline := StyleBoxFlat.new()
+	outline.bg_color = Palette.PANEL
+	outline.border_color = Palette.HIGHLIGHT
+	outline.set_border_width_all(3)
+	outline.set_corner_radius_all(10)
+	outline.set_content_margin_all(8)
+	mastery.add_theme_stylebox_override("panel", outline)
+	mastery.add_child(info)
+	column.add_child(mastery)
+	var share := UiKit.button("Share", Color(1, 1, 1, 0.14), 34, 16)
+	share.custom_minimum_size.x = 140
+	share.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	column.add_child(share)
+
+	# The card's details sit on the dark full-screen view.
+	var view := PanelContainer.new()
+	var dark := StyleBoxFlat.new()
+	dark.bg_color = Color(0, 0, 0, 0.55)
+	dark.set_corner_radius_all(12)
+	dark.set_content_margin_all(10)
+	view.add_theme_stylebox_override("panel", dark)
+	view.add_child(column)
+	return view
 
 
 ## The top of the Goals tab: Claim all, then the three sections (a red dot where something's ready).
