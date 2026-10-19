@@ -492,14 +492,24 @@ func _draw_tier_crest() -> void:
 const RIBBON_COLORS := {2: Color("cd8a4b"), 3: Color("c9d3e3"), 4: Color("ffc83d"), 5: Color("ff5ad1")}
 
 
-## A small rosette under the tier crest (and its Party Points pill), with two tails.
-func _draw_mastery_ribbon() -> void:
+## Where the mastery ribbon's rosette sits on this card (in card coordinates), e.g. for the How to
+## play page to circle it.
+func ribbon_rect() -> Rect2:
 	var w := width
 	var small := _small()
 	var cw := w * (0.3 if small else 0.25)
 	var top := w * 0.035 + cw * 0.78 + (w * 0.02 if small else w * 0.09)
 	var radius := w * (0.07 if small else 0.055)
 	var center := Vector2(w * 0.035 + cw * 0.5, top + radius)
+	return Rect2(center - Vector2.ONE * radius, Vector2.ONE * radius * 2)
+
+
+## A small rosette under the tier crest (and its Party Points pill), with two tails.
+func _draw_mastery_ribbon() -> void:
+	var w := width
+	var rect := ribbon_rect()
+	var radius := rect.size.x / 2
+	var center := rect.get_center()
 	var color: Color = RIBBON_COLORS[mini(mastery_rank, 5)]
 	for side in [-1.0, 1.0]:
 		var tail := PackedVector2Array([center + Vector2(side * radius * 0.2, 0),

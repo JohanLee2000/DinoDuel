@@ -4,7 +4,8 @@ extends Control
 ## Journey, Eggs and Amber, Collection, Goals), each a few pages. Opened as the menu from Settings,
 ## at the Battles topic from the ? button in battle, and as the moves page alone (with a "Let's go"
 ## button) at the start of the first battle's tutorial. Numbers in the texts come from the game's
-## rules ({placeholders}, see _numbers), so they can't go stale.
+## rules ({placeholders}, see _numbers), so they can't go stale, and most pages have a picture built
+## from the game's real pieces (see Pictures).
 
 signal closed
 
@@ -19,6 +20,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "Battle moves",
+				"picture": "_pic_moves",
 				"rows": [
 					["", "Each turn you and your rival pick a move [b]at the same time[/b]. Knock out all 3 of the rival's dinos to win."],
 					["move:0", "A quick hit. [b]Beats Charge[/b] by cancelling it."],
@@ -31,6 +33,7 @@ const TOPICS := [
 			{"title": "Damage and speed", "custom": "_damage_page"},
 			{
 				"title": "Land, Sky and Sea",
+				"picture": "_pic_types",
 				"rows": [
 					["type_land", "[b]Land beats Sky[/b]: it pounces on pterosaurs on the ground."],
 					["type_sky", "[b]Sky beats Sea[/b]: it dives on marine reptiles."],
@@ -40,6 +43,7 @@ const TOPICS := [
 			},
 			{
 				"title": "Knockouts and the meteor",
+				"picture": "_pic_knockout",
 				"rows": [
 					["", "When one of your dinos is knocked out, you pick who comes in next. Benched dinos keep the HP they have."],
 					["", "From turn [b]{meteor_turn}[/b], a [b]meteor shower[/b] hits both active dinos every turn. It can bring one down to 1 HP, but never knocks it out."],
@@ -56,6 +60,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "Bring 6, pick 3",
+				"picture": "_pic_pick_summary",
 				"rows": [
 					["", "Bring [b]6[/b] dinos. Before each battle you see the rival's 6, then secretly pick [b]3[/b]."],
 					["", "Party Points: N 1, R 2, SR 3, SSR 4, UR 5. Your 3 must add up to [b]{cap} or less[/b]."],
@@ -66,6 +71,7 @@ const TOPICS := [
 			},
 			{
 				"title": "Saved parties",
+				"picture": "_pic_party_slots",
 				"rows": [
 					["cards", "Keep up to [b]{party_slots} parties[/b]: tap Party 1, 2 or 3 on the Party tab. Changes save on their own."],
 					["edit", "Tap the pencil to name the open party, like \"Sea squad\"."],
@@ -82,6 +88,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "The trail",
+				"picture": "_pic_trail",
 				"rows": [
 					["map", "The Journey travels through time: the [b]Triassic[/b], [b]Jurassic[/b] and [b]Cretaceous[/b], then the finale, [b]Extinction Day[/b]."],
 					["", "Each era is a trail of rivals. Tap the [b]glowing[/b] one to see their team and what you'll win, then battle."],
@@ -92,6 +99,7 @@ const TOPICS := [
 			},
 			{
 				"title": "Reading your rivals",
+				"picture": "_pic_rival",
 				"rows": [
 					["", "Every rival has a [b]habit[/b], like biting a lot or bracing often. Their description hints at it: read it and play the counter."],
 					["", "Later rivals [b]learn[/b] how you play, so mix up your moves."],
@@ -101,6 +109,7 @@ const TOPICS := [
 			},
 			{
 				"title": "Stars, chests and rewards",
+				"picture": "_pic_stars_chests",
 				"rows": [
 					["star", "[b]Stars[/b]: when you win, one for each of your dinos still standing (up to 3). Your best result against each rival counts."],
 					["chest", "Each era has 3 [b]star chests[/b]: {chests}. Tap a full chest on the Journey tab to open it."],
@@ -117,6 +126,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "Clutches and eggs",
+				"picture": "_pic_eggs",
 				"rows": [
 					["egg", "A clutch holds [b]{eggs} eggs[/b], and each hatches one dino. Win battles and check in daily for free clutches."],
 					["egg", "Buy a clutch for {clutch_price} Amber, or a [b]Rare clutch[/b] (better odds) for {rare_price}. With both kinds waiting, Hatch asks which one."],
@@ -127,6 +137,7 @@ const TOPICS := [
 			},
 			{
 				"title": "Amber and crafting",
+				"picture": "_pic_craft",
 				"rows": [
 					["amber", "Duplicates melt into Amber: N {melt_0}, R {melt_1}, SR {melt_2}, SSR {melt_3}, UR {melt_4}."],
 					["book", "In the Dex, tap a missing dino to [b]craft[/b] it for Amber: N {craft_0}, R {craft_1}, SR {craft_2}, SSR {craft_3}, UR {craft_4}."],
@@ -142,6 +153,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "The Dex",
+				"picture": "_pic_dex",
 				"rows": [
 					["book", "Every dino, by era. The ones you own show in full, ones you've battled show faded, and the rest are \"???\"."],
 					["", "A [color=#ff3b4e]red dot[/color] marks a new dino you haven't looked at yet."],
@@ -149,7 +161,7 @@ const TOPICS := [
 					["", "Collect a whole era for a gold badge, and every dino in a [b]set[/b] for Amber (on the Goals tab)."],
 				],
 			},
-			{"title": "Dino mastery", "custom": "_mastery_page"},
+			{"title": "Dino mastery", "picture": "_pic_mastery", "custom": "_mastery_page"},
 		],
 	},
 	{
@@ -159,6 +171,7 @@ const TOPICS := [
 		"pages": [
 			{
 				"title": "Goals",
+				"picture": "_pic_goals",
 				"rows": [
 					["", "[b]Today[/b]: the daily check-in and {quests} quests, plus a bonus clutch for finishing all of them. New quests every day at midnight."],
 					["egg", "Check in every day for a free clutch and a bonus that grows all week ({checkin_last} on day {checkin_days}). Missing a day pauses the streak; it doesn't reset."],
@@ -255,6 +268,8 @@ func _show() -> void:
 	_title.text = ("How to play" if _intro else page["title"]).to_upper()
 	_subtitle.text = "" if _intro else "%s  ·  %d / %d" % [topic["title"], _page + 1, pages.size()]
 	_subtitle.visible = not _intro
+	if page.has("picture"):
+		_body.add_child(_framed(call(page["picture"])))
 	if page.has("custom"):
 		call(page["custom"])
 	var numbers := _numbers()
@@ -390,6 +405,446 @@ func _mastery_page() -> void:
 		_body.add_child(_row(icon if icon != "" else "dot:-", "[b]%s[/b]: %s%s" % [Mastery.title_of(rank),
 				earned.left(1).to_lower() + earned.substr(1), ribbon]))
 	_body.add_child(_rich("A dino's rank and progress show in its Dex entry, and from Fighter up a ribbon shows on its card."))
+
+
+# --- Pictures (Jo, 2026-10-19) --------------------------------------------------------------
+# One per page where it helps, built from the game's real pieces (cards, map markers, icons and
+# buttons), so they always look like what the player sees.
+
+## The move buttons' colors in a battle (BattleScreen.BUTTON_COLORS).
+const BATTLE_BUTTON_COLORS: Array[Color] = [Color("d92b3a"), Color("ff7a1a"), Color("2e7bff"), Color("34445e")]
+
+
+## A page's picture in a slightly lighter box, centered. Pictures are only to look at, so taps and
+## drags go through them (the page still scrolls).
+func _framed(content: Control) -> Control:
+	var well := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(1, 1, 1, 0.05)
+	style.border_color = Color(1, 1, 1, 0.12)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(14)
+	style.set_content_margin_all(14)
+	well.add_theme_stylebox_override("panel", style)
+	var center := CenterContainer.new()
+	center.add_child(content)
+	well.add_child(center)
+	# Some pieces (map markers) build their insides once they're on screen.
+	_inert.call_deferred(well)
+	_inert(well)
+	return well
+
+
+static func _inert(node: Node) -> void:
+	if not is_instance_valid(node):
+		return
+	if node is Control:
+		(node as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for child in node.get_children():
+		_inert(child)
+
+
+## `content` with a short caption under it.
+func _captioned(content: Control, text: String, color := Palette.TEXT_DIM) -> Control:
+	var box := UiKit.vbox(6)
+	content.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(content)
+	box.add_child(UiKit.label(text, 22, color, HORIZONTAL_ALIGNMENT_CENTER, false))
+	return box
+
+
+func _card(id: StringName, card_width: float, mode := DinoCard.Mode.FULL) -> DinoCard:
+	var card := DinoCard.create(Session.catalog.find(id), mode, null, false, card_width)
+	card.inspect_on_hold = false
+	return card
+
+
+## The four move buttons as they look in a battle (T. rex against Pteranodon), with the gold tag.
+func _pic_moves() -> Control:
+	var rex := Combatant.from_def(Session.catalog.find(&"t_rex"), false, false)
+	var ptera := Combatant.from_def(Session.catalog.find(&"pteranodon"), false, false)
+	var box := UiKit.vbox(10)
+	box.add_child(_edge_tag())
+	var grid := UiKit.grid(2, 10)
+	var texts: Array[String] = ["Bite · %d damage\nBeats Charge" % BattleEngine.damage(rex, ptera, false),
+			"Charge · %d damage\nBeats Brace, acts last" % BattleEngine.damage(rex, ptera, true),
+			"Brace\nBeats Bite", "Swap Dino\nGoes first"]
+	for i in 4:
+		var button := UiKit.button(texts[i], BATTLE_BUTTON_COLORS[i], 80, 21)
+		button.icon = Icons.texture(Icons.MOVES[i], 30)
+		button.add_theme_constant_override("icon_max_width", 30)
+		button.custom_minimum_size.x = 272
+		grid.add_child(button)
+	box.add_child(grid)
+	return box
+
+
+## "Type advantage · bonus included", as in a battle.
+func _edge_tag() -> Control:
+	var tag := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.08, 0.15, 0.92)
+	style.border_color = Palette.HIGHLIGHT
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(18)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 3
+	style.content_margin_bottom = 5
+	tag.add_theme_stylebox_override("panel", style)
+	var text := UiKit.label("Type advantage · bonus included", 22, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	text.add_theme_font_override("font", Fonts.bold())
+	tag.add_child(text)
+	tag.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	return tag
+
+
+## Land, Sky and Sea in a circle, each arrow pointing at the type it beats.
+func _pic_types() -> Control:
+	var box := UiKit.vbox(10)
+	box.add_child(TypeCycle.new())
+	box.add_child(_edge_tag())
+	return box
+
+
+## A knocked-out dino and the benched one you pick to come in.
+func _pic_knockout() -> Control:
+	var row := UiKit.hbox(18, BoxContainer.ALIGNMENT_CENTER)
+	var out_def := Session.catalog.find(&"pteranodon")
+	var out := Combatant.from_def(out_def, false, false)
+	out.health = 0
+	var ko := DinoCard.create(out_def, DinoCard.Mode.BATTLE, out, false, 170)
+	ko.inspect_on_hold = false
+	ko.display_health(0)
+	row.add_child(_captioned(ko, "Knocked out"))
+	var arrow := UiKit.title("→", 44, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER, false)
+	arrow.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(arrow)
+	var in_def := Session.catalog.find(&"mosasaurus")
+	var benched := Combatant.from_def(in_def, false, false)
+	benched.health = benched.max_health - 4
+	var next := DinoCard.create(in_def, DinoCard.Mode.MINI, benched, false, 118)
+	next.inspect_on_hold = false
+	next.display_health(benched.health)
+	next.highlighted = true
+	row.add_child(_captioned(next, "Tap who comes in\n(keeps its HP)"))
+	return row
+
+
+## The pick screen's summary: picks and points, the points bar, and the two bonus chips.
+func _pic_pick_summary() -> Control:
+	var box := UiKit.vbox(8)
+	box.custom_minimum_size.x = 540
+	var count := UiKit.label("2 / 3 selected  •  7 / %d points" % PartyRules.POINT_CAP, 28, Palette.TEXT,
+			HORIZONTAL_ALIGNMENT_CENTER, false)
+	count.add_theme_font_override("font", Fonts.bold())
+	box.add_child(count)
+	var bar := UiKit.hbox(4)
+	var used: Array[Color] = []
+	for i in 3:
+		used.append(Palette.RARITY_COLORS[DinoDef.Rarity.SUPER_RARE])
+	for i in 4:
+		used.append(Palette.RARITY_COLORS[DinoDef.Rarity.EPIC])
+	for i in PartyRules.POINT_CAP:
+		var piece := Panel.new()
+		piece.custom_minimum_size = Vector2(0, 14)
+		piece.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var style := StyleBoxFlat.new()
+		style.set_corner_radius_all(4)
+		style.bg_color = used[i] if i < used.size() else Color(1, 1, 1, 0.1)
+		piece.add_theme_stylebox_override("panel", style)
+		bar.add_child(piece)
+	box.add_child(bar)
+	box.add_child(UiKit.label("Choose 1 more dino costing %d points or less." % (PartyRules.POINT_CAP - 7), 24,
+			Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
+	var chips := UiKit.hbox(10)
+	chips.add_child(_chip("Era bond: 1 more Jurassic", false))
+	chips.add_child(_chip("Balanced: needs Sea", false))
+	box.add_child(chips)
+	return box
+
+
+## A bonus chip as on the pick screen: gold when it's on.
+func _chip(text: String, on: bool) -> Control:
+	var chip := PanelContainer.new()
+	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var style := StyleBoxFlat.new()
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(22)
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 6
+	style.content_margin_bottom = 6
+	style.bg_color = Color(Palette.HIGHLIGHT, 0.2) if on else Color(1, 1, 1, 0.05)
+	style.border_color = Palette.HIGHLIGHT if on else Color(Palette.TEXT, 0.35)
+	chip.add_theme_stylebox_override("panel", style)
+	var label := UiKit.label(text, 21, Palette.HIGHLIGHT if on else Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false)
+	label.add_theme_font_override("font", Fonts.bold())
+	chip.add_child(label)
+	return chip
+
+
+## The Party tab's slot buttons, with one renamed.
+func _pic_party_slots() -> Control:
+	var row := UiKit.hbox(8)
+	row.custom_minimum_size.x = 540
+	var names: Array[String] = ["Party 1", "Sea squad", "Party 3"]
+	for i in names.size():
+		var button := UiKit.button(names[i], UiKit.BUTTON_GREEN if i == 1 else UiKit.BUTTON_GRAY, 60, 22)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(button)
+	var pencil := UiKit.button("", UiKit.BUTTON_GRAY, 60, 22)
+	pencil.icon = Icons.texture(&"edit", 28)
+	pencil.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pencil.custom_minimum_size.x = 64
+	row.add_child(pencil)
+	return row
+
+
+## Three markers from the Triassic trail: beaten (with stars), next (glowing) and locked.
+func _pic_trail() -> Control:
+	var row := UiKit.hbox(4, BoxContainer.ALIGNMENT_CENTER)
+	for entry in [[&"rae", 3, true, false, "Beaten: best stars"], [&"fern", 0, true, true, "Next: tap it!"],
+			[&"cora", 0, false, false, "Locked for now"]]:
+		var stage := Journey.find(entry[0])
+		if stage == null:
+			continue
+		var marker := StageMarker.create(stage, entry[1], entry[2], entry[3])
+		row.add_child(_captioned(marker, entry[4], Palette.HIGHLIGHT if entry[3] else Palette.TEXT_DIM))
+	return row
+
+
+## Ranger Fern and her description: it gives her habit away.
+func _pic_rival() -> Control:
+	var stage := Journey.find(&"fern")
+	var row := UiKit.hbox(14)
+	row.custom_minimum_size.x = 540
+	var sprite := TextureRect.new()
+	sprite.texture = RivalArt.sprite(stage.character)
+	sprite.custom_minimum_size = Vector2(130, 150)
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	row.add_child(sprite)
+	var words := UiKit.vbox(6)
+	words.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	words.alignment = BoxContainer.ALIGNMENT_CENTER
+	words.add_child(UiKit.title(stage.display_name, 28, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	words.add_child(UiKit.label("\"%s\"" % stage.intro, 24, Palette.TEXT))
+	row.add_child(words)
+	return row
+
+
+## Stars for one win, and an era's three chests with what they hold.
+func _pic_stars_chests() -> Control:
+	var box := UiKit.vbox(14)
+	var stars := UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
+	for i in Journey.MAX_STARS:
+		stars.add_child(_icon(&"star" if i < 2 else &"star_empty", 46))
+	var note := UiKit.label("  2 dinos still standing = 2 stars", 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	note.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	stars.add_child(note)
+	box.add_child(stars)
+	var chests := UiKit.hbox(26, BoxContainer.ALIGNMENT_CENTER)
+	for chest in Journey.STAR_CHESTS:
+		var reward := "%d Amber" % chest[1] if chest[1] > 0 else ("a clutch" if chest[2] > 0 else "a Rare clutch")
+		var column := UiKit.vbox(2)
+		var icon := _icon(&"chest", 64)
+		icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		column.add_child(icon)
+		column.add_child(UiKit.title("%d ★" % chest[0], 26, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+		column.add_child(UiKit.label(reward, 22, Palette.TEXT, HORIZONTAL_ALIGNMENT_CENTER, false))
+		chests.add_child(column)
+	box.add_child(chests)
+	return box
+
+
+func _icon(icon_name: StringName, icon_size: int) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = Icons.texture(icon_name, icon_size)
+	icon.custom_minimum_size = Vector2.ONE * icon_size
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	return icon
+
+
+## Cracked eggs glow in their rarity's color.
+func _pic_eggs() -> Control:
+	var row := UiKit.hbox(22, BoxContainer.ALIGNMENT_CENTER)
+	var egg_art: Texture2D = load("res://assets/eggs/egg_whole.webp")
+	for rarity in [DinoDef.Rarity.RARE, DinoDef.Rarity.SUPER_RARE, DinoDef.Rarity.LEGENDARY]:
+		var holder := Control.new()
+		holder.custom_minimum_size = Vector2(130, 150)
+		var glow := TextureRect.new()
+		var radial := GradientTexture2D.new()
+		var fade := Gradient.new()
+		fade.set_color(0, Color(Palette.RARITY_COLORS[rarity], 0.85))
+		fade.set_color(1, Color(Palette.RARITY_COLORS[rarity], 0.0))
+		radial.gradient = fade
+		radial.fill = GradientTexture2D.FILL_RADIAL
+		radial.fill_from = Vector2(0.5, 0.5)
+		radial.fill_to = Vector2(0.5, 0.0)
+		glow.texture = radial
+		glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		glow.stretch_mode = TextureRect.STRETCH_SCALE
+		holder.add_child(glow)
+		var egg := TextureRect.new()
+		egg.texture = egg_art
+		egg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		egg.offset_left = 22
+		egg.offset_right = -22
+		egg.offset_top = 14
+		egg.offset_bottom = -10
+		egg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		egg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		holder.add_child(egg)
+		row.add_child(_captioned(holder, DinoDef.RARITY_NAMES[rarity], Palette.RARITY_COLORS[rarity]))
+	return row
+
+
+## A missing dino in the Dex, with its Craft button.
+func _pic_craft() -> Control:
+	var row := UiKit.hbox(20, BoxContainer.ALIGNMENT_CENTER)
+	var dino := Session.catalog.find(&"cryolophosaurus")
+	var back := DinoCard.create_unknown(dino, DinoCard.Mode.FULL, 140)
+	back.inspect_on_hold = false
+	row.add_child(back)
+	var side := UiKit.vbox(10)
+	side.alignment = BoxContainer.ALIGNMENT_CENTER
+	var cost: int = Economy.CRAFT_COST[dino.rarity]
+	var craft := UiKit.button("Craft  ·  %d Amber" % cost, UiKit.BUTTON_AMBER, 72, 24)
+	craft.custom_minimum_size.x = 300
+	side.add_child(craft)
+	var melt := UiKit.hbox(8)
+	melt.add_child(_icon(&"amber", 34))
+	var line := UiKit.label("A duplicate SR melts into %d" % Economy.MELT_VALUE[DinoDef.Rarity.SUPER_RARE], 22, Palette.TEXT,
+			HORIZONTAL_ALIGNMENT_LEFT, false)
+	line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	melt.add_child(line)
+	side.add_child(melt)
+	row.add_child(side)
+	return row
+
+
+## The Dex's three looks: yours (here new, with the dot), battled but not yours, and not found yet.
+func _pic_dex() -> Control:
+	var row := UiKit.hbox(14, BoxContainer.ALIGNMENT_CENTER)
+	var owned := _card(&"triceratops", 150)
+	owned.is_new = true
+	row.add_child(_captioned(owned, "Yours (dot: new)"))
+	var seen := _card(&"pteranodon", 150)
+	seen.modulate = Color(1, 1, 1, 0.45)
+	row.add_child(_captioned(seen, "Battled, not yours"))
+	var unknown := DinoCard.create_unknown(Session.catalog.find(&"cryolophosaurus"), DinoCard.Mode.FULL, 150)
+	unknown.inspect_on_hold = false
+	row.add_child(_captioned(unknown, "Not found yet"))
+	return row
+
+
+## A card with its mastery ribbon circled.
+func _pic_mastery() -> Control:
+	var row := UiKit.hbox(18, BoxContainer.ALIGNMENT_CENTER)
+	var card := _card(&"t_rex", 200)
+	card.mastery_rank = Mastery.RANKS.size()
+	var ring := RibbonRing.make(card)
+	card.add_child(ring)
+	row.add_child(card)
+	var words := UiKit.vbox(4)
+	words.alignment = BoxContainer.ALIGNMENT_CENTER
+	words.add_child(UiKit.title(Mastery.title_of(Mastery.RANKS.size()), 30, DinoCard.RIBBON_COLORS[Mastery.RANKS.size()],
+			HORIZONTAL_ALIGNMENT_LEFT, false))
+	words.add_child(UiKit.label("Its ribbon, under\nthe tier badge", 24, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false))
+	row.add_child(words)
+	return row
+
+
+## The top of the Goals tab: Claim all, then the three sections (a red dot where something's ready).
+func _pic_goals() -> Control:
+	var box := UiKit.vbox(10)
+	box.custom_minimum_size.x = 540
+	box.add_child(UiKit.button("Claim all ready rewards  (3)", UiKit.BUTTON_GREEN, 64, 24))
+	var sections := UiKit.hbox(8)
+	var names: Array[String] = ["Today", "Collection", "Achievements"]
+	for i in names.size():
+		var button := UiKit.button(names[i], UiKit.BUTTON_GREEN if i == 0 else UiKit.BUTTON_GRAY, 56, 22)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if i != 2:
+			var dot := Panel.new()
+			var red := StyleBoxFlat.new()
+			red.bg_color = Color("ff3b4e")
+			red.border_color = Color.WHITE
+			red.set_border_width_all(2)
+			red.set_corner_radius_all(10)
+			dot.add_theme_stylebox_override("panel", red)
+			dot.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+			dot.offset_left = -22
+			dot.offset_right = -6
+			dot.offset_top = 5
+			dot.offset_bottom = 21
+			button.add_child(dot)
+		sections.add_child(button)
+	box.add_child(sections)
+	return box
+
+
+## Land, Sky and Sea medallions around a circle, an arrow from each to the type it beats.
+class TypeCycle:
+	extends Control
+
+	const ICON := 84.0
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(440, 300)
+
+	func _draw() -> void:
+		# Land on top, Sky lower right, Sea lower left: Land -> Sky -> Sea -> Land.
+		var spots: Array[Vector2] = [Vector2(220, 58), Vector2(370, 232), Vector2(70, 232)]
+		var font := Fonts.condensed_bold()
+		for i in 3:
+			var from := spots[i]
+			var to := spots[(i + 1) % 3]
+			var direction := (to - from).normalized()
+			var start := from + direction * (ICON * 0.62)
+			var end := to - direction * (ICON * 0.66)
+			draw_line(start, end, Palette.HIGHLIGHT, 4.0, true)
+			var side := Vector2(-direction.y, direction.x)
+			draw_colored_polygon(PackedVector2Array([end + direction * 4, end - direction * 16 + side * 9,
+					end - direction * 16 - side * 9]), Palette.HIGHLIGHT)
+			var middle := (start + end) / 2 - side * 18
+			var text := "beats"
+			var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
+			draw_string(font, middle - Vector2(width / 2, -8), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Palette.HIGHLIGHT)
+		for i in 3:
+			var icon := Icons.texture(Icons.type_icon(i), int(ICON))
+			draw_texture_rect(icon, Rect2(spots[i] - Vector2.ONE * ICON / 2, Vector2.ONE * ICON), false)
+			var label: String = DinoDef.TYPE_NAMES[i].to_upper()
+			var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 24).x
+			var y := spots[i].y + ICON / 2 + 24 if i != 0 else spots[i].y - ICON / 2 - 6
+			draw_string(font, Vector2(spots[i].x - width / 2, y), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Palette.TEXT)
+
+
+## A pulsing ring around a card's mastery ribbon.
+class RibbonRing:
+	extends Control
+
+	var _card: DinoCard
+
+	static func make(card: DinoCard) -> RibbonRing:
+		var ring := RibbonRing.new()
+		ring._card = card
+		ring.size = card.size
+		ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return ring
+
+	func _ready() -> void:
+		var pulse := create_tween().set_loops()
+		pulse.tween_property(self, "modulate:a", 0.45, 0.6).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(self, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
+
+	func _draw() -> void:
+		var rect := _card.ribbon_rect()
+		draw_arc(rect.get_center(), rect.size.x * 1.25, 0, TAU, 40, Palette.HIGHLIGHT, 3.0, true)
 
 
 # --- Stats pages ----------------------------------------------------------------------------
