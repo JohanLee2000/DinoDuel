@@ -51,7 +51,8 @@ static func _mastery_panel(profile: PlayerProfile, dino: DinoDef) -> Control:
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var color: Color = DinoCard.RIBBON_COLORS.get(rank, Palette.TEXT)
 	var earned := Mastery.description_of(rank).trim_suffix(".")
-	var headline := "%s: %s" % [Mastery.title_of(rank), earned.left(1).to_lower() + earned.substr(1)] 			if rank > 0 else "No mastery yet: take it into battle to start its story"
+	var headline := "%s: %s" % [Mastery.title_of(rank), earned.left(1).to_lower() + earned.substr(1)] \
+			if rank > 0 else "No mastery yet: take it into battle to start its story"
 	box.add_child(UiKit.label(headline, 26, color, HORIZONTAL_ALIGNMENT_CENTER))
 	box.add_child(UiKit.label("%d battles  ·  %d wins  ·  %d counters  ·  %d bosses" % [stats["battles"], stats["wins"],
 			stats["counters"], stats["bosses"]], 23, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER))
