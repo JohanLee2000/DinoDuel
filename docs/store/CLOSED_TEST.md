@@ -42,6 +42,18 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 0.6.3 (version code 14)
+
+```
+<en-US>
+Dino Duel 0.6.3
+- New How to play: pick a topic (Battles, Your party, The Journey, Eggs and Amber, Collection, Goals)
+- Full guide to the Journey: how eras open, rivals' habits, Alphas, stars, chests and rewards
+- Pictures on most pages so you can see what each part looks like
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.6.2 (version code 13)
 
 The first update 0.6.1 players should be offered in the game (in-app update test).
