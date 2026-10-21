@@ -18,7 +18,7 @@ Closed testers weren't getting new versions on their own (Play's auto-update is 
 - `addons/inapp_update/`: the Godot plugin (enabled in Project Settings > Plugins): the built AARs in `bin/`, the export script that adds them and Google's library to **Gradle builds only** (the "Google Play" preset; the USB debug preset is untouched), and the `InappUpdate` GDScript wrapper (unchanged from upstream).
 - `app/update_check.gd` (`UpdateCheck`): asks Play once per launch and tracks the state. `ui/main/update_banner.gd` (`UpdateBanner`): the strip. `ui/main/main.gd` adds the strip (3 lines, marked "Experiment").
 - Permissions: none. Checked the manifests of the plugin and of Google's `app-update`, `app-update-ktx` and `core-common` (2026-10-16): no `uses-permission`. `core-common` adds one hidden, non-exported activity Play uses for its dialogs.
-- Data: Google says the library sends Play the device metadata, the app's version and the installed modules, to see whether an update exists and how big it is (encrypted, not shared, deleted after a set period). **Check whether the Data safety form needs to mention this before production.**
+- Data: Google says the library sends Play the device metadata, the app's version and the installed modules, to see whether an update exists and how big it is (encrypted, not shared, deleted after a set period). Jo kept the prompt (2026-10-21): the privacy policy now has an "Update checks" section. The Data safety answer is still Jo's call (the two options are in docs/store/STORE_LISTING.md).
 
 ## Rebuilding the plugin (only if the Kotlin code or Godot version changes)
 ```bash
