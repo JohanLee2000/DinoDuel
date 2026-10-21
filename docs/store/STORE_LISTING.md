@@ -48,9 +48,9 @@ Draft text and answers for Play Console. Jo edits the wording; character limits 
 |---|---|---|
 | App icon | `assets/branding/app_icon_512.png` | 512 x 512 PNG |
 | Feature graphic | `feature_graphic.png` (rendered by `tools/feature_graphic.tscn`) | 1024 x 500 PNG/JPEG, no alpha |
-| Phone screenshots | `screenshots/01..08_*.png` (1142 x 2280; 2026-10-15 for 0.6.0: battle, Journey map, Legendary hatch, Shiny T. rex, Rory, Dex, coached battle, Goals). More in `screenshots/extra/` for the website | 2-8 images, 320-3840 px, at most 2:1 |
+| Phone screenshots | `screenshots/01..08_*.png` (1142 x 2280; retaken 2026-10-21 for 0.6.3: battle, Journey map, rival popup (Sage Sela), T. rex Dex entry with mastery, Party, Eggs, the Professaur's tour, Goals). Older and extra shots in `screenshots/extra/` (hatch, Dex, coached battle, check-in, partner pick, the tour's Journey step) | 2-8 images, 320-3840 px, at most 2:1 |
 
-Screenshots come from the phone with the debug-only `--store-shots` showcase save (see `app/session.gd`), so the DEV button never appears. To retake, put the flags in `user://dev_args.txt` on the phone (adb push + `run-as ... cp`), relaunch, and `adb exec-out screencap -p`. Delete `dev_args.txt` afterwards or every launch uses it.
+Screenshots come from the phone with the debug-only `--store-shots` showcase save (see `app/session.gd`), so the DEV button never appears. Each is the phone's 1080 x 2340 screencap with the plain top 60 px trimmed and a 31 px strip of the background color on each side, to stay within Play's 2:1. The tour shots use `--store-shots --tutorial` (a new player, without the DEV buttons): type the name, skip the story, pick a partner. To retake, put the flags in `user://dev_args.txt` on the phone (adb push + `run-as ... cp`), relaunch, and `adb exec-out screencap -p`. Delete `dev_args.txt` afterwards or every launch uses it.
 
 ## App content answers (Policy › App content)
 

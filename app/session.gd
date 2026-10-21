@@ -106,7 +106,9 @@ func _ready() -> void:
 					rival = each
 	profile = SaveStore.load_profile(catalog)
 	if profile == null:
-		profile = _showcase_profile() if store_shots else PlayerProfile.new_game(randi())
+		# --store-shots with --tutorial: a new player's start (for screenshots of the intro and tour)
+		# without the DEV buttons.
+		profile = _showcase_profile() if store_shots and not dev_tutorial else PlayerProfile.new_game(randi())
 		save()
 	refresh_quests()
 
