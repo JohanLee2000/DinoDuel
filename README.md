@@ -5,17 +5,15 @@ A dinosaur card-battle game for Android: hatch fossil eggs, collect 65+ prehisto
 **Website:** https://johanlee2000.github.io/DinoDuel/ · **Privacy policy:** https://johanlee2000.github.io/DinoDuel/privacy-policy.html
 
 <p>
-  <img src="docs/site/01_battle.jpg" alt="A battle: both sides pick Bite, Charge, Brace or Swap at the same time" width="200">
-  <img src="docs/site/02_journey.jpg" alt="The Journey map through the Jurassic, with a rival at every stop" width="200">
-  <img src="docs/site/03_hatch_legendary.jpg" alt="Hatching a Legendary Cymbospondylus" width="200">
-  <img src="docs/site/04_card_t_rex_shiny.jpg" alt="The Shiny Tyrannosaurus Rex card" width="200">
-  <img src="docs/site/05_rival_rory.jpg" alt="Rival Rory, the boss of the Triassic, with his Alpha Liliensternus" width="200">
-  <img src="docs/site/06_dex_cretaceous.jpg" alt="The Dino Dex: 68 prehistoric creatures" width="200">
-  <img src="docs/site/07_coached_first_battle.jpg" alt="A coach teaches the moves in your first battle" width="200">
-  <img src="docs/site/08_goals.jpg" alt="Daily check-in, quests and collection rewards" width="200">
-  <img src="docs/site/09_battle_intro.jpg" alt="Rival Rory wants to battle!" width="200">
-  <img src="docs/site/10_checkin.jpg" alt="The daily check-in, building to a Rare clutch on day 7" width="200">
-  <img src="docs/site/11_choose_partner.jpg" alt="Choosing your partner dino" width="200">
+  <img src="docs/site/01_battle.jpg" alt="A battle: Triceratops against Sage Sela's Liopleurodon. Both sides pick Bite, Charge, Brace or Swap Dino at the same time" width="200">
+  <img src="docs/site/02_journey.jpg" alt="The Journey map through the Jurassic, with a rival at every stop and star chests to fill" width="200">
+  <img src="docs/site/03_rival_sela.jpg" alt="Sage Sela's team and her habit, before you challenge her" width="200">
+  <img src="docs/site/04_card_t_rex.jpg" alt="The Shiny Tyrannosaurus Rex card, a Legend after 25 wins" width="200">
+  <img src="docs/site/05_party.jpg" alt="Your party: three saved parties, search, filters and sorting" width="200">
+  <img src="docs/site/06_eggs.jpg" alt="Fossil eggs: hatch clutches, buy a Rare clutch, and see your hatch history" width="200">
+  <img src="docs/site/07_hatch_legendary.jpg" alt="Hatching a Legendary Cymbospondylus" width="200">
+  <img src="docs/site/08_professaur_tour.jpg" alt="The Professaur welcomes you to camp" width="200">
+  <img src="docs/site/09_goals.jpg" alt="Goals: daily check-in and quests, collection rewards and achievements, with Claim all" width="200">
 </p>
 
 ## The game
