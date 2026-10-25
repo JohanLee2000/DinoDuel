@@ -8,7 +8,7 @@ Go through this before building a production release (signed `.aab` for Google P
   Jo's call (2026-10-08): keep it through closed testing (Play builds are release builds, so testers never see it), delete it before the production release.
 
 ## In-app update prompt (kept, 2026-10-21)
-- [ ] **Answer the Data safety form for the update check** (options in `docs/store/STORE_LISTING.md`). The privacy policy already covers it ("Update checks").
+- [x] (Done 2026-10-25, the cautious answer.) **Answer the Data safety form for the update check** (options in `docs/store/STORE_LISTING.md`). The privacy policy already covers it ("Update checks").
 
 ## Signing
 - [x] Create the release keystore and **back it up with its password** (done: Jo confirmed the backup on 2026-10-09) somewhere safe (password manager plus an offline copy). Losing it means you can't update the app on Google Play. Never commit it (`.gitignore` already blocks `*.keystore` and `*.jks`).
