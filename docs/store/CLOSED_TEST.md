@@ -42,6 +42,19 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 1.0.0 (version code 15): first production release
+
+The DEV unlock buttons are deleted. Upload to the **Production** track (and closed testing if you want testers on the same build).
+
+```
+<en-US>
+Dino Duel 1.0
+Welcome, fossil hunters! Hatch fossil eggs, collect 68 prehistoric creatures and battle rival collectors on a Journey from the Triassic to the meteor.
+Thanks to everyone who tested the early versions.
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 0.6.3 (version code 14)
 
 ```
