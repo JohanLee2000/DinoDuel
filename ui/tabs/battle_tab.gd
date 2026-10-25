@@ -50,17 +50,6 @@ func _build() -> void:
 	_markers.clear()
 	add_child(_era_tabs())
 	add_child(_banner())
-	if OS.is_debug_build() and not Session.store_shots:
-		# Development only: opens every stage for this run without touching the save.
-		# TODO(release): delete this button and Journey.dev_unlock_all (docs/RELEASE_CHECKLIST.md).
-		var dev := UiKit.button("DEV: lock stages again" if Journey.dev_unlock_all else "DEV: unlock all stages",
-				UiKit.BUTTON_GRAY, 52, 24)
-		dev.pressed.connect(func() -> void:
-			Journey.dev_unlock_all = not Journey.dev_unlock_all
-			if not Journey.chapter_unlocked(Session.profile, _chapter):
-				_chapter = _current_chapter()
-			_build())
-		add_child(dev)
 	if _problem != "":
 		add_child(UiKit.label(_problem, 28, Palette.HIGHLIGHT))
 

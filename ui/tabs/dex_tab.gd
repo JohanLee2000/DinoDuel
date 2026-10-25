@@ -18,15 +18,6 @@ func _ready() -> void:
 	add_child(UiKit.title("Dino Dex"))
 	_summary = UiKit.label("", 29, Palette.TEXT_DIM)
 	add_child(_summary)
-	if OS.is_debug_build() and not Session.store_shots:
-		# Development only: debug builds (editor, USB installs) show this; release builds don't.
-		# TODO(release): delete this button and PlayerProfile.unlock_all (docs/RELEASE_CHECKLIST.md).
-		var unlock := UiKit.button("DEV: unlock all dinos", UiKit.BUTTON_GRAY, 56, 26)
-		unlock.pressed.connect(func() -> void:
-			Session.profile.unlock_all(Session.catalog)
-			Session.save()
-			_refresh())
-		add_child(unlock)
 	_filter = CollectionFilter.create("dex", true)
 	_filter.changed.connect(func() -> void:
 		_apply_filter()

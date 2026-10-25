@@ -65,7 +65,6 @@ func _ready() -> void:
 		args.append_array(FileAccess.get_file_as_string(DEV_ARGS_FILE).strip_edges().split(" ", false))
 	Power.setup(get_tree(), not "--uncapped" in args)
 	DinoArt.use_thumbs = not "--no-thumbs" in args
-	Journey.dev_unlock_all = "--unlock-stages" in args
 	dev_tab_timing = "--tab-timing" in args
 	if DisplayServer.get_name() != "headless" and DinoArt.use_thumbs:
 		DinoArt.warm_up(catalog)
@@ -106,15 +105,13 @@ func _ready() -> void:
 					rival = each
 	profile = SaveStore.load_profile(catalog)
 	if profile == null:
-		# --store-shots with --tutorial: a new player's start (for screenshots of the intro and tour)
-		# without the DEV buttons.
+		# --store-shots with --tutorial: a new player's start (for screenshots of the intro and tour).
 		profile = _showcase_profile() if store_shots and not dev_tutorial else PlayerProfile.new_game(randi())
 		save()
 	refresh_quests()
 
 
-## Dev: the save the store screenshots show. Built directly rather than with
-## PlayerProfile.unlock_all, so it keeps working after that is deleted for release.
+## Dev (debug builds only): the save the store screenshots show.
 func _showcase_profile() -> PlayerProfile:
 	# Seed 136's first egg is Cymbospondylus, so it's left out here and hatches as a new UR.
 	var showcase := PlayerProfile.new_game(136)
