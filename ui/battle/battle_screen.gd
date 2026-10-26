@@ -18,13 +18,17 @@ const MATCHUP_TEXT := {
 const BUTTON_COLORS: Array[Color] = [Color("d92b3a"), Color("ff7a1a"), Color("2e7bff"), Color("34445e")]
 const MOVE_ICON_SIZE := 40
 const BENCH_CARD_WIDTH := 92.0
-## The layout is designed for a 1280-unit-tall screen. Taller phones (most modern ones, 19.5:9 and
-## up) get bigger cards instead of an empty band above the buttons; this many extra units of
-## height make the cards 100% bigger, up to MAX_CARD_SCALE.
+## Taller phones (most modern ones, 19.5:9 and up) get bigger cards instead of an empty band above
+## the buttons; this many extra units of height make the cards 100% bigger, up to MAX_CARD_SCALE.
 const EXTRA_HEIGHT_PER_SCALE := 900.0
 ## Height the layout needs at the current text sizes before cards start growing.
 const BASE_LAYOUT_HEIGHT := 1320.0
 const MAX_CARD_SCALE := 1.3
+## Shorter screens shrink the cards instead (see _fit_to_screen), down to this.
+const MIN_CARD_SCALE := 0.6
+## Room kept free when fitting, in case the text box grows later. The fit already measures with the
+## opening headline, usually the longest (two lines).
+const FIT_SLACK := 24.0
 ## First battle (tutorial): the rival's scripted moves for the opening turns, and the counter the
 ## coach suggests for each, so the player meets the whole triangle once.
 const COACH_RIVAL_MOVES: Array[BattleAction.Kind] = [BattleAction.Kind.BITE, BattleAction.Kind.BRACE,
@@ -38,6 +42,10 @@ const COACH_SCRIPT_TIPS: Array[String] = [
 ]
 ## Room kept free for the coach's tip box when sizing the cards.
 const COACH_PANEL_HEIGHT := 175.0
+const COACH_TRIANGLE_TIP := "That's the whole triangle! From now on %s picks freely, so watch for habits."
+const COACH_EDGE_TIP := "Your type beats theirs: [b]+50% damage[/b], already in your move buttons. Land beats Sky, Sky beats Sea, Sea beats Land."
+const COACH_BAD_EDGE_TIP := "Careful: their type beats yours. [b]Swap[/b] to a different type to dodge the extra damage."
+const COACH_LOW_TIP := "Low on HP? [b]Swap[/b] goes first, and benched dinos heal 1 HP every turn."
 const PICKER_CARD_WIDTH := 200.0
 const HEADLINE_FONT_SIZE := 29
 const HIT_COLOR := Color("ff6b5e")
@@ -152,6 +160,7 @@ func _ready() -> void:
 		_snapshot_health(side)
 		_rebuild_side(side)
 	_update_score()
+	_fit_to_screen()
 	if resumed:
 		_log_lines.append(_log_header("Battle resumed"))
 		_headline("Battle resumed: turn %d" % _state.turn, Palette.TEXT)
@@ -711,6 +720,44 @@ func _build_edge_tag() -> void:
 	_hint.add_child(_edge_tag)
 
 
+## Shorter screens are only 1280 units tall: 16:10 tablets like the Galaxy Tab A8 (Jo, 2026-10-26)
+## and 16:9 phones. That's less than the layout needs with full-size cards, so the move buttons fell
+## off the bottom. Once everything is laid out (a frame later, after the opening headline), this
+## measures how far it overflows and shrinks the cards just enough; the two card rows are what
+## scales with them. Phones with room to spare are left as they are.
+func _fit_to_screen() -> void:
+	# The coach's tip box only appears once the battle begins, so it's measured holding its longest
+	# tip, shown but invisible, and hidden again afterwards.
+	var sizing_coach := _coaching and _coach_panel != null and not _coach_panel.visible
+	if sizing_coach:
+		_coach_text.text = _longest_coach_tip()
+		_coach_panel.modulate.a = 0.0
+		_coach_panel.show()
+	# Up to three passes: a rebuilt row doesn't shrink quite in proportion (labels stay the same size).
+	for attempt in 3:
+		# Two frames: the replaced cards are only freed at the end of the first.
+		await get_tree().process_frame
+		await get_tree().process_frame
+		if not is_inside_tree():
+			return
+		var safe: MarginContainer = $SafeArea
+		var room := get_viewport_rect().size.y - safe.get_theme_constant("margin_top") \
+				- safe.get_theme_constant("margin_bottom")
+		var overflow := ($SafeArea/Column as Control).get_combined_minimum_size().y + FIT_SLACK - room
+		if overflow <= 0.0 or _card_scale <= MIN_CARD_SCALE:
+			break
+		var rows := 0.0
+		for row: Control in [$SafeArea/Column/EnemyRow, $SafeArea/Column/PlayerRow]:
+			rows += row.get_combined_minimum_size().y
+		_card_scale = maxf(MIN_CARD_SCALE, _card_scale * (rows - overflow) / rows)
+		for side in 2:
+			_rebuild_side(side)
+	# Still invisible means the coach hasn't spoken yet (_coach_show makes it visible).
+	if sizing_coach and _coach_panel.modulate.a == 0.0:
+		_coach_panel.hide()
+		_coach_panel.modulate.a = 1.0
+
+
 func _update_backdrop_focus() -> void:
 	if _active_cards[RIVAL] and _active_cards[PLAYER]:
 		_backdrop.set_focus(_slots[RIVAL].get_global_rect(), _slots[PLAYER].get_global_rect())
@@ -1033,16 +1080,13 @@ func _coach_turn() -> void:
 	var them := _state.side(RIVAL).active_dino()
 	var can_swap := not _state.side(PLAYER).bench().is_empty()
 	if turn == COACH_RIVAL_MOVES.size() + 1:
-		_coach_show("That's the whole triangle! From now on %s picks freely, so watch for habits." % rival_name)
+		_coach_show(COACH_TRIANGLE_TIP % rival_name)
 		return
-	if BattleEngine.has_advantage(me, them) and _coach_once(&"edge",
-			"Your type beats theirs: [b]+50% damage[/b]. It's already in the damage on your move buttons (look for the gold [b]Type advantage[/b] tag). Land beats Sky, Sky beats Sea, Sea beats Land."):
+	if BattleEngine.has_advantage(me, them) and _coach_once(&"edge", COACH_EDGE_TIP):
 		return
-	if can_swap and BattleEngine.has_advantage(them, me) and _coach_once(&"bad_edge",
-			"Careful: their type beats yours. [b]Swap[/b] to a different type to dodge the extra damage."):
+	if can_swap and BattleEngine.has_advantage(them, me) and _coach_once(&"bad_edge", COACH_BAD_EDGE_TIP):
 		return
-	if can_swap and me.health * 10 <= me.max_health * 4 and _coach_once(&"low",
-			"Low on HP? [b]Swap[/b] goes first, and benched dinos heal 1 HP every turn."):
+	if can_swap and me.health * 10 <= me.max_health * 4 and _coach_once(&"low", COACH_LOW_TIP):
 		return
 	_coach_panel.hide()
 
@@ -1058,6 +1102,7 @@ func _coach_once(key: StringName, text: String) -> bool:
 
 func _coach_show(text: String, highlight := -1) -> void:
 	_coach_text.text = text
+	_coach_panel.modulate.a = 1.0
 	_coach_panel.show()
 	_stop_coach_highlight()
 	if highlight < 0:
@@ -1075,6 +1120,16 @@ func _stop_coach_highlight() -> void:
 		_coach_pulse = null
 	for button in _buttons:
 		button.scale = Vector2.ONE
+
+
+## The coach's longest tip, which the fit measures the tip box with (see _fit_to_screen).
+func _longest_coach_tip() -> String:
+	var rival_name := Session.rival.display_name
+	var tips: Array[String] = [COACH_TRIANGLE_TIP % rival_name, COACH_EDGE_TIP, COACH_BAD_EDGE_TIP, COACH_LOW_TIP]
+	for tip in COACH_SCRIPT_TIPS:
+		tips.append("Nice! " + tip % rival_name)
+	tips.sort_custom(func(a: String, b: String) -> bool: return a.length() > b.length())
+	return tips[0]
 
 
 func _skip_coach() -> void:
