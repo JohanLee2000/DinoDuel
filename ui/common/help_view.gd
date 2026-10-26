@@ -140,7 +140,8 @@ const TOPICS := [
 				"rows": [
 					["amber", "Duplicates melt into Amber: N {melt_0}, R {melt_1}, SR {melt_2}, SSR {melt_3}, UR {melt_4}."],
 					["book", "In the Dex, tap a missing dino to [b]craft[/b] it for Amber: N {craft_0}, R {craft_1}, SR {craft_2}, SSR {craft_3}, UR {craft_4}."],
-					["", "Amber also comes from battles, daily quests, goals and star chests."],
+					["star", "[b]Tip:[/b] after one dino in particular? Crafting gets you exactly that one. A clutch ({clutch_price} Amber) gives 3 random eggs: better for growing your collection early, while crafting is best for a favorite or the last dino in a set. Tap [b]Can craft[/b] in the Dex to see what you can afford now."],
+					["", "Earn Amber from battles, duplicates, daily quests, goals and star chests."],
 				],
 			},
 		],
@@ -148,8 +149,9 @@ const TOPICS := [
 	{
 		"title": "Collection",
 		"icon": "book",
-		"about": "The Dex, sets and dino mastery",
+		"about": "Card tiers, the Dex, sets and dino mastery",
 		"pages": [
+			{"title": "Card tiers", "picture": "_pic_tiers", "custom": "_tiers_page"},
 			{
 				"title": "The Dex",
 				"picture": "_pic_dex",
@@ -765,6 +767,28 @@ func _mini_dex_entry() -> Control:
 	return view
 
 
+## A card from each tier, N to UR, with the tier's name under it.
+func _pic_tiers() -> Control:
+	var row := UiKit.hbox(8, BoxContainer.ALIGNMENT_CENTER)
+	var examples: Array[StringName] = [&"coelophysis", &"pteranodon", &"triceratops", &"liopleurodon", &"t_rex"]
+	for rarity in examples.size():
+		row.add_child(_captioned(_card(examples[rarity], 100), DinoDef.RARITY_NAMES[rarity], Palette.RARITY_COLORS[rarity]))
+	return row
+
+
+## What N, R, SR, SSR and UR mean: each tier's name, Party Points and how often eggs hatch it.
+func _tiers_page() -> void:
+	_body.add_child(_row("", "The badge in a card's top-left corner is its [b]tier[/b], from N (Common) up to UR (Legendary). Rarer dinos are stronger, but cost more Party Points: your 3 must add up to [b]%d or less[/b]." \
+			% PartyRules.POINT_CAP))
+	var notes: Array[String] = ["", "", "", ", with a crown", ", with a crown and a color-shifting frame"]
+	for rarity in DinoDef.RARITY_NAMES.size():
+		var points: int = PartyRules.RARITY_POINTS[rarity]
+		_body.add_child(_row("tier:%d" % rarity, "[b]%s[/b]%s. %d Party Point%s, %d%% of eggs." % [DinoDef.RARITY_NAMES[rarity],
+				notes[rarity], points, "" if points == 1 else "s", roundi(Economy.RARITY_ODDS[rarity] * 100)]))
+	_body.add_child(_rich("Egg odds are for a normal clutch; a Rare clutch has better ones. [b]Shiny[/b] isn't a tier: any dino can hatch Shiny (1 in %d), with a holographic look and the same stats." \
+			% roundi(1.0 / Economy.SHINY_ODDS)))
+
+
 ## The top of the Goals tab: Claim all, then the three sections (a red dot where something's ready).
 func _pic_goals() -> Control:
 	var box := UiKit.vbox(10)
@@ -1037,6 +1061,22 @@ func _row(icon: String, text: String) -> Control:
 		code.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		inside.add_child(code)
 		chip.add_child(inside)
+		row.add_child(chip)
+	elif icon.begins_with("tier:"):
+		var tier := int(icon.get_slice(":", 1))
+		var chip := PanelContainer.new()
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(Palette.RARITY_COLORS[tier], 0.22)
+		style.border_color = Palette.RARITY_COLORS[tier]
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(10)
+		chip.add_theme_stylebox_override("panel", style)
+		chip.custom_minimum_size = Vector2(96, 48)
+		chip.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		var code := UiKit.title(DinoDef.RARITY_CODES[tier], 30, Palette.RARITY_COLORS[tier].lerp(Color.WHITE, 0.35),
+				HORIZONTAL_ALIGNMENT_CENTER, false)
+		code.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		chip.add_child(code)
 		row.add_child(chip)
 	elif icon.begins_with("dot:"):
 		var swatch := Panel.new()
