@@ -42,6 +42,17 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 1.0.1 (version code 16)
+
+```
+<en-US>
+Dino Duel 1.0.1
+- Battles now fit tablets like the Galaxy Tab A8 and 16:9 phones: the move buttons are no longer cut off at the bottom
+- Shorter tip about type advantage in your first battle
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 1.0.0 (version code 15): first production release
 
 The DEV unlock buttons are deleted. Upload to the **Production** track (and closed testing if you want testers on the same build).
