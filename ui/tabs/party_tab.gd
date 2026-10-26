@@ -1,6 +1,7 @@
 extends VBoxContainer
 ## Party tab: choose the 6 dinos you bring to battles. Before each battle you pick 3 of them.
-## Three saved parties (PartySlots) to switch between and name. A search, filters and sorting
+## Three saved parties (PartySlots) to switch between and name. Share the open party's code, or
+## duel a friend's (PartyShareView, FriendDuelView). A search, filters and sorting
 ## (CollectionFilter) help find dinos in a big collection. New dinos have a dot until tapped.
 
 var _slots: PartySlots
@@ -22,6 +23,20 @@ func _ready() -> void:
 	_slots = PartySlots.new()
 	_slots.switched.connect(_refresh)
 	add_child(_slots)
+	var social := UiKit.hbox(10)
+	var share := UiKit.icon_button("Share party", &"share", UiKit.BUTTON_GRAY, 60, 24)
+	share.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	share.pressed.connect(func() -> void:
+		Sound.play(&"tap")
+		PartyShareView.open())
+	social.add_child(share)
+	var duel := UiKit.icon_button("Duel a friend", &"move_bite", UiKit.BUTTON_GRAY, 60, 24)
+	duel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	duel.pressed.connect(func() -> void:
+		Sound.play(&"tap")
+		FriendDuelView.open())
+	social.add_child(duel)
+	add_child(social)
 	_lineup_row = UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	add_child(_lineup_row)
 	_status = UiKit.label("", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)

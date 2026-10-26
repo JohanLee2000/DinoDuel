@@ -138,10 +138,11 @@ func _ready() -> void:
 	UiKit.style_button(%RematchButton, UiKit.BUTTON_RED)
 	UiKit.add_icon(%RematchButton, "Rematch", &"restart", UiKit.BUTTON_RED, 32)
 	UiKit.style_button(%BackButton, UiKit.BUTTON_GREEN)
-	UiKit.add_icon(%BackButton, "Back to journey", &"back", UiKit.BUTTON_GREEN, 32)
+	UiKit.add_icon(%BackButton, "Back to party" if not Session.friend.is_empty() else "Back to journey", &"back",
+			UiKit.BUTTON_GREEN, 32)
 	%HatchButton.pressed.connect(Session.go_to_main.bind(Session.Tab.EGGS))
 	%RematchButton.pressed.connect(Session.go_to_pre_battle)
-	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
+	%BackButton.pressed.connect(func() -> void: Session.go_to_main(Session.home_tab()))
 
 	_rival_name.text = Session.rival.display_name
 	_build_top_bar()
@@ -610,7 +611,7 @@ func _rebuild_side(side: int) -> void:
 ## it's standing), so the score shows at a glance.
 func _build_top_bar() -> void:
 	var bar := _rival_name.get_parent()
-	var face := _round_face(RivalArt.head(Session.rival.character), 60)
+	var face := _round_face(RivalArt.face(Session.rival), 60)
 	bar.add_child(face)
 	bar.move_child(face, 0)
 	var name_box := UiKit.vbox(2)
@@ -764,7 +765,10 @@ func _update_backdrop_focus() -> void:
 
 
 func _is_shiny(side: int, dino: DinoDef) -> bool:
-	return side == PLAYER and Session.profile.is_shiny(dino.id)
+	if side == RIVAL:
+		# A friend's Shiny dinos look Shiny in their ghost duel too.
+		return dino.id in Session.friend.get("shiny_ids", [])
+	return Session.profile.is_shiny(dino.id)
 
 
 func _set_bench_highlight(on: bool) -> void:
@@ -867,15 +871,23 @@ func _result_summary(left: int, reward: Dictionary) -> Control:
 	column.add_child(tiles)
 
 	var rewards := UiKit.vbox(10)
-	rewards.add_child(UiKit.title("First clear!" if reward["first_clear"] else "Rewards", 30, Palette.HIGHLIGHT,
-			HORIZONTAL_ALIGNMENT_CENTER, false))
-	var row := UiKit.hbox(28, BoxContainer.ALIGNMENT_CENTER)
-	if reward["clutches"] > 0:
-		row.add_child(_reward_item(&"egg", "+%d clutch%s" % [reward["clutches"], "" if reward["clutches"] == 1 else "es"]))
-	if reward["rare_clutches"] > 0:
-		row.add_child(_reward_item(&"egg", "+%d Rare" % reward["rare_clutches"]))
-	row.add_child(_reward_item(&"amber", "+%d Amber" % reward["amber"]))
-	rewards.add_child(row)
+	if reward.get("friendly", false):
+		# A friend's party: no rewards, just the record against them.
+		rewards.add_child(UiKit.title("Friendly duel", 30, Palette.HIGHLIGHT, HORIZONTAL_ALIGNMENT_CENTER, false))
+		var record := Session.profile.friend_record(Session.friend.get("player", ""))
+		rewards.add_child(UiKit.label("Your record against %s: %d win%s, %d loss%s" % [Session.rival.display_name,
+				record[0], "" if record[0] == 1 else "s", record[1], "" if record[1] == 1 else "es"], 29, Palette.TEXT,
+				HORIZONTAL_ALIGNMENT_CENTER))
+	else:
+		rewards.add_child(UiKit.title("First clear!" if reward["first_clear"] else "Rewards", 30, Palette.HIGHLIGHT,
+				HORIZONTAL_ALIGNMENT_CENTER, false))
+		var row := UiKit.hbox(28, BoxContainer.ALIGNMENT_CENTER)
+		if reward["clutches"] > 0:
+			row.add_child(_reward_item(&"egg", "+%d clutch%s" % [reward["clutches"], "" if reward["clutches"] == 1 else "es"]))
+		if reward["rare_clutches"] > 0:
+			row.add_child(_reward_item(&"egg", "+%d Rare" % reward["rare_clutches"]))
+		row.add_child(_reward_item(&"amber", "+%d Amber" % reward["amber"]))
+		rewards.add_child(row)
 	# Mastery ranks earned in this battle, e.g. "Dilophosaurus is now a Veteran!" (from Fighter up:
 	# every dino becomes a Recruit in its first battle).
 	for earned in reward.get("mastery", []):

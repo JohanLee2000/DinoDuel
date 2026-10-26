@@ -255,7 +255,8 @@ static func claim_achievement(profile: PlayerProfile, catalog: DinoCatalog, id: 
 # --- Events (called by PlayerProfile and Session) -------------------------------------------
 
 ## After a finished battle (not a forfeit). `summary`: won, rival_id, party (the 3 picked
-## DinoDefs), turns, dinos_left, first_clear (a new Journey stage cleared), meteor_turn.
+## DinoDefs), turns, dinos_left, first_clear (a new Journey stage cleared), meteor_turn, friendly (a
+## ghost duel against a friend's party code: counts for quests, not achievements).
 static func on_battle(profile: PlayerProfile, summary: Dictionary) -> void:
 	var won: bool = summary.get("won", false)
 	var party: Array[DinoDef] = []
@@ -263,7 +264,7 @@ static func on_battle(profile: PlayerProfile, summary: Dictionary) -> void:
 	var turns: int = summary.get("turns", 999)
 	var left: int = summary.get("dinos_left", 0)
 	_add(profile, &"battles")
-	if won:
+	if won and not summary.get("friendly", false):
 		if party.size() > 0 and left >= party.size():
 			_add(profile, &"flawless_wins")
 		if turns <= FAST_WIN_TURNS:

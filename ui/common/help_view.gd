@@ -56,7 +56,7 @@ const TOPICS := [
 	{
 		"title": "Your party",
 		"icon": "cards",
-		"about": "Picking 3, Party Points, bonuses, saved parties",
+		"about": "Picking 3, Party Points, bonuses, saved parties, friend duels",
 		"pages": [
 			{
 				"title": "Bring 6, pick 3",
@@ -77,6 +77,15 @@ const TOPICS := [
 					["edit", "Tap the pencil to name the open party, like \"Sea squad\"."],
 					["", "Switch parties on the pick screen too, to bring the right 6 against each rival."],
 					["", "Search, filter and sort by ATK, DEF or SPD to find dinos fast. [b]Hold any card[/b] to see it bigger."],
+				],
+			},
+			{
+				"title": "Duel a friend",
+				"rows": [
+					["share", "[b]Share party[/b] gives you a code for the open party. Send it to friends, with a picture of your 6."],
+					["move_bite", "[b]Duel a friend[/b]: paste a friend's code and battle their party. The game plays it for them, so you can duel anytime, offline."],
+					["", "Friend duels count for your dinos' mastery and daily quests, but give no Amber, eggs or stars."],
+					["", "Friends you've dueled stay in a list with your record against each. A newer code from the same friend replaces the old one."],
 				],
 			},
 		],

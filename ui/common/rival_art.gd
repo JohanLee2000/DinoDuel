@@ -37,6 +37,15 @@ static func head(character: StringName) -> Texture2D:
 	return crop
 
 
+## The round-marker face for a rival: its head crop, or for a friend's party (no sprite) the
+## painting of the first dino they bring.
+static func face(rival: RivalDef) -> Texture2D:
+	var crop := head(rival.character) if rival.character != &"" else null
+	if crop == null and not rival.brings.is_empty():
+		return DinoArt.thumb(rival.brings[0], false)
+	return crop
+
+
 static func _boxes() -> Dictionary:
 	if _head_boxes.is_empty() and ResourceLoader.exists(HEADS):
 		var json := load(HEADS) as JSON

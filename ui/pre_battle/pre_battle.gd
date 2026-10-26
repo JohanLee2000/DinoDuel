@@ -39,6 +39,9 @@ func _ready() -> void:
 
 	var rival := Session.rival
 	_rival_label.text = "%s brings these 6 and will pick 3:" % rival.display_name
+	if not Session.friend.is_empty():
+		_rival_label.text = "%s's party, %s. The game plays it and picks 3 of these 6:" % [rival.display_name,
+				Session.friend["party"]]
 	_rival_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_rival_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# The rival's sprite beside who they are.
@@ -46,7 +49,7 @@ func _ready() -> void:
 	_rival_label.get_parent().add_child(heading)
 	_rival_label.get_parent().move_child(heading, 0)
 	var sprite := TextureRect.new()
-	sprite.texture = RivalArt.sprite(rival.character)
+	sprite.texture = RivalArt.sprite(rival.character) if rival.character != &"" else RivalArt.face(rival)
 	sprite.custom_minimum_size = Vector2(120, 120)
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -55,8 +58,12 @@ func _ready() -> void:
 	_rival_label.reparent(heading)
 	_rival_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	for dino in rival.brings:
-		_rival_brings.add_child(DinoCard.create(dino, DinoCard.Mode.MINI))
+		_rival_brings.add_child(DinoCard.create(dino, DinoCard.Mode.MINI, null, dino.id in Session.friend.get("shiny_ids", [])))
 	var notes := "Stars: one for each of your dinos still standing when you win."
+	if not Session.friend.is_empty():
+		var record := Session.profile.friend_record(Session.friend["player"])
+		notes = "Friendly duel: counts for your dinos' mastery and daily quests, but gives no rewards. Your record against %s: %d-%d." \
+				% [rival.display_name, record[0], record[1]]
 	if not rival.alphas.is_empty():
 		var names: Array[String] = []
 		for dino in rival.brings:
@@ -89,7 +96,7 @@ func _ready() -> void:
 				_picked.append(card.def)
 		Session.dev_prepick = 0
 	_battle_button.pressed.connect(func() -> void: Session.start_battle(_picked.duplicate()))
-	%BackButton.pressed.connect(Session.go_to_main.bind(Session.Tab.BATTLE))
+	%BackButton.pressed.connect(func() -> void: Session.go_to_main(Session.home_tab()))
 	_refresh()
 
 	if Session.autoplay:
@@ -298,4 +305,4 @@ func _flash_guide(text: String) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		Session.go_to_main(Session.Tab.BATTLE)
+		Session.go_to_main(Session.home_tab())

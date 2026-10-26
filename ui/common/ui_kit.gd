@@ -129,6 +129,11 @@ static func pill_button(text: String, icon_name: StringName, height := 76, font_
 	return b
 
 
+## Changes the text of a button made with icon_button / add_icon.
+static func set_icon_text(b: Button, text: String) -> void:
+	(b.get_meta("caption") as Label).text = text
+
+
 static func set_pill_text(b: Button, text: String) -> void:
 	(b.get_meta("caption") as Label).text = text
 

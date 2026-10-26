@@ -20,6 +20,9 @@ var rival: RivalDef
 var rivals: Array[RivalDef] = []
 var player_party: Array[DinoDef] = []
 var rival_party: Array[DinoDef] = []
+## A ghost duel against a friend's party code (PartyCode.decode): {code, player, party, ids,
+## shiny_ids}. Empty for Journey battles.
+var friend: Dictionary = {}
 var battle_seed := 0
 ## True during the player's first battle, which comes with a coach (see BattleScreen).
 var coaching := false
@@ -179,6 +182,7 @@ func _switch_profile(new_profile: PlayerProfile) -> void:
 	player_party = []
 	rival_party = []
 	rival = rivals[0]
+	friend = {}
 	coaching = false
 	resume_events = []
 	current_tab = Tab.BATTLE
@@ -198,10 +202,24 @@ func go_to_main(tab: int = -1) -> void:
 func go_to_pre_battle(chosen: RivalDef = null) -> void:
 	if chosen:
 		rival = chosen
+		if chosen.id != PartyCode.FRIEND_ID:
+			friend = {}
 	for dino in rival.brings:
 		profile.mark_seen(dino.id)
 	save()
 	get_tree().change_scene_to_file(PRE_BATTLE_SCENE)
+
+
+## A ghost duel: the friend's party (from their code), played by the AI. Remembers the friend.
+func start_friend_duel(info: Dictionary) -> void:
+	friend = info
+	profile.remember_friend(info)
+	go_to_pre_battle(PartyCode.make_rival(info, catalog))
+
+
+## Where to go after a battle or the pick screen: the Party tab for friend duels.
+func home_tab() -> int:
+	return Tab.PARTY if not friend.is_empty() else Tab.BATTLE
 
 
 ## The rival picks its party now, without seeing the player's pick.
@@ -214,6 +232,8 @@ func start_battle(party: Array[DinoDef]) -> void:
 	# Saved from the start, so the battle can continue if Android closes the game mid-fight.
 	profile.battle = {"rival": String(rival.id), "seed": battle_seed, "player": _ids(player_party),
 			"rival_party": _ids(rival_party), "coaching": coaching, "events": []}
+	if not friend.is_empty():
+		profile.battle["friend"] = friend["code"]
 	save()
 	get_tree().change_scene_to_file(BATTLE_SCENE)
 
@@ -232,6 +252,11 @@ func resume_saved_battle() -> bool:
 	if saved.is_empty() or autoplay:
 		return false
 	var found: Array = rivals.filter(func(each: RivalDef) -> bool: return String(each.id) == saved.get("rival", ""))
+	friend = {}
+	if saved.get("rival", "") == String(PartyCode.FRIEND_ID):
+		friend = PartyCode.decode(String(saved.get("friend", "")), catalog)
+		if not friend.is_empty():
+			found = [PartyCode.make_rival(friend, catalog)]
 	var mine := _defs(saved.get("player", []))
 	var theirs := _defs(saved.get("rival_party", []))
 	if found.is_empty() or mine.size() != PartyRules.PARTY_SIZE or theirs.size() != PartyRules.PARTY_SIZE:
@@ -284,10 +309,13 @@ func wants_coach() -> bool:
 ## battle stays unfinished, so the coach comes back next time.
 func forfeit_battle() -> void:
 	profile.battle = {}
-	profile.record_forfeit(rival.id)
+	if friend.is_empty():
+		profile.record_forfeit(rival.id)
+	else:
+		profile.record_friend_duel(friend, false)
 	coaching = false
 	save()
-	go_to_main(Tab.BATTLE)
+	go_to_main(home_tab())
 
 
 func rematch() -> void:
@@ -310,10 +338,17 @@ func finish_battle(won: bool, turns := 0, dinos_left := 0) -> Dictionary:
 	var events: Array = profile.battle.get("events", [])
 	var counters := Mastery.counters_in(rival.start_battle(player_party, rival_party), events)
 	profile.battle = {}
-	var reward := profile.record_battle(won, rival, dinos_left)
+	# Friend duels (Jo, 2026-10-26): mastery and daily quests only, plus the record against them.
+	var friendly := not friend.is_empty()
+	var reward := {"amber": 0, "clutches": 0, "rare_clutches": 0, "first_clear": false, "stars": 0,
+			"new_best": false, "friendly": true}
+	if friendly:
+		profile.record_friend_duel(friend, won)
+	else:
+		reward = profile.record_battle(won, rival, dinos_left)
 	reward["mastery"] = Mastery.record_battle(profile, player_party, won, rival.is_boss, counters)
 	Goals.on_battle(profile, {"won": won, "rival_id": rival.id, "party": player_party, "turns": turns,
-			"dinos_left": dinos_left, "first_clear": reward["first_clear"],
+			"dinos_left": dinos_left, "first_clear": reward["first_clear"], "friendly": friendly,
 			"meteor_turn": rival.meteor_turn if rival.meteor_turn > 0 else BattleEngine.METEOR_START_TURN})
 	if coaching:
 		profile.tutorial_done = true

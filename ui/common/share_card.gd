@@ -26,28 +26,103 @@ static func message(dino: DinoDef, shiny: bool, hatched: bool) -> String:
 
 
 static func render(dino: DinoDef, shiny: bool, hatched: bool) -> String:
+	return await _render(SIZE, PATH, func(root: Control) -> void: _compose(root, dino, shiny, hatched))
+
+
+## Draws a picture with `compose` into a `size` viewport and saves it at `path`.
+static func _render(size: Vector2i, path: String, compose: Callable) -> String:
 	var tree := Engine.get_main_loop() as SceneTree
 	var viewport := SubViewport.new()
-	viewport.size = SIZE
+	viewport.size = size
 	viewport.disable_3d = true
 	viewport.transparent_bg = false
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	var root := Control.new()
-	root.size = Vector2(SIZE)
+	root.size = Vector2(size)
 	viewport.add_child(root)
 	# Deferred, so this also works if it's called while the scene tree is busy adding nodes.
 	tree.root.add_child.call_deferred(viewport)
 	await tree.process_frame
-	_compose(root, dino, shiny, hatched)
+	compose.call(root)
 	# A few frames so the card's shaders and text settle before the picture is taken.
 	for i in 4:
 		await tree.process_frame
 	var image := viewport.get_texture().get_image()
 	viewport.queue_free()
 	image.convert(Image.FORMAT_RGB8)
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(PATH.get_base_dir()))
-	image.save_png(PATH)
-	return PATH
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
+	image.save_png(path)
+	return path
+
+
+# --- Party (2026-10-26) ----------------------------------------------------------------------
+
+const PARTY_SIZE := Vector2i(1080, 1440)
+const PARTY_PATH := "user://share/dino_duel_party.png"
+const PARTY_CARD_WIDTH := 260.0
+
+
+## Shares a party's picture and its code (PartyCode), for friends to duel it.
+static func share_party(player: String, party_name: String, ids: Array[StringName], shiny_ids: Array[StringName],
+		code: String) -> void:
+	var path := await _render(PARTY_SIZE, PARTY_PATH,
+			func(root: Control) -> void: _compose_party(root, player, party_name, ids, shiny_ids, code))
+	Share.image(path, party_message(code))
+
+
+static func party_message(code: String) -> String:
+	return "Can you beat my Dino Duel party? 🦖
+In the game, open Party, tap Duel a friend and paste this code:
+%s
+%s" % [code, LINK]
+
+
+static func _compose_party(root: Control, player: String, party_name: String, ids: Array[StringName],
+		shiny_ids: Array[StringName], code: String) -> void:
+	var size := Vector2(PARTY_SIZE)
+	var base := ColorRect.new()
+	base.color = Palette.BACKGROUND
+	base.size = size
+	root.add_child(base)
+	var catalog := Session.catalog
+	var backdrop := TextureRect.new()
+	backdrop.texture = load(BACKDROPS[catalog.find(ids[0]).dino_type])
+	backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	backdrop.size = size
+	backdrop.modulate = Color(0.4, 0.4, 0.45)
+	root.add_child(backdrop)
+	var logo := TextureRect.new()
+	logo.texture = load("res://assets/branding/logo.png")
+	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	logo.size = Vector2(480, 480 * 200.0 / 758.0)
+	logo.position = Vector2((size.x - logo.size.x) / 2, 30)
+	root.add_child(logo)
+	var title := "%s'S PARTY: %s" % [player.to_upper(), party_name.to_upper()]
+	_text(root, title, 50 if title.length() <= 28 else 36, Palette.HIGHLIGHT, 182, Fonts.title())
+	_text(root, "Can you beat it?", 34, Palette.TEXT, 248, Fonts.bold())
+	var gap := 24.0
+	var card_height := PARTY_CARD_WIDTH * DinoCard.ASPECT
+	var left := (size.x - PARTY_CARD_WIDTH * 3 - gap * 2) / 2
+	for i in ids.size():
+		var card := DinoCard.create(catalog.find(ids[i]), DinoCard.Mode.FULL, null, ids[i] in shiny_ids, PARTY_CARD_WIDTH)
+		card.inspect_on_hold = false
+		card.position = Vector2(left + (i % 3) * (PARTY_CARD_WIDTH + gap), 316 + (i / 3) * (card_height + gap))
+		root.add_child(card)
+	var box := Panel.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0.6)
+	style.border_color = Palette.HIGHLIGHT
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(18)
+	box.add_theme_stylebox_override("panel", style)
+	box.size = Vector2(size.x - 120, 130)
+	box.position = Vector2(60, size.y - 196)
+	root.add_child(box)
+	_text(root, "PARTY CODE", 26, Palette.TEXT_DIM, size.y - 186, Fonts.condensed_bold())
+	_text(root, code, 36 if code.length() <= 40 else 28, Color.WHITE, size.y - 140, Fonts.bold())
+	_text(root, "Dino Duel: Party, then Duel a friend", 26, Palette.TEXT_DIM, size.y - 52, Fonts.body())
 
 
 static func _compose(root: Control, dino: DinoDef, shiny: bool, hatched: bool) -> void:

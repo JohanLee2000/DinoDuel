@@ -11,6 +11,8 @@ const HATCH_HISTORY_SIZE := 50
 ## Saved party slots (Jo, 2026-10-16): Party 1 / 2 / 3, each a lineup of 6 with a name.
 const PARTY_SLOTS := 3
 const PARTY_NAME_MAX_LENGTH := 16
+## How many friends (party codes) the friends list keeps.
+const FRIENDS_MAX := 30
 
 ## id -> true if the copy you own is Shiny.
 var owned: Dictionary = {}
@@ -30,6 +32,8 @@ var party_slot := 0
 var new_dinos: Dictionary = {}
 ## Dino mastery (Mastery): id -> {battles, wins, counters, bosses}.
 var mastery: Dictionary = {}
+## Friends whose party codes you've dueled, most recent first: {code, player, party, wins, losses}.
+var friends: Array[Dictionary] = []
 var clutches_without_epic := 0
 var last_daily_day := -1
 ## Daily check-in streak: which of the 7 days (0-6) the next check-in is.
@@ -316,6 +320,47 @@ func mark_viewed(id: StringName) -> bool:
 	return new_dinos.erase(id)
 
 
+## Adds a friend's party code to the friends list (to the top), or updates them if a friend with
+## the same name is already there: their newer code replaces the old one, and their record stays.
+func remember_friend(info: Dictionary) -> void:
+	var index := _friend_index(info["player"])
+	var entry := {"code": info["code"], "player": info["player"], "party": info["party"], "wins": 0, "losses": 0}
+	if index >= 0:
+		entry["wins"] = friends[index]["wins"]
+		entry["losses"] = friends[index]["losses"]
+		friends.remove_at(index)
+	friends.push_front(entry)
+	if friends.size() > FRIENDS_MAX:
+		friends.resize(FRIENDS_MAX)
+
+
+## A ghost duel against a friend's party ended (a forfeit counts as a loss).
+func record_friend_duel(info: Dictionary, won: bool) -> void:
+	var index := _friend_index(info["player"])
+	if index < 0:
+		remember_friend(info)
+		index = 0
+	friends[index]["wins" if won else "losses"] += 1
+
+
+## [wins, losses] against a friend.
+func friend_record(player: String) -> Array:
+	var index := _friend_index(player)
+	return [friends[index]["wins"], friends[index]["losses"]] if index >= 0 else [0, 0]
+
+
+func forget_friend(index: int) -> void:
+	if index >= 0 and index < friends.size():
+		friends.remove_at(index)
+
+
+func _friend_index(player: String) -> int:
+	for i in friends.size():
+		if String(friends[i]["player"]).to_lower() == player.to_lower():
+			return i
+	return -1
+
+
 func lineup_defs(catalog: DinoCatalog) -> Array[DinoDef]:
 	var defs: Array[DinoDef] = []
 	for id in lineup:
@@ -445,6 +490,7 @@ func to_dict() -> Dictionary:
 		"party_slot": party_slot,
 		"new_dinos": new_dinos.keys(),
 		"mastery": mastery.duplicate(true),
+		"friends": friends.duplicate(true),
 		"clutches_without_epic": clutches_without_epic,
 		"last_daily_day": last_daily_day,
 		"checkin_day": checkin_day,
@@ -519,6 +565,12 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	for key in data.get("new_dinos", []):
 		if profile.owns(StringName(key)):
 			profile.new_dinos[StringName(key)] = true
+	for entry in data.get("friends", []):
+		if entry is Dictionary and String(entry.get("code", "")).begins_with(PartyCode.PREFIX) \
+				and profile.friends.size() < FRIENDS_MAX:
+			profile.friends.append({"code": String(entry["code"]), "player": String(entry.get("player", "A friend")),
+					"party": String(entry.get("party", "Party")), "wins": maxi(0, int(entry.get("wins", 0))),
+					"losses": maxi(0, int(entry.get("losses", 0)))})
 	var saved_mastery: Dictionary = data.get("mastery", {})
 	for key in saved_mastery:
 		if catalog.find(StringName(key)) and saved_mastery[key] is Dictionary:

@@ -103,6 +103,17 @@ func _ready() -> void:
 			SettingsView.open.call_deferred()
 		"history":
 			HatchHistoryView.open.call_deferred()
+		"shareparty":
+			PartyShareView.open.call_deferred()
+		"sharepicture":
+			# Dev: renders the open party's share picture to user://share/ (and opens the share sheet).
+			var profile := Session.profile
+			ShareCard.share_party.call_deferred(profile.player_name, profile.party_name(profile.party_slot), profile.lineup,
+					[] as Array[StringName], PartyShareView.code_for(profile))
+		_ when Session.dev_open == "duel" or Session.dev_open.begins_with("duel:"):
+			FriendDuelView.open.call_deferred(Session.dev_open.get_slice(":", 1) if ":" in Session.dev_open else "")
+		_ when Session.dev_open.begins_with("friendduel:"):
+			Session.start_friend_duel.call_deferred(PartyCode.decode(Session.dev_open.get_slice(":", 1), Session.catalog))
 		"checkin":
 			_open_checkin.call_deferred()
 		"help":
