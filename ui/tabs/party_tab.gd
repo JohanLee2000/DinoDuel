@@ -80,7 +80,7 @@ func _refresh() -> void:
 		_lineup_row.add_child(_empty_slot())
 
 	var owned := _owned()
-	_status.text = "%d/%d in your party  ·  %d collected" % [profile.lineup.size(), PartyRules.BRING_SIZE, owned.size()]
+	_status.text = "%d/%d in party · tap to add or remove · hold to zoom" % [profile.lineup.size(), PartyRules.BRING_SIZE]
 	_status.remove_theme_color_override("font_color")
 	var lineup := profile.lineup_defs(Session.catalog)
 	if lineup.size() == PartyRules.BRING_SIZE and not PartyRules.has_valid_pick(lineup):
