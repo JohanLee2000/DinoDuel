@@ -2,7 +2,8 @@ class_name CollectionFilter
 extends VBoxContainer
 ## Search and filters for the Dex and Party tabs (2026-10-15): a name search and a Filters button
 ## that opens chips for type, tier and era, plus a row of Show chips (Dex: All / Owned / Missing /
-## Can craft) or Sort chips (Party: ATK / DEF / SPD, highest first; none on = the usual order).
+## Can craft) or, in the Filters panel, Sort chips (Party: ATK / DEF / SPD, highest first; none on =
+## the usual order).
 ## Within a group, chips add up (Land + Sea shows both); groups narrow each other. Choices last
 ## while the app is open, one set per tab, but aren't saved.
 
@@ -97,10 +98,9 @@ func _ready() -> void:
 	if _with_show:
 		add_child(_chip_row("", SHOW_NAMES, func(i: int) -> bool: return showing == i,
 				func(i: int) -> void: showing = i as Show))
-	if _with_sort:
-		add_child(_sort_row())
-
 	var groups := UiKit.vbox(8)
+	if _with_sort:
+		groups.add_child(_sort_row())
 	groups.add_child(_toggle_row("Type", DinoDef.TYPE_NAMES, types, TYPE_ICONS))
 	groups.add_child(_toggle_row("Tier", TIER_NAMES, tiers))
 	groups.add_child(_toggle_row("Era", DinoDef.ERA_NAMES, eras))
@@ -110,6 +110,7 @@ func _ready() -> void:
 		types.clear()
 		tiers.clear()
 		eras.clear()
+		sort = Sort.USUAL
 		for row in groups.get_children():
 			for chip in row.get_children():
 				if chip is Button and chip.has_meta("on"):
@@ -163,9 +164,9 @@ func sorted(dinos: Array[DinoDef]) -> Array[DinoDef]:
 	return result
 
 
-## How many chips are on in the Filters panel (the search and Show/Sort rows aren't counted).
+## How many chips are on in the Filters panel, a sort included (the search and Show row aren't counted).
 func active_filters() -> int:
-	return types.size() + tiers.size() + eras.size()
+	return types.size() + tiers.size() + eras.size() + (1 if sort != Sort.USUAL else 0)
 
 
 func is_narrowed() -> bool:

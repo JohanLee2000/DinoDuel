@@ -67,6 +67,7 @@ const TOPICS := [
 					["", "[b]Era bond[/b]: all 3 from the same era give +{bond_attack} Attack and +{bond_speed} Speed each."],
 					["", "[b]Balanced[/b]: one Land, one Sky and one Sea give +{balanced_hp} HP each."],
 					["", "The pick screen shows the points you have left and which bonuses you'll get."],
+					["cards", "On the Party tab, tap a dino to add it to the open party; tap it in the row at the top to take it out."],
 				],
 			},
 			{

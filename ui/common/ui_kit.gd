@@ -10,6 +10,8 @@ const BUTTON_AMBER := Color("ff7a1a")
 const BUTTON_RED := Color("d92b3a")
 ## Rare clutches, in Super Rare purple.
 const BUTTON_RARE := Color("8a46e6")
+## Sharing with friends (Share party).
+const BUTTON_EMERALD := Color("17824b")
 
 
 ## Wrapping labels need a width from their parent, so pass wrap = false inside rows and grids.

@@ -17,26 +17,29 @@ var _cards := {}
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
-	add_child(UiKit.title("Your party"))
-	add_child(UiKit.label("Bring %d dinos. Before each battle you see your rival's 6 and pick 3." \
-			% PartyRules.BRING_SIZE, 29, Palette.TEXT_DIM))
-	_slots = PartySlots.new()
-	_slots.switched.connect(_refresh)
-	add_child(_slots)
-	var social := UiKit.hbox(10)
-	var share := UiKit.icon_button("Share party", &"share", UiKit.BUTTON_GRAY, 60, 24)
-	share.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Compact header (Jo, 2026-10-26): Share and Duel beside the title, no intro text (How to play
+	# and the tour explain it), a one-line status, and Sort inside the Filters panel.
+	var header := UiKit.hbox(10)
+	var heading := UiKit.title("Your party", 34, Palette.TEXT, HORIZONTAL_ALIGNMENT_LEFT, false)
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(heading)
+	var share := UiKit.icon_button("Share", &"share", UiKit.BUTTON_EMERALD, 56, 23)
+	share.custom_minimum_size.x = 150
 	share.pressed.connect(func() -> void:
 		Sound.play(&"tap")
 		PartyShareView.open())
-	social.add_child(share)
-	var duel := UiKit.icon_button("Duel a friend", &"move_bite", UiKit.BUTTON_GRAY, 60, 24)
-	duel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(share)
+	var duel := UiKit.icon_button("Duel a friend", &"move_bite", UiKit.BUTTON_RED, 56, 23)
+	duel.custom_minimum_size.x = 210
 	duel.pressed.connect(func() -> void:
 		Sound.play(&"tap")
 		FriendDuelView.open())
-	social.add_child(duel)
-	add_child(social)
+	header.add_child(duel)
+	add_child(header)
+	_slots = PartySlots.new()
+	_slots.switched.connect(_refresh)
+	add_child(_slots)
 	_lineup_row = UiKit.hbox(6, BoxContainer.ALIGNMENT_CENTER)
 	add_child(_lineup_row)
 	_status = UiKit.label("", 29, Palette.TEXT_DIM, HORIZONTAL_ALIGNMENT_CENTER)
@@ -77,8 +80,7 @@ func _refresh() -> void:
 		_lineup_row.add_child(_empty_slot())
 
 	var owned := _owned()
-	_status.text = "%d/%d in your party · tap to add or remove · hold to zoom · %d collected" % [
-			profile.lineup.size(), PartyRules.BRING_SIZE, owned.size()]
+	_status.text = "%d/%d in your party  ·  %d collected" % [profile.lineup.size(), PartyRules.BRING_SIZE, owned.size()]
 	_status.remove_theme_color_override("font_color")
 	var lineup := profile.lineup_defs(Session.catalog)
 	if lineup.size() == PartyRules.BRING_SIZE and not PartyRules.has_valid_pick(lineup):
