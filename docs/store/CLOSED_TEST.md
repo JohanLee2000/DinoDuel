@@ -42,6 +42,19 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 1.0.2 (version code 17)
+
+```
+<en-US>
+Dino Duel 1.0.2
+- Duel your friends: share your party as a code, or paste a friend's and battle their party
+- A friends list keeps your record against each friend
+- Roomier Party tab with Share and Duel buttons up top
+- How to play: card tiers explained, plus a crafting tip
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 1.0.1 (version code 16)
 
 ```
