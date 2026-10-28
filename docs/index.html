@@ -33,6 +33,8 @@
     background: var(--panel); border: 1px solid var(--border); color: var(--gold);
     font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-style: italic; letter-spacing: 0.04em; text-transform: uppercase;
   }
+  .badge.play { background: var(--gold); border-color: var(--gold); color: var(--bg); text-decoration: none; }
+  .badge.play:hover, .badge.play:focus-visible { filter: brightness(1.1); }
   .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 40px 0; }
   .feature { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
   .feature h3 { margin: 0 0 6px; font-size: 1.35em; color: var(--gold); text-transform: uppercase; }
@@ -55,7 +57,7 @@
     <section class="hero">
       <img src="site/hero.jpg" alt="Dino Duel: Hatch. Collect. Battle. Cards of Mosasaurus, Tyrannosaurus Rex and Quetzalcoatlus" width="1024" height="500">
       <p class="lead">Hatch fossil eggs, collect 65+ prehistoric beasts and outsmart rival collectors in quick, tactical card duels.</p>
-      <span class="badge">Coming soon to Google Play</span>
+      <a class="badge play" href="https://play.google.com/store/apps/details?id=com.dinoduelstudios.dinoduel">Get it on Google Play</a>
     </section>
 
     <section class="features" aria-label="Features">
