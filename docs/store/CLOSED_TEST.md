@@ -42,6 +42,18 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 1.0.3 (version code 18)
+
+```
+<en-US>
+Dino Duel 1.0.3
+- What's new: see what changed after every update (and any time in Settings)
+- Rate Dino Duel from Settings
+- Fixed: the battle music now plays after a Rematch
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 1.0.2 (version code 17)
 
 ```
