@@ -10,6 +10,10 @@ Go through this before building a production release (signed `.aab` for Google P
 ## In-app update prompt (kept, 2026-10-21)
 - [x] (Done 2026-10-25, the cautious answer.) **Answer the Data safety form for the update check** (options in `docs/store/STORE_LISTING.md`). The privacy policy already covers it ("Update checks").
 
+## Rating card and What's new (1.0.3, 2026-10-28)
+- [ ] **Data safety for the rating card**: Jo's call between the two answers in `docs/store/STORE_LISTING.md`. The privacy policy already covers it ("Rating the game").
+- Every release: add its notes to `WhatsNew.RELEASES` (`app/whats_new.gd`) before bumping `version/name`; a test fails if the exported version has no notes.
+
 ## Signing
 - [x] Create the release keystore and **back it up with its password** (done: Jo confirmed the backup on 2026-10-09) somewhere safe (password manager plus an offline copy). Losing it means you can't update the app on Google Play. Never commit it (`.gitignore` already blocks `*.keystore` and `*.jks`).
 

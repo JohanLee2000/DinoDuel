@@ -833,6 +833,11 @@ func _show_result() -> void:
 	intro.tween_property(result_title, "scale", Vector2.ONE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	intro.parallel().tween_property(result_title, "modulate:a", 1.0, 0.15)
 	intro.tween_property(summary, "modulate:a", 1.0, 0.2)
+	# Google Play's rating card, now and then after a Journey win (ReviewPrompt decides when).
+	if _state.winner == PLAYER and Session.friend.is_empty() and not _autopilot:
+		await get_tree().create_timer(1.5).timeout
+		if is_inside_tree() and ReviewPrompt.ask(Session.profile, SaveStore.today()):
+			Session.save()
 	if _autopilot:
 		await get_tree().create_timer(2.5).timeout
 		if Session.autoplay_battles_left > 0:

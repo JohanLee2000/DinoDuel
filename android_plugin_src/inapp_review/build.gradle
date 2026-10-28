@@ -1,0 +1,42 @@
+// Google Play's in-app review (rating card) for Dino Duel: the Android side of addons/inapp_review.
+// Written 2026-10-28 on the same setup as android_plugin_src/inapp_update. Build with Godot's Gradle
+// wrapper (see docs/IN_APP_REVIEW.md), then copy the two AARs from build/outputs/aar/ into
+// addons/inapp_review/bin/debug and bin/release.
+plugins {
+	// Same versions as Godot 4.7.2's Android build template (android/build/config.gradle).
+	id 'com.android.library' version '8.6.1'
+	id 'org.jetbrains.kotlin.android' version '2.1.21'
+}
+
+ext.godotVersion = "4.7.2.stable"
+
+android {
+	namespace "com.dinoduelstudios.inappreview"
+	compileSdk 35
+
+	defaultConfig {
+		minSdk 24
+		targetSdk 35
+		consumerProguardFiles "consumer-rules.pro"
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
+	}
+	kotlinOptions {
+		jvmTarget = "17"
+	}
+
+	libraryVariants.all { variant ->
+		variant.outputs.all { output ->
+			output.outputFileName = "InappReviewPlugin-${variant.name}.aar"
+		}
+	}
+}
+
+dependencies {
+	compileOnly "org.godotengine:godot:$godotVersion"
+	// Also declared in addons/inapp_review/InappReviewPlugin.gd, so it lands in the app's build.
+	implementation "com.google.android.play:review:2.0.2"
+}

@@ -226,6 +226,11 @@ Tuned 2026-10-15 (48 simulated players): Triassic 94 (Rae, coached anyway) / 72 
 - Dino numbers in codes are permanent: new dinos are appended to `PartyCode.DINO_NUMBERS`.
 - **Clans** (explored 2026-10-26, not planned): real clans need an online service (accounts, a server holding membership, clan goals or chat, moderation for clan names and messages), internet permission, sign-in, and new Data safety and privacy answers. The friends list is the offline stand-in.
 
+## Rating card and What's new (Jo, 2026-10-28)
+- **Rating card:** Google Play's in-app review, asked for after a Journey win once the player has 5+ wins, at most 3 times and 30+ days apart; Play decides whether it shows. No question before it and no button that opens it; **Settings > Rate Dino Duel** opens the Play Store page. See docs/IN_APP_REVIEW.md.
+- **What's new:** after an update, the main screen shows the Professaur's "News from camp" once, a section per version since the player last looked (up to 3), then the day's check-in if it's waiting. New players skip it. Settings > **What's new** shows it again. Notes live in `app/whats_new.gd`, one entry per release.
+- **Fixed (1.0.3):** no battle music after Rematch. Switching tracks twice within the 1 s crossfade (Rematch, then Start battle straight away) let the old fade-out stop the new track; `Sound` now cancels a player's fade before reusing it.
+
 ## Future plans (Jo, 2026-10-16; not for the current release)
 - **Post-game after Extinction Day:** beating the finale unlocks post-game content: the journey continues into the **Ice Age** and beyond (new eras, new creatures, new rivals).
 - **Expedition mode** (a small roguelike on the same battle engine). First version: draft 3 dinos from a **loaned** selection (so players try creatures they haven't collected), fight 3 encounters, choose a recovery or temporary benefit between battles (e.g. **Rest**: heal your team; **Recruit**: swap one dino for a new candidate), then face a final rival; the reward depends on how far you got. Later: branching paths and temporary effects.

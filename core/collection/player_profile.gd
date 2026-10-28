@@ -34,6 +34,11 @@ var new_dinos: Dictionary = {}
 var mastery: Dictionary = {}
 ## Friends whose party codes you've dueled, most recent first: {code, player, party, wins, losses}.
 var friends: Array[Dictionary] = []
+## The version whose What's new the player last saw (WhatsNew); "" for saves from before it.
+var whats_new_seen := ""
+## Google Play's rating card (ReviewPrompt): how many times the game asked, and the last day.
+var review_asks := 0
+var review_asked_day := -1
 var clutches_without_epic := 0
 var last_daily_day := -1
 ## Daily check-in streak: which of the 7 days (0-6) the next check-in is.
@@ -491,6 +496,9 @@ func to_dict() -> Dictionary:
 		"new_dinos": new_dinos.keys(),
 		"mastery": mastery.duplicate(true),
 		"friends": friends.duplicate(true),
+		"whats_new_seen": whats_new_seen,
+		"review_asks": review_asks,
+		"review_asked_day": review_asked_day,
 		"clutches_without_epic": clutches_without_epic,
 		"last_daily_day": last_daily_day,
 		"checkin_day": checkin_day,
@@ -571,6 +579,9 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 			profile.friends.append({"code": String(entry["code"]), "player": String(entry.get("player", "A friend")),
 					"party": String(entry.get("party", "Party")), "wins": maxi(0, int(entry.get("wins", 0))),
 					"losses": maxi(0, int(entry.get("losses", 0)))})
+	profile.whats_new_seen = String(data.get("whats_new_seen", ""))
+	profile.review_asks = maxi(0, int(data.get("review_asks", 0)))
+	profile.review_asked_day = int(data.get("review_asked_day", -1))
 	var saved_mastery: Dictionary = data.get("mastery", {})
 	for key in saved_mastery:
 		if catalog.find(StringName(key)) and saved_mastery[key] is Dictionary:

@@ -48,6 +48,16 @@ func _ready() -> void:
 #		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 #		transfer.add_child(button)
 #	column.add_child(transfer)
+	var extras := UiKit.hbox(12)
+	var news := UiKit.icon_button("What's new", &"history", UiKit.BUTTON_GRAY, 76, 26)
+	news.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	news.pressed.connect(func() -> void: WhatsNewView.open(WhatsNew.unseen("")))
+	extras.add_child(news)
+	var rate := UiKit.icon_button("Rate Dino Duel", &"star", UiKit.BUTTON_GRAY, 76, 26, Color.WHITE)
+	rate.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rate.pressed.connect(ReviewPrompt.open_store_page)
+	extras.add_child(rate)
+	column.add_child(extras)
 	var restart := UiKit.icon_button("Reset game", &"restart", UiKit.BUTTON_RED, 76, 28)
 	restart.pressed.connect(_confirm_restart)
 	column.add_child(restart)

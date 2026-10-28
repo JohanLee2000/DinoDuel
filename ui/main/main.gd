@@ -94,6 +94,9 @@ func _ready() -> void:
 		_start_new_player.call_deferred()
 	elif not Session.profile.tour_done:
 		ProfessorTour.start.call_deferred(self)
+	elif Session.dev_open == "" and Session.dev_open_card == "" \
+			and not WhatsNew.unseen(Session.profile.whats_new_seen).is_empty():
+		_open_whats_new.call_deferred()
 	elif Session.dev_open == "" and Session.dev_open_card == "" and Session.take_checkin_prompt():
 		_open_checkin.call_deferred()
 	if Session.dev_tab_timing:
@@ -103,6 +106,8 @@ func _ready() -> void:
 			SettingsView.open.call_deferred()
 		"history":
 			HatchHistoryView.open.call_deferred()
+		"whatsnew":
+			WhatsNewView.open.call_deferred(WhatsNew.unseen(""))
 		"shareparty":
 			PartyShareView.open.call_deferred()
 		"sharepicture":
@@ -143,6 +148,15 @@ func _dev_time_tabs() -> void:
 			lines.append("round %d  %-6s %6.1f ms" % [round + 1, TABS[i]["name"], (Time.get_ticks_usec() - start) / 1000.0])
 	var file := FileAccess.open("user://tab_timing.txt", FileAccess.WRITE)
 	file.store_string("\n".join(lines) + "\n")
+
+
+## What's new since the player last looked; then the day's check-in if it's waiting.
+func _open_whats_new() -> void:
+	WhatsNewView.open(WhatsNew.unseen(Session.profile.whats_new_seen)).closed.connect(func() -> void:
+		Session.profile.whats_new_seen = WhatsNew.latest()
+		Session.save()
+		if Session.take_checkin_prompt():
+			_open_checkin())
 
 
 func _open_checkin() -> void:

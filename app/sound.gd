@@ -52,6 +52,8 @@ var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 var _music_players: Array[AudioStreamPlayer] = []
 var _music_track := &""
+## Per music player: its running fade, so a player that's reused cancels its old fade first.
+var _fades := {}
 ## A track asked for before the players existed (the node joins the tree a frame after setup).
 var _pending_track := &""
 
@@ -203,11 +205,25 @@ func _set_music(track: StringName) -> void:
 		incoming.stream = stream
 		incoming.volume_db = -40.0
 		incoming.play()
-		create_tween().tween_property(incoming, "volume_db", MUSIC_DB, FADE_SECONDS)
+		_fade(incoming, MUSIC_DB, false)
+	else:
+		_fade(incoming, -60.0, true)
 	if outgoing.playing:
-		var fade := create_tween()
-		fade.tween_property(outgoing, "volume_db", -60.0, FADE_SECONDS)
-		fade.tween_callback(outgoing.stop)
+		_fade(outgoing, -60.0, true)
+
+
+## Fades a music player, first cancelling a fade still running on it. Without that, switching
+## tracks twice within a fade (Rematch, then Start battle straight away) let the old fade-out
+## finish and stop the new track: no battle music (Jo, 2026-10-28).
+func _fade(player: AudioStreamPlayer, to_db: float, then_stop: bool) -> void:
+	var running: Tween = _fades.get(player)
+	if running and running.is_valid():
+		running.kill()
+	var fade := create_tween()
+	fade.tween_property(player, "volume_db", to_db, FADE_SECONDS)
+	if then_stop:
+		fade.tween_callback(player.stop)
+	_fades[player] = fade
 
 
 ## Every button taps when pressed, so screens don't each need to remember to.

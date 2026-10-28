@@ -110,6 +110,7 @@ func _ready() -> void:
 	if profile == null:
 		# --store-shots with --tutorial: a new player's start (for screenshots of the intro and tour).
 		profile = _showcase_profile() if store_shots and not dev_tutorial else PlayerProfile.new_game(randi())
+		profile.whats_new_seen = WhatsNew.latest()
 		save()
 	refresh_quests()
 
@@ -168,7 +169,9 @@ func save() -> void:
 ## game from the name entry. Sound settings are kept; they're device preferences, not progress.
 func restart_game() -> void:
 	SaveStore.delete_all()
-	_switch_profile(PlayerProfile.new_game(randi()))
+	var fresh := PlayerProfile.new_game(randi())
+	fresh.whats_new_seen = WhatsNew.latest()
+	_switch_profile(fresh)
 
 
 ## Settings > Import save (after the player confirms): the imported progress replaces this
