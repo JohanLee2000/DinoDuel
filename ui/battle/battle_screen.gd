@@ -630,6 +630,9 @@ func _build_top_bar() -> void:
 	you.add_child(_dots_row(PLAYER))
 	bar.add_child(you)
 	bar.move_child(you, name_box.get_index() + 1)
+	var mine := Avatar.of_player(56)
+	bar.add_child(mine)
+	bar.move_child(mine, you.get_index())
 	bar.add_theme_constant_override("separation", 12)
 
 

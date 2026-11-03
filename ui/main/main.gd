@@ -20,6 +20,8 @@ var _first_steps: FirstStepsBar
 var _tab_glow: Tween
 var _amber_icon: Control
 var _gear: Button
+## Top left: the player's avatar, which opens their Fossil Hunter ID (ProfileView).
+var _avatar_button: Button
 
 @onready var _content: MarginContainer = %Content
 @onready var _nav_bar: HBoxContainer = %NavBar
@@ -39,6 +41,13 @@ func _ready() -> void:
 	var title_label: Label = %Title
 	title_label.replace_by(logo)
 	title_label.queue_free()
+	_avatar_button = Button.new()
+	_avatar_button.flat = true
+	_avatar_button.custom_minimum_size = Vector2(60, 60)
+	_avatar_button.pressed.connect(func() -> void: ProfileView.open())
+	logo.get_parent().add_child(_avatar_button)
+	logo.get_parent().move_child(_avatar_button, logo.get_index())
+	_update_avatar()
 	_amber_icon = _add_icon_before(_amber_label, &"amber")
 	_add_icon_before(_clutch_label, &"egg")
 	_gear = Button.new()
@@ -108,6 +117,12 @@ func _ready() -> void:
 			HatchHistoryView.open.call_deferred()
 		"whatsnew":
 			WhatsNewView.open.call_deferred(WhatsNew.unseen(""))
+		"profile":
+			ProfileView.open.call_deferred()
+		_ when Session.dev_open.begins_with("profile:"):
+			# profile:avatar, profile:title or profile:showcase: the ID with that picker open.
+			var picker := "_pick_" + Session.dev_open.get_slice(":", 1)
+			(func() -> void: ProfileView.open().call(picker)).call_deferred()
 		"shareparty":
 			PartyShareView.open.call_deferred()
 		"sharepicture":
@@ -215,7 +230,14 @@ func _style_tabs() -> void:
 				_buttons[i].add_theme_color_override(color_name, Palette.TEXT_DIM)
 
 
+func _update_avatar() -> void:
+	for child in _avatar_button.get_children():
+		child.queue_free()
+	_avatar_button.add_child(Avatar.of_player(60))
+
+
 func _update_bar() -> void:
+	_update_avatar()
 	var profile := Session.profile
 	_amber_label.text = str(profile.amber)
 	_clutch_label.text = str(profile.clutches + profile.rare_clutches)

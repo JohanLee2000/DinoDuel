@@ -226,6 +226,14 @@ Tuned 2026-10-15 (48 simulated players): Triassic 94 (Rae, coached anyway) / 72 
 - Dino numbers in codes are permanent: new dinos are appended to `PartyCode.DINO_NUMBERS`.
 - **Clans** (explored 2026-10-26, not planned): real clans need an online service (accounts, a server holding membership, clan goals or chat, moderation for clan names and messages), internet permission, sign-in, and new Data safety and privacy answers. The friends list is the offline stand-in.
 
+## Fossil Hunter ID: the profile (Jo, 2026-11-03; phase 1)
+Inspired by TCG Pocket's profile (icon, emblems, featured cards) and Marvel Snap's avatars and titles. Tap the **avatar at the top left** of the main screen to open the ID (`ui/profile/profile_view.gd`; rules `core/collection/hunter_id.gd`):
+- **Avatar:** any dino you own (the upper part of its painting, Shiny if yours is), **any rival you've beaten** on the Journey (Rory once), or the Professaur. Until one is picked, it's your partner. Shown in the top bar and beside YOU in battles.
+- **Name** (rename with the pencil) and **title**, earned by playing: Fossil Hunter (everyone), Triassic / Jurassic / Cretaceous Champion, Extinction Survivor, Star Collector, Unstoppable (5 wins in a row), Egg Enthusiast (100 eggs), Shiny Hunter (5 Shinies), Era Expert, Completionist, Trusted Partner and Legend Tamer (mastery), Friendly Rival (10 friend-duel wins), and "<Set> Collector" for every set. Locked titles show how to earn them.
+- **Showcase:** your 3 favorite cards. **Stats:** dinos (and Shinies), Journey stars, battles won, best win streak (new: Journey battles, a loss or forfeit ends it), eggs hatched, favorite dino (most battles), rarest dino, Legends, friend duels won.
+- No free-text bio (players' text others read would be user-generated content under Play policy). Everything is earned, nothing bought.
+- **Next phases (planned):** frames and badges (unlocked by milestones, eras, sets, bosses, mastery, events); the avatar and title in party codes, so friend duels show them; a Share my ID picture.
+
 ## Rating card and What's new (Jo, 2026-10-28)
 - **Rating card:** Google Play's in-app review, asked for after a Journey win once the player has 5+ wins, at most 3 times and 30+ days apart; Play decides whether it shows. No question before it and no button that opens it; **Settings > Rate Dino Duel** opens the Play Store page. See docs/IN_APP_REVIEW.md.
 - **What's new:** after an update, the main screen shows the Professaur's "News from camp" once, a section per version since the player last looked (up to 3), then the day's check-in if it's waiting. New players skip it. Settings > **What's new** shows it again. Notes live in `app/whats_new.gd`, one entry per release.

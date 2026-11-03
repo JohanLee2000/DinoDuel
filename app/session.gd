@@ -138,6 +138,10 @@ func _showcase_profile() -> PlayerProfile:
 	showcase.first_steps_active = false
 	showcase.clutches = 1
 	showcase.eggs_hatched = 57
+	showcase.avatar = "dino:t_rex"
+	showcase.title = "champ_0"
+	showcase.showcase.assign([&"t_rex", &"mosasaurus", &"quetzalcoatlus"])
+	showcase.best_win_streak = 7
 	# Mastery ribbons and "new" dots for screenshots.
 	for entry in [[&"t_rex", 31, 27, 30, 4], [&"pteranodon", 14, 11, 9, 3], [&"mosasaurus", 12, 10, 12, 1],
 			[&"velociraptor", 5, 3, 4, 0], [&"triceratops", 2, 1, 1, 0]]:

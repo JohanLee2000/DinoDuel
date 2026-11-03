@@ -39,6 +39,13 @@ var whats_new_seen := ""
 ## Google Play's rating card (ReviewPrompt): how many times the game asked, and the last day.
 var review_asks := 0
 var review_asked_day := -1
+## The Fossil Hunter ID (HunterId): avatar id ("" = the partner), title id, showcase dino ids.
+var avatar := ""
+var title := ""
+var showcase: Array[StringName] = []
+## Wins in a row in Journey battles (friend duels don't count), and the best run.
+var win_streak := 0
+var best_win_streak := 0
 var clutches_without_epic := 0
 var last_daily_day := -1
 ## Daily check-in streak: which of the 7 days (0-6) the next check-in is.
@@ -389,10 +396,13 @@ func record_battle(won: bool, stage: RivalDef = null, stars := 0) -> Dictionary:
 			"stars": 0, "new_best": false}
 	if won:
 		wins += 1
+		win_streak += 1
+		best_win_streak = maxi(best_win_streak, win_streak)
 		reward["clutches"] = Economy.WIN_CLUTCHES
 		reward["amber"] = Economy.WIN_AMBER
 	else:
 		losses += 1
+		win_streak = 0
 	if stage:
 		var key := String(stage.id)
 		var record: Array = rival_record.get(stage.id, [0, 0])
@@ -423,6 +433,7 @@ func record_battle(won: bool, stage: RivalDef = null, stars := 0) -> Dictionary:
 ## Leaving a battle partway: a loss in the record, but no Amber (or quitting would farm it).
 func record_forfeit(rival_id: StringName = &"") -> void:
 	losses += 1
+	win_streak = 0
 	if rival_id != &"":
 		var record: Array = rival_record.get(rival_id, [0, 0])
 		record[1] += 1
@@ -499,6 +510,11 @@ func to_dict() -> Dictionary:
 		"whats_new_seen": whats_new_seen,
 		"review_asks": review_asks,
 		"review_asked_day": review_asked_day,
+		"avatar": avatar,
+		"title": title,
+		"showcase": showcase.duplicate(),
+		"win_streak": win_streak,
+		"best_win_streak": best_win_streak,
 		"clutches_without_epic": clutches_without_epic,
 		"last_daily_day": last_daily_day,
 		"checkin_day": checkin_day,
@@ -582,6 +598,14 @@ static func from_dict(data: Dictionary, catalog: DinoCatalog) -> PlayerProfile:
 	profile.whats_new_seen = String(data.get("whats_new_seen", ""))
 	profile.review_asks = maxi(0, int(data.get("review_asks", 0)))
 	profile.review_asked_day = int(data.get("review_asked_day", -1))
+	profile.avatar = String(data.get("avatar", ""))
+	profile.title = String(data.get("title", ""))
+	for key in data.get("showcase", []):
+		if profile.owns(StringName(key)) and profile.showcase.size() < HunterId.SHOWCASE_SIZE \
+				and not StringName(key) in profile.showcase:
+			profile.showcase.append(StringName(key))
+	profile.win_streak = maxi(0, int(data.get("win_streak", 0)))
+	profile.best_win_streak = maxi(profile.win_streak, int(data.get("best_win_streak", 0)))
 	var saved_mastery: Dictionary = data.get("mastery", {})
 	for key in saved_mastery:
 		if catalog.find(StringName(key)) and saved_mastery[key] is Dictionary:

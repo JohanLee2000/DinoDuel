@@ -159,7 +159,7 @@ const TOPICS := [
 	{
 		"title": "Collection",
 		"icon": "book",
-		"about": "Card tiers, the Dex, sets and dino mastery",
+		"about": "Card tiers, the Dex, sets, mastery, your ID",
 		"pages": [
 			{"title": "Card tiers", "picture": "_pic_tiers", "custom": "_tiers_page"},
 			{
@@ -173,6 +173,15 @@ const TOPICS := [
 				],
 			},
 			{"title": "Dino mastery", "picture": "_pic_mastery", "custom": "_mastery_page"},
+			{
+				"title": "Your Fossil Hunter ID",
+				"rows": [
+					["", "Tap your [b]avatar[/b] at the top left to open your ID: your name, title, showcase and stats."],
+					["", "[b]Avatar[/b]: any dino you own, any rival you've beaten on the Journey, or the Professaur."],
+					["trophy", "[b]Titles[/b] are earned by playing: clear an era, complete a set, win 5 in a row, raise a Legend... Tap your title to see them all."],
+					["cards", "[b]Showcase[/b]: put your 3 favorite cards on display."],
+				],
+			},
 		],
 	},
 	{
