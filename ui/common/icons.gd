@@ -133,6 +133,7 @@ const SVG := {
 	&"back": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g fill="none" stroke="#ffffff" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
 <line x1="54" y1="32" x2="12" y2="32"/><path d="M29 14 L11 32 L29 50"/></g></svg>""",
 	# A locked Journey stage.
+	&"check": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#3ddc84" stroke="#05080f" stroke-width="4"/><path d="M19 33 L28 42 L45 23" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>""",
 	&"lock": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M20 28 L20 20 A12 12 0 0 1 44 20 L44 28" fill="none" stroke="#dfe7f5" stroke-width="7" stroke-linecap="round"/>
 <rect x="12" y="27" width="40" height="31" rx="7" fill="#dfe7f5" stroke="#0b1220" stroke-width="3"/><circle cx="32" cy="41" r="5" fill="#0b1220"/><rect x="30" y="42" width="4" height="9" rx="2" fill="#0b1220"/></svg>""",
 	# Journey star chest.

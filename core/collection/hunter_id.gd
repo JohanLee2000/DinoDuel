@@ -65,6 +65,24 @@ static func beaten_rivals(profile: PlayerProfile) -> Array[String]:
 	return characters
 
 
+## Every rival character on the Journey, in order (Rory once).
+static func rival_characters() -> Array[String]:
+	var characters: Array[String] = []
+	for stage in Journey.stages():
+		var character := String(stage.character)
+		if character != "" and not character in characters:
+			characters.append(character)
+	return characters
+
+
+## A rival's name as the Journey shows it ("Captain Cora"), from their first stage.
+static func rival_name(character: String) -> String:
+	for stage in Journey.stages():
+		if String(stage.character) == character:
+			return stage.display_name
+	return character.capitalize()
+
+
 ## Every avatar the player can pick: beaten rivals, the Professaur, then their dinos, rarest first.
 static func avatar_choices(profile: PlayerProfile, catalog: DinoCatalog) -> Array[String]:
 	var choices: Array[String] = []

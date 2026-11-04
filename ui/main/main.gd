@@ -22,6 +22,8 @@ var _amber_icon: Control
 var _gear: Button
 ## Top left: the player's avatar, which opens their Fossil Hunter ID (ProfileView).
 var _avatar_button: Button
+## Matches the settings gear (Icons.texture(&"gear", 34) draws 68 px, the gear itself ~62).
+const TOP_AVATAR_SIZE := 66
 
 @onready var _content: MarginContainer = %Content
 @onready var _nav_bar: HBoxContainer = %NavBar
@@ -43,7 +45,7 @@ func _ready() -> void:
 	title_label.queue_free()
 	_avatar_button = Button.new()
 	_avatar_button.flat = true
-	_avatar_button.custom_minimum_size = Vector2(60, 60)
+	_avatar_button.custom_minimum_size = Vector2.ONE * TOP_AVATAR_SIZE
 	_avatar_button.pressed.connect(func() -> void: ProfileView.open())
 	logo.get_parent().add_child(_avatar_button)
 	logo.get_parent().move_child(_avatar_button, logo.get_index())
@@ -120,9 +122,16 @@ func _ready() -> void:
 		"profile":
 			ProfileView.open.call_deferred()
 		_ when Session.dev_open.begins_with("profile:"):
-			# profile:avatar, profile:title or profile:showcase: the ID with that picker open.
+			# profile:avatar, profile:title or profile:showcase: the ID with that picker open;
+			# profile:avatar:<search> also types a search.
 			var picker := "_pick_" + Session.dev_open.get_slice(":", 1)
-			(func() -> void: ProfileView.open().call(picker)).call_deferred()
+			var query := Session.dev_open.get_slice(":", 2) if Session.dev_open.get_slice_count(":") > 2 else ""
+			(func() -> void:
+				var view := ProfileView.open()
+				if query != "":
+					view.call(picker, query)
+				else:
+					view.call(picker)).call_deferred()
 		"shareparty":
 			PartyShareView.open.call_deferred()
 		"sharepicture":
@@ -233,7 +242,12 @@ func _style_tabs() -> void:
 func _update_avatar() -> void:
 	for child in _avatar_button.get_children():
 		child.queue_free()
-	_avatar_button.add_child(Avatar.of_player(60))
+	# Centered in the button, as big as the gear on the other side.
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	center.add_child(Avatar.of_player(TOP_AVATAR_SIZE))
+	_avatar_button.add_child(center)
 
 
 func _update_bar() -> void:

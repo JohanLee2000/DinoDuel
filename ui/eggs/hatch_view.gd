@@ -213,7 +213,8 @@ func _reveal(result: HatchResult, egg_center: Vector2) -> void:
 	_add_share_button(result)
 	_waiting_for_tap = true
 	if Session.autoplay:
-		await get_tree().create_timer(1.2).timeout
+		# Store screenshots and trailer clips need the card on screen long enough to see.
+		await get_tree().create_timer(3.0 if Session.store_shots else 1.2).timeout
 		_advance()
 
 

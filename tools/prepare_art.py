@@ -28,6 +28,8 @@ from PIL import Image
 PROJECT = Path(__file__).resolve().parent.parent
 OUT = PROJECT / "assets" / "dinos"
 THUMBS = OUT / "thumbs"
+# Avatar portraits (tools/build_avatar_portraits.gd): mipmapped like the thumbnails.
+AVATARS = OUT / "avatars"
 THUMB_WIDTH = 360
 PAINTING_LIMIT = 768
 # Every dino in the game has a data file named after its id.
@@ -54,9 +56,10 @@ def rebuild_thumbs() -> None:
 def fix_imports() -> None:
     """Sets the game's import options in the .import files Godot wrote. Run Godot's --import again after."""
     changed = 0
-    for imp in sorted(OUT.glob("*.webp.import")) + sorted(THUMBS.glob("*.webp.import")):
+    imports = sorted(OUT.glob("*.webp.import")) + sorted(THUMBS.glob("*.webp.import")) + sorted(AVATARS.glob("*.webp.import"))
+    for imp in imports:
         text = imp.read_text(encoding="utf-8")
-        if imp.parent == THUMBS:
+        if imp.parent in (THUMBS, AVATARS):
             new = text.replace("mipmaps/generate=false", "mipmaps/generate=true")
         else:
             new = re.sub(r"^process/size_limit=\d+$", f"process/size_limit={PAINTING_LIMIT}", text, flags=re.M)

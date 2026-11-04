@@ -138,6 +138,9 @@ func _ready() -> void:
 			_sfx_volume = 0.0
 		if not config.get_value("audio", "music", true):
 			_music_volume = 0.0
+	if "--no-music" in OS.get_cmdline_user_args():
+		# Dev: sound effects only, for trailer clips that get one music track over the top.
+		_music_volume = 0.0
 	_apply_settings(false)
 	get_tree().node_added.connect(_on_node_added)
 	if _pending_track != &"":

@@ -75,3 +75,27 @@ func test_profile_saves_and_drops_what_is_gone() -> void:
 			"unowned and repeated dinos dropped, at most 3")
 	assert_eq(HunterId.stats(p, catalog).size(), 9)
 	assert_eq(HunterId.rarest_dino(p, catalog).id, &"t_rex")
+
+
+func test_every_dino_has_a_face_for_its_avatar() -> void:
+	# assets/dinos/faces.json (tools/preview_faces.py): where each painting's face is, so a dino
+	# avatar shows the face rather than a neck or a wing.
+	var faces: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/dinos/faces.json"))
+	for dino in catalog.dinos:
+		assert_true(faces.has(String(dino.id)), "%s needs a face box in assets/dinos/faces.json" % dino.id)
+		var box: Array = faces.get(String(dino.id), [0.0, 0.0, 0.5])
+		assert_eq(box.size(), 3, "%s: [x, y, size]" % dino.id)
+		assert_true(box[2] >= 0.15 and box[0] >= 0.0 and box[1] >= 0.0, "%s: box inside the painting" % dino.id)
+		assert_true(box[0] + box[2] <= 1.001 and box[1] + box[2] <= 1.501, "%s: box inside the painting (2:3)" % dino.id)
+
+
+
+func test_rivals_are_named_as_on_the_journey() -> void:
+	var characters := HunterId.rival_characters()
+	assert_eq(characters.count("rory"), 1, "Rory once, though he has a stage in every era")
+	assert_eq(characters.size(), 16)
+	assert_eq(HunterId.rival_name("cora"), "Captain Cora")
+	assert_eq(HunterId.rival_name("rory"), "Rival Rory")
+	var beaten := HunterId.beaten_rivals(_profile())
+	for character in beaten:
+		assert_true(character in characters)
