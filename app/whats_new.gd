@@ -5,6 +5,11 @@ extends RefCounted
 ## with the same version as the export presets (version/name).
 
 const RELEASES: Array[Dictionary] = [
+	{"version": "1.0.4", "items": [
+		"Your Fossil Hunter ID: tap your avatar at the top left.",
+		"Pick an avatar: any dino you own, or a rival you've beaten on the Journey.",
+		"Earn titles, show off your 3 favorite cards and see your stats.",
+	]},
 	{"version": "1.0.3", "items": [
 		"What's new: this popup, after every update (and any time in Settings).",
 		"Rate Dino Duel from Settings.",

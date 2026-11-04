@@ -42,6 +42,18 @@ Thanks for testing! Feedback: dinoduelstudios@gmail.com
 </en-US>
 ```
 
+## Release 1.0.4 (version code 19)
+
+```
+<en-US>
+Dino Duel 1.0.4
+- New: your Fossil Hunter ID. Tap your avatar at the top left
+- Pick an avatar: any dino you own, or a rival you've beaten
+- Earn titles, show off your 3 favorite cards and see your stats
+Feedback: dinoduelstudios@gmail.com
+</en-US>
+```
+
 ## Release 1.0.3 (version code 18)
 
 ```
